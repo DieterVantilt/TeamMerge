@@ -9,29 +9,7 @@ namespace TeamMerge.Commands
     {
         void RaiseCanExecuteChanged();
     }
-
-    public class AsyncRelayCommand<T>
-        : RelayCommandBase<T>
-    {
-        private readonly Func<T, Task> _canExecuteAsync;
-
-        public AsyncRelayCommand(Func<T, Task> canExecuteAsync) 
-            : this(canExecuteAsync, x => true)
-        {
-        }
-
-        public AsyncRelayCommand(Func<T, Task> canExecuteAsync, Func<T, bool> canExecute)
-            : base(canExecute)
-        {
-            _canExecuteAsync = canExecuteAsync;
-        }
-
-        public async override void Execute(object parameter)
-        {
-            await _canExecuteAsync((T) parameter);
-        }
-    }
-
+    
     public class RelayCommand<T>
         : RelayCommandBase<T>
     {
@@ -67,6 +45,53 @@ namespace TeamMerge.Commands
         public bool CanExecute(object parameter)
         {
             return _canExecute((T)parameter); ;
+        }
+
+        public void RaiseCanExecuteChanged()
+        {
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public abstract void Execute(object parameter);
+
+        public event EventHandler CanExecuteChanged;
+    }
+
+    public class RelayCommand
+        : RelayCommandBase
+    {
+        private readonly Action _execute;
+
+        public RelayCommand(Action execute)
+            : this(execute, () => true)
+        {
+        }
+
+        public RelayCommand(Action execute, Func<bool> canExecute)
+            : base(canExecute)
+        {
+            _execute = execute;
+        }
+
+        public override void Execute(object parameter)
+        {
+            _execute();
+        }
+    }
+
+    public abstract class RelayCommandBase
+        : IRelayCommand
+    {
+        private readonly Func<bool> _canExecute;
+
+        public RelayCommandBase(Func<bool> canExecute)
+        {
+            _canExecute = canExecute;
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return _canExecute();
         }
 
         public void RaiseCanExecuteChanged()

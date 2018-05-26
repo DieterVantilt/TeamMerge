@@ -28,9 +28,9 @@ namespace TeamMerge.Merge
             TargetBranches = new ObservableCollection<string>();
             ProjectNames = new ObservableCollection<string>();
 
-            ViewChangesetDetailsCommand = new RelayCommand<object>(ViewChangeset, CanViewChangeset);
-            MergeCommand = new AsyncRelayCommand<object>(MergeAsync, CanMerge);
-            FetchChangesetsCommand = new AsyncRelayCommand<object>(FetchChangesetsAsync, CanFetchChangesets);
+            ViewChangesetDetailsCommand = new RelayCommand(ViewChangeset, CanViewChangeset);
+            MergeCommand = new AsyncRelayCommand(MergeAsync, CanMerge);
+            FetchChangesetsCommand = new AsyncRelayCommand(FetchChangesetsAsync, CanFetchChangesets);
 
             Title = Resources.TeamMerge;
         }
@@ -148,7 +148,7 @@ namespace TeamMerge.Merge
             }
         }
 
-        private async Task MergeAsync(object objec1t)
+        private async Task MergeAsync()
         {
             await SetBusyWhileExecutingAsync(async () =>
             {
@@ -159,7 +159,7 @@ namespace TeamMerge.Merge
             });
         }
 
-        private bool CanMerge(object objec1t)
+        private bool CanMerge()
         {
             return SelectedChangesets != null
                 && SelectedChangesets.Any()
@@ -167,7 +167,7 @@ namespace TeamMerge.Merge
                                          x.ChangesetId <= SelectedChangesets.Max(y => y.ChangesetId)) == SelectedChangesets.Count;
         }
 
-        private async Task FetchChangesetsAsync(object fdfdsfds)
+        private async Task FetchChangesetsAsync()
         {
             await SetBusyWhileExecutingAsync(async () =>
             {
@@ -182,17 +182,17 @@ namespace TeamMerge.Merge
             MergeCommand.RaiseCanExecuteChanged();
         }
 
-        private bool CanFetchChangesets(object fdfdsfds)
+        private bool CanFetchChangesets()
         {
             return SourceBranch != null && TargetBranch != null;
         }
 
-        private bool CanViewChangeset(object arg)
+        private bool CanViewChangeset()
         {
             return SelectedChangeset != null;
         }
 
-        private void ViewChangeset(object obj)
+        private void ViewChangeset()
         {
             TeamExplorerUtils.Instance.NavigateToPage(TeamExplorerPageIds.ChangesetDetails, ServiceProvider, SelectedChangeset.ChangesetId);
         }

@@ -1,5 +1,4 @@
-﻿using Microsoft.TeamFoundation.Controls;
-using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
+﻿using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 using System;
 using System.Threading.Tasks;
 
