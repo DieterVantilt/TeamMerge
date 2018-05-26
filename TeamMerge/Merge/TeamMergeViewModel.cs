@@ -225,7 +225,6 @@ namespace TeamMerge.Merge
             {
                 SelectedProjectName = SelectedProjectName,
                 Changesets = Changesets,
-                Title = Title,
                 SourceBranch = SourceBranch,
                 TargetBranch = TargetBranch
             };
@@ -239,7 +238,6 @@ namespace TeamMerge.Merge
 
             SelectedProjectName = context.SelectedProjectName;
             Changesets = context.Changesets;
-            Title = context.Title;
             SourceBranch = context.SourceBranch;
             TargetBranch = context.TargetBranch;
         }

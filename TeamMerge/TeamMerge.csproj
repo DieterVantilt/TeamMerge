@@ -65,12 +65,17 @@
       <DependentUpon>TeamMergeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Merge\TeamMergeViewModel.cs" />
-    <Compile Include="Services\Models\Branch.cs" />
+    <Compile Include="ResourceImage.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ResourceImage.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\Models\Branch.cs" />
     <Compile Include="Services\MergeService.cs" />
     <Compile Include="Services\Models\ChangesetModel.cs" />
     <Compile Include="Services\TeamService.cs" />
@@ -93,10 +98,14 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\Command1.png" />
     <Content Include="Resources\Command1Package.ico" />
+    <Content Include="Resources\TeamMerge.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ResourceImage.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResourceImage.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -104,6 +113,7 @@
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

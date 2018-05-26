@@ -12,7 +12,5 @@ namespace TeamMerge.Merge.Context
         public string SelectedProjectName { get; set; }
 
         public ObservableCollection<ChangesetModel> Changesets { get; set; }
-
-        public string Title { get; set; }
     }
 }
