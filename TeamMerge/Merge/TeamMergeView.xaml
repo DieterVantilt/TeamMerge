@@ -19,18 +19,18 @@
             <DataTemplate x:Key="ChangesetItemDataTemplate">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="20" MaxWidth="50" />
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="115" />
                         <ColumnDefinition Width="100" />
-                        <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Grid.ToolTip>
                         <ToolTip Content="{Binding Comment}" />
                     </Grid.ToolTip>
                     <TextBlock Margin="0 0 2 0" Grid.Column="0" Text="{Binding ChangesetId}" />
-                    <TextBlock Margin="2 0 2 0" Grid.Column="1" Text="{Binding Comment}" />
+                    <TextBlock Margin="2 0 2 0" Grid.Column="1" Text="{Binding CreationDate, StringFormat={}{0:dd/MM/yyyy HH:mm:ss}}" />
                     <TextBlock Margin="2 0 2 0" Grid.Column="2" Text="{Binding Owner}" />
-                    <TextBlock Margin="2 0 2 0" Grid.Column="3" Text="{Binding CreationDate, StringFormat={}{0:dd/mm/yyyy HH:mm:ss}}" />
+                    <TextBlock Margin="2 0 2 0" Grid.Column="3" Text="{Binding Comment}" />                                      
                 </Grid>
             </DataTemplate>
 
@@ -46,21 +46,25 @@
         </ResourceDictionary>       
     </UserControl.Resources>
 
-    <StackPanel IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBooleanConverter}}">
+    <StackPanel IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBooleanConverter}}"
+                Margin="5">
         <TextBlock Text="{x:Static resources:Resources.ProjectName}" />
         <ComboBox ItemsSource="{Binding ProjectNames}"
-                  SelectedItem="{Binding SelectedProjectName, UpdateSourceTrigger=PropertyChanged}"/>
+                  SelectedItem="{Binding SelectedProjectName, UpdateSourceTrigger=PropertyChanged}"
+                  Margin="0 0 0 10"/>
 
         <TextBlock Text="{x:Static resources:Resources.SourceBranch}" />
         <ComboBox ItemsSource="{Binding SourcesBranches}"
-                  SelectedItem="{Binding SourceBranch, UpdateSourceTrigger=PropertyChanged}"/>
+                  SelectedItem="{Binding SourceBranch, UpdateSourceTrigger=PropertyChanged}"
+                  Margin="0 0 0 10"/>
 
         <TextBlock Text="{x:Static resources:Resources.TargetBranch}" />
         <ComboBox ItemsSource="{Binding TargetBranches}"
-                  SelectedItem="{Binding TargetBranch, UpdateSourceTrigger=PropertyChanged}"/>
+                  SelectedItem="{Binding TargetBranch, UpdateSourceTrigger=PropertyChanged}"
+                  Margin="0 0 0 20"/>
 
         <ui:ChangesetListBox
-             Margin="0 20 0 0" MaxHeight="400"
+             Margin="0 0 0 20" MaxHeight="400"
              ItemsSource="{Binding Changesets}"
              SelectedItem="{Binding SelectedChangeset}"
              Style="{StaticResource ChangesetListStyle}"
@@ -77,8 +81,11 @@
 
         </ui:ChangesetListBox>
 
-        <Button Command="{Binding FetchChangesetsCommand}" Content="{x:Static resources:Resources.FetchChangesets}" />
+        <Button Command="{Binding FetchChangesetsCommand}" 
+                Content="{x:Static resources:Resources.FetchChangesets}"
+                Margin="0 0 0 20"/>
 
-        <Button Command="{Binding MergeCommand}" Content="{x:Static resources:Resources.Merge}" />
+        <Button Command="{Binding MergeCommand}" 
+                Content="{x:Static resources:Resources.Merge}" />
     </StackPanel>
 </UserControl>
