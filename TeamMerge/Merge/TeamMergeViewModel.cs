@@ -10,6 +10,7 @@ using TeamMerge.Helpers;
 using TeamMerge.Merge.Context;
 using TeamMerge.Services;
 using TeamMerge.Services.Models;
+using TeamMerge.Utils;
 
 namespace TeamMerge.Merge
 {
@@ -135,7 +136,6 @@ namespace TeamMerge.Merge
             MergeCommand.RaiseCanExecuteChanged();
         }
 
-
         private ObservableCollection<ChangesetModel> _changesets;
 
         public ObservableCollection<ChangesetModel> Changesets
@@ -156,6 +156,12 @@ namespace TeamMerge.Merge
 
                 await _mergeService.MergeBranches(SourceBranch, TargetBranch, orderedSelectedChangesets.First().ChangesetId, orderedSelectedChangesets.Last().ChangesetId);
                 await _mergeService.AddWorkItemsAndNavigate(orderedSelectedChangesets.Select(x => x.ChangesetId));
+
+                ConfigManager.AddValue(ConfigManager.SELECTED_PROJECT_NAME, SelectedProjectName);
+                ConfigManager.AddValue(ConfigManager.SOURCE_BRANCH, SourceBranch);
+                ConfigManager.AddValue(ConfigManager.TARGET_BRANCH, TargetBranch);
+
+                ConfigManager.SaveDictionary();
             });
         }
 
@@ -176,7 +182,6 @@ namespace TeamMerge.Merge
                 var changesets = await Task.Run(() => _teamService.GetChangesets(SourceBranch, TargetBranch));
 
                 Changesets = new ObservableCollection<ChangesetModel>(changesets);
-
             });
 
             MergeCommand.RaiseCanExecuteChanged();
@@ -209,12 +214,23 @@ namespace TeamMerge.Merge
                 var projectNames = await Task.Run(() => _teamService.GetProjectNames());
 
                 projectNames.ToList().ForEach(x => ProjectNames.Add(x));
-            });
 
-            if (e.Context != null)
-            {
-                RestoreContext(e);
-            }
+                if (e.Context != null)
+                {
+                    RestoreContext(e);
+                }
+                else
+                {
+                    var projectName = ConfigManager.GetValue<string>(ConfigManager.SELECTED_PROJECT_NAME);
+
+                    if (projectName != null)
+                    {
+                        SelectedProjectName = projectName;
+                        SourceBranch = ConfigManager.GetValue<string>(ConfigManager.SOURCE_BRANCH);
+                        TargetBranch = ConfigManager.GetValue<string>(ConfigManager.TARGET_BRANCH);
+                    }
+                }
+            });
         }
 
         public override void SaveContext(object sender, SectionSaveContextEventArgs e)

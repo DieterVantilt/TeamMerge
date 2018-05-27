@@ -19,7 +19,7 @@ namespace TeamMerge
             _serviceProvider = serviceProvider;
             
             Text = Resources.TeamMerge;
-            Image = ResourceImage.TeamMerge;
+            Image = ResourceImage.TeamMerge;   
         }
 
         public override void Execute()

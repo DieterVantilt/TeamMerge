@@ -9,7 +9,7 @@ namespace TeamMerge
     {
         public TeamMergePage()
         {
-            Title = Resources.TeamMerge;
+            Title = Resources.TeamMerge;            
         }
     }
 }
