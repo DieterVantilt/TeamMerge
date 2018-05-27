@@ -8,13 +8,13 @@ using TeamMerge.Helpers;
 
 namespace TeamMerge.Services
 {
-    public class TFSService
+    public class TFVCService
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ITeamFoundationContext _context;
         private readonly VersionControlServer _versionControlServer;
 
-        public TFSService(IServiceProvider serviceProvider)
+        public TFVCService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
             _context = VersionControlHelper.GetTeamFoundationContext(_serviceProvider);

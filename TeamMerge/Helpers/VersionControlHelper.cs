@@ -10,7 +10,8 @@ namespace TeamMerge.Helpers
             var context = GetTeamFoundationContext(provider);
             if (context != null)
             {
-                return context.HasCollection && context.HasTeamProject;
+                return context.HasCollection && context.HasTeamProject 
+                    && context is TeamFoundationContext tfContext && tfContext.SourceControlType == TeamFoundationSourceControlType.TFVC;
             }
 
             return false;

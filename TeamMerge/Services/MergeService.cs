@@ -13,19 +13,19 @@ namespace TeamMerge.Services
     public class MergeService
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly TFSService _tfsService;
+        private readonly TFVCService _tfvcService;
         private readonly ITeamExplorer _teamExplorer;
 
         public MergeService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _tfsService = new TFSService(serviceProvider);
+            _tfvcService = new TFVCService(serviceProvider);
             _teamExplorer = (ITeamExplorer)_serviceProvider.GetService(typeof(ITeamExplorer));
         }
 
         public async Task MergeBranches(string source, string target, int from, int to)
         {
-            await _tfsService.Merge(source, target, from, to);
+            await _tfvcService.Merge(source, target, from, to);
         }
 
         public async Task AddWorkItemsAndNavigate(IEnumerable<int> changesetIds)
@@ -51,7 +51,7 @@ namespace TeamMerge.Services
 
         private async Task GetAssociatedWorkItemIds(int changesetId, ConcurrentBag<int> concurrentbag)
         {
-            var changeset = await _tfsService.GetChangeset(changesetId);
+            var changeset = await _tfvcService.GetChangeset(changesetId);
 
             var associatedWorkItemIds = changeset.AssociatedWorkItems?.Select(x => x.Id) ?? new List<int>();
 

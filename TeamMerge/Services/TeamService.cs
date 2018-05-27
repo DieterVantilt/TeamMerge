@@ -9,17 +9,17 @@ namespace TeamMerge.Services
     public class TeamService
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly TFSService _versionControlService;
+        private readonly TFVCService _tfvcService;
 
         public TeamService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _versionControlService = new TFSService(_serviceProvider);
+            _tfvcService = new TFVCService(_serviceProvider);
         }
 
         public async Task<IEnumerable<string>> GetProjectNames()
         {
-            var projects = await _versionControlService.ListTfsProjects();
+            var projects = await _tfvcService.ListTfsProjects();
 
             return projects.Select(x => x.Name).ToList();
         }
@@ -28,7 +28,7 @@ namespace TeamMerge.Services
         {
             var result = new List<Branch>();
 
-            var branches = _versionControlService.ListBranches(projectName);
+            var branches = _tfvcService.ListBranches(projectName);
 
             foreach(var branchObject in branches)
             {
@@ -53,7 +53,7 @@ namespace TeamMerge.Services
         {
             var changesets = new List<ChangesetModel>();
 
-            var mergeCandidates = await _versionControlService.GetMergeCandidates(source, target);
+            var mergeCandidates = await _tfvcService.GetMergeCandidates(source, target);
 
             return mergeCandidates.Select(x => new ChangesetModel
             {

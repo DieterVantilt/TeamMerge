@@ -79,7 +79,7 @@
     <Compile Include="Services\MergeService.cs" />
     <Compile Include="Services\Models\ChangesetModel.cs" />
     <Compile Include="Services\TeamService.cs" />
-    <Compile Include="Services\TFSService.cs" />
+    <Compile Include="Services\TFVCService.cs" />
     <Compile Include="TeamMergeNavigationItem.cs" />
     <Compile Include="TeamMergePackage.cs" />
     <Compile Include="Guids.cs" />
