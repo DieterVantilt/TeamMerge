@@ -100,7 +100,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Command1Package.ico" />
-    <Content Include="Resources\TeamMerge.png" />
+    <Content Include="Resources\TeamMerge.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ResourceImage.resx">
