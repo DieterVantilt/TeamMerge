@@ -81,11 +81,22 @@
 
         </ui:ChangesetListBox>
 
-        <Button Command="{Binding FetchChangesetsCommand}" 
-                Content="{x:Static resources:Resources.FetchChangesets}"
-                Margin="0 0 0 20"/>
+      <Grid>
+          <Grid.ColumnDefinitions>
+              <ColumnDefinition />
+              <ColumnDefinition Width="10" />
+              <ColumnDefinition />
+          </Grid.ColumnDefinitions>
 
-        <Button Command="{Binding MergeCommand}" 
-                Content="{x:Static resources:Resources.Merge}" />
+          <Button Command="{Binding FetchChangesetsCommand}"
+                  Content="{x:Static resources:Resources.FetchChangesets}"
+                  Grid.Column="0"/>
+
+
+          <Button Command="{Binding MergeCommand}"
+                  Content="{x:Static resources:Resources.Merge}"
+                  FontWeight="Bold"
+                  Grid.Column="2"/>
+      </Grid>
     </StackPanel>
 </UserControl>

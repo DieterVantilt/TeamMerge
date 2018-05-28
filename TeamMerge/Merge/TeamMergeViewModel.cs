@@ -181,7 +181,7 @@ namespace TeamMerge.Merge
 
                 var changesets = await Task.Run(() => _teamService.GetChangesets(SourceBranch, TargetBranch));
 
-                Changesets = new ObservableCollection<ChangesetModel>(changesets);
+                Changesets = new ObservableCollection<ChangesetModel>(changesets.OrderByDescending(x => x.CreationDate));
             });
 
             MergeCommand.RaiseCanExecuteChanged();
