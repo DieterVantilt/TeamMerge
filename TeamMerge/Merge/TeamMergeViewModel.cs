@@ -155,6 +155,7 @@ namespace TeamMerge.Merge
                 var orderedSelectedChangesets = SelectedChangesets.OrderBy(x => x.ChangesetId).ToList();
 
                 await _mergeService.MergeBranches(SourceBranch, TargetBranch, orderedSelectedChangesets.First().ChangesetId, orderedSelectedChangesets.Last().ChangesetId);
+
                 await _mergeService.AddWorkItemsAndNavigate(orderedSelectedChangesets.Select(x => x.ChangesetId));
 
                 ConfigManager.AddValue(ConfigManager.SELECTED_PROJECT_NAME, SelectedProjectName);
@@ -179,7 +180,7 @@ namespace TeamMerge.Merge
             {
                 Changesets.Clear();
 
-                var changesets = await Task.Run(() => _teamService.GetChangesets(SourceBranch, TargetBranch));
+                var changesets = await _teamService.GetChangesets(SourceBranch, TargetBranch);
 
                 Changesets = new ObservableCollection<ChangesetModel>(changesets.OrderByDescending(x => x.CreationDate));
             });
@@ -211,7 +212,7 @@ namespace TeamMerge.Merge
                 _mergeService = new MergeService(ServiceProvider);
                 _teamService = new TeamService(ServiceProvider);
 
-                var projectNames = await Task.Run(() => _teamService.GetProjectNames());
+                var projectNames = await _teamService.GetProjectNames();
 
                 projectNames.ToList().ForEach(x => ProjectNames.Add(x));
 
