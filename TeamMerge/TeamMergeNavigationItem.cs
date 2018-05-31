@@ -7,7 +7,7 @@ using TeamMerge.Helpers;
 
 namespace TeamMerge
 {
-    [TeamExplorerNavigationItem(Guids.TeamMergeNavigationItemId, 210, TargetPageId = Guids.TeamMergePageId)]
+    [TeamExplorerNavigationItem(Guids.TeamMergeNavigationItemId, 400, TargetPageId = Guids.TeamMergePageId)]
     public class TeamMergeNavigationItem 
         : TeamExplorerNavigationItemBase
     {
