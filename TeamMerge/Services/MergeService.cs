@@ -10,25 +10,32 @@ using System.Threading.Tasks;
 
 namespace TeamMerge.Services
 {
-    public class MergeService
+    public interface IMergeService
+    {
+        Task MergeBranches(Workspace workspace, string source, string target, int from, int to);
+        Task AddWorkItemsAndNavigate(IEnumerable<int> changesetIds, Workspace workspace);
+    }
+
+    public class MergeService 
+        : IMergeService
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly TFVCService _tfvcService;
+        private readonly ITFVCService _tfvcService;
         private readonly ITeamExplorer _teamExplorer;
 
-        public MergeService(IServiceProvider serviceProvider)
+        public MergeService(IServiceProvider serviceProvider, ITFVCService tFVCService)
         {
             _serviceProvider = serviceProvider;
-            _tfvcService = new TFVCService(serviceProvider);
+            _tfvcService = tFVCService;
             _teamExplorer = (ITeamExplorer)_serviceProvider.GetService(typeof(ITeamExplorer));
         }
 
-        public async Task MergeBranches(string source, string target, int from, int to)
+        public async Task MergeBranches(Workspace workspace, string source, string target, int from, int to)
         {
-            await _tfvcService.Merge(source, target, from, to);
+            await _tfvcService.Merge(workspace, source, target, from, to);
         }
 
-        public async Task AddWorkItemsAndNavigate(IEnumerable<int> changesetIds)
+        public async Task AddWorkItemsAndNavigate(IEnumerable<int> changesetIds, Workspace workspace)
         {
             var workItemIds = new ConcurrentBag<int>();
 
@@ -45,6 +52,10 @@ namespace TeamMerge.Services
             var pendingChangeModel = (IPendingCheckin) pendingChangePage.Model;
 
             var modelType = pendingChangeModel.GetType();
+
+            var propertyInfo = modelType.GetProperty("Workspace");
+            propertyInfo.SetValue(pendingChangeModel, workspace);
+
             var method = modelType.GetMethod("AddWorkItemsByIdAsync", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
             method.Invoke(pendingChangeModel, new object[] { workItemIds.ToArray(), 1 });
         }

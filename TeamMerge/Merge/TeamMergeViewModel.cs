@@ -1,5 +1,6 @@
 ﻿using Microsoft.TeamFoundation.Controls;
 using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
+using Microsoft.TeamFoundation.VersionControl.Client;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,21 +18,28 @@ namespace TeamMerge.Merge
     public class TeamMergeViewModel 
         : TeamExplorerViewModelBase
     {
-        private TeamService _teamService;
-        private MergeService _mergeService;
+        private readonly ITeamService _teamService;
+        private readonly IMergeService _mergeService;
+        private readonly IConfigHelper _configHelper;
         private List<Branch> _currentBranches;
 
-        public TeamMergeViewModel()
+        public TeamMergeViewModel(ITeamService teamService, IMergeService mergeService, IConfigHelper configHelper)
         {
-            Changesets = new ObservableCollection<ChangesetModel>();
-            SelectedChangesets = new ObservableCollection<ChangesetModel>();
-            SourcesBranches = new ObservableCollection<string>();
-            TargetBranches = new ObservableCollection<string>();
-            ProjectNames = new ObservableCollection<string>();
+            _teamService = teamService;
+            _mergeService = mergeService;
+            _configHelper = configHelper;
 
             ViewChangesetDetailsCommand = new RelayCommand(ViewChangeset, CanViewChangeset);
             MergeCommand = new AsyncRelayCommand(MergeAsync, CanMerge);
             FetchChangesetsCommand = new AsyncRelayCommand(FetchChangesetsAsync, CanFetchChangesets);
+            SelectWorkspaceCommand = new RelayCommand<Workspace>(SelectWorkspace);
+
+            SourcesBranches = new ObservableCollection<string>();
+            TargetBranches = new ObservableCollection<string>();
+            ProjectNames = new ObservableCollection<string>();
+
+            Changesets = new ObservableCollection<ChangesetModel>();
+            SelectedChangesets = new ObservableCollection<ChangesetModel>();
 
             Title = Resources.TeamMerge;
         }
@@ -39,6 +47,7 @@ namespace TeamMerge.Merge
         public IRelayCommand ViewChangesetDetailsCommand { get; private set; }
         public IRelayCommand MergeCommand { get; private set; }
         public IRelayCommand FetchChangesetsCommand { get; private set; }
+        public IRelayCommand SelectWorkspaceCommand { get; private set; }
 
         public ObservableCollection<string> ProjectNames { get; set; }
         public ObservableCollection<string> SourcesBranches { get; set; }
@@ -148,21 +157,37 @@ namespace TeamMerge.Merge
             }
         }
 
+        private ObservableCollection<Workspace> _workspaces;
+
+        public ObservableCollection<Workspace> Workspaces
+        {
+            get { return _workspaces; }
+            set { _workspaces = value; RaisePropertyChanged(nameof(Workspaces)); }
+        }
+
+        private Workspace _selectedWorkspace;
+
+        public Workspace SelectedWorkspace
+        {
+            get { return _selectedWorkspace; }
+            set { _selectedWorkspace = value; RaisePropertyChanged(nameof(SelectedWorkspace)); }
+        }
+
         private async Task MergeAsync()
         {
             await SetBusyWhileExecutingAsync(async () =>
             {
                 var orderedSelectedChangesets = SelectedChangesets.OrderBy(x => x.ChangesetId).ToList();
 
-                await _mergeService.MergeBranches(SourceBranch, TargetBranch, orderedSelectedChangesets.First().ChangesetId, orderedSelectedChangesets.Last().ChangesetId);
+                await _mergeService.MergeBranches(SelectedWorkspace, SourceBranch, TargetBranch, orderedSelectedChangesets.First().ChangesetId, orderedSelectedChangesets.Last().ChangesetId);
 
-                await _mergeService.AddWorkItemsAndNavigate(orderedSelectedChangesets.Select(x => x.ChangesetId));
+                await _mergeService.AddWorkItemsAndNavigate(orderedSelectedChangesets.Select(x => x.ChangesetId), SelectedWorkspace);
 
-                ConfigManager.AddValue(ConfigManager.SELECTED_PROJECT_NAME, SelectedProjectName);
-                ConfigManager.AddValue(ConfigManager.SOURCE_BRANCH, SourceBranch);
-                ConfigManager.AddValue(ConfigManager.TARGET_BRANCH, TargetBranch);
+                _configHelper.AddValue(ConfigManager.SELECTED_PROJECT_NAME, SelectedProjectName);
+                _configHelper.AddValue(ConfigManager.SOURCE_BRANCH, SourceBranch);
+                _configHelper.AddValue(ConfigManager.TARGET_BRANCH, TargetBranch);
 
-                ConfigManager.SaveDictionary();
+                _configHelper.SaveDictionary();
             });
         }
 
@@ -203,16 +228,21 @@ namespace TeamMerge.Merge
             TeamExplorerUtils.Instance.NavigateToPage(TeamExplorerPageIds.ChangesetDetails, ServiceProvider, SelectedChangeset.ChangesetId);
         }
 
+        private void SelectWorkspace(Workspace workspace)
+        {
+            SelectedWorkspace = workspace;
+        }
+
         public override async void Initialize(object sender, SectionInitializeEventArgs e)
         {
             base.Initialize(sender, e);
 
             await SetBusyWhileExecutingAsync(async () =>
             {
-                _mergeService = new MergeService(ServiceProvider);
-                _teamService = new TeamService(ServiceProvider);
-
                 var projectNames = await _teamService.GetProjectNames();
+
+                Workspaces = new ObservableCollection<Workspace>(await _teamService.AllWorkspaces());
+                SelectedWorkspace = _teamService.CurrentWorkspace() ?? Workspaces.First();
 
                 projectNames.ToList().ForEach(x => ProjectNames.Add(x));
 
@@ -222,13 +252,13 @@ namespace TeamMerge.Merge
                 }
                 else
                 {
-                    var projectName = ConfigManager.GetValue<string>(ConfigManager.SELECTED_PROJECT_NAME);
+                    var projectName = _configHelper.GetValue<string>(ConfigManager.SELECTED_PROJECT_NAME);
 
                     if (projectName != null)
                     {
                         SelectedProjectName = projectName;
-                        SourceBranch = ConfigManager.GetValue<string>(ConfigManager.SOURCE_BRANCH);
-                        TargetBranch = ConfigManager.GetValue<string>(ConfigManager.TARGET_BRANCH);
+                        SourceBranch = _configHelper.GetValue<string>(ConfigManager.SOURCE_BRANCH);
+                        TargetBranch = _configHelper.GetValue<string>(ConfigManager.TARGET_BRANCH);
                     }
                 }
             });

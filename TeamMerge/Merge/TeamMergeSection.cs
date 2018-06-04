@@ -1,5 +1,7 @@
 ﻿using Microsoft.TeamFoundation.Controls;
 using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
+using TeamMerge.Services;
+using TeamMerge.Utils;
 
 namespace TeamMerge.Merge
 {
@@ -9,7 +11,9 @@ namespace TeamMerge.Merge
     {
         protected override ITeamExplorerSection CreateViewModel(SectionInitializeEventArgs e)
         {
-            return base.CreateViewModel(e) ?? new TeamMergeViewModel();
+            var tfvcService = new TFVCService(ServiceProvider);
+
+            return base.CreateViewModel(e) ?? new TeamMergeViewModel(new TeamService(ServiceProvider, tfvcService), new MergeService(ServiceProvider, tfvcService), new ConfigHelper());
         }
 
         protected override object CreateView(SectionInitializeEventArgs e)

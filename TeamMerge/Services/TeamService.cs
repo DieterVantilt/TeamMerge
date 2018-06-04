@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.TeamFoundation.VersionControl.Client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,15 +7,25 @@ using TeamMerge.Services.Models;
 
 namespace TeamMerge.Services
 {
-    public class TeamService
+    public interface ITeamService
+    {
+        IEnumerable<Branch> GetBranches(string projectName);
+        Task<IEnumerable<ChangesetModel>> GetChangesets(string source, string target);
+        Task<IEnumerable<string>> GetProjectNames();
+        Task<IEnumerable<Workspace>> AllWorkspaces();
+        Workspace CurrentWorkspace();
+    }
+
+    public class TeamService 
+        : ITeamService
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly TFVCService _tfvcService;
+        private readonly ITFVCService _tfvcService;
 
-        public TeamService(IServiceProvider serviceProvider)
+        public TeamService(IServiceProvider serviceProvider, ITFVCService tFVCService)
         {
             _serviceProvider = serviceProvider;
-            _tfvcService = new TFVCService(_serviceProvider);
+            _tfvcService = tFVCService;
         }
 
         public async Task<IEnumerable<string>> GetProjectNames()
@@ -46,7 +57,7 @@ namespace TeamMerge.Services
                 result.Add(branch);
             }
 
-            return result;
+            return result.OrderBy(x => x.Name);
         }
 
         public async Task<IEnumerable<ChangesetModel>> GetChangesets(string source, string target)
@@ -62,6 +73,16 @@ namespace TeamMerge.Services
                 CreationDate = x.CreationDate,
                 Owner = x.OwnerDisplayName
             });
+        }
+
+        public async Task<IEnumerable<Workspace>> AllWorkspaces()
+        {
+            return await _tfvcService.AllWorkspaces();
+        }
+
+        public Workspace CurrentWorkspace()
+        {
+            return _tfvcService.CurrentWorkspace();
         }
     }
 }
