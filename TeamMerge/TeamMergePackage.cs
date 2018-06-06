@@ -26,7 +26,7 @@ namespace TeamMerge
     [Guid(Guids.PackageGuidString)]
     [ProvideBindingPath]
     public sealed class TeamMergePackage 
-        : Package
+        : AsyncPackage
     {        
     }
 }
