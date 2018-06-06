@@ -101,6 +101,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\Command1Package.ico" />
     <Content Include="Resources\TeamMerge.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
