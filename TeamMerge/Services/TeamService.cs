@@ -9,11 +9,11 @@ namespace TeamMerge.Services
 {
     public interface ITeamService
     {
-        IEnumerable<Branch> GetBranches(string projectName);
+        IEnumerable<BranchModel> GetBranches(string projectName);
         Task<IEnumerable<ChangesetModel>> GetChangesets(string source, string target);
         Task<IEnumerable<string>> GetProjectNames();
-        Task<IEnumerable<Workspace>> AllWorkspaces();
-        Workspace CurrentWorkspace();
+        Task<IEnumerable<WorkspaceModel>> AllWorkspaces();
+        WorkspaceModel CurrentWorkspace();
     }
 
     public class TeamService 
@@ -35,15 +35,15 @@ namespace TeamMerge.Services
             return projects.Select(x => x.Name).ToList();
         }
 
-        public IEnumerable<Branch> GetBranches(string projectName)
+        public IEnumerable<BranchModel> GetBranches(string projectName)
         {
-            var result = new List<Branch>();
+            var result = new List<BranchModel>();
 
             var branches = _tfvcService.ListBranches(projectName);
 
             foreach(var branchObject in branches)
             {
-                var branch = new Branch
+                var branchModel = new BranchModel
                 {
                     Name = branchObject.Properties.RootItem.Item,
                     Branches = branchObject.ChildBranches.Where(x => !x.IsDeleted).Select(x => x.Item).ToList()
@@ -51,10 +51,10 @@ namespace TeamMerge.Services
 
                 if (branchObject.Properties.ParentBranch != null)
                 {
-                    branch.Branches.Add(branchObject.Properties.ParentBranch.Item);
+                    branchModel.Branches.Add(branchObject.Properties.ParentBranch.Item);
                 }
 
-                result.Add(branch);
+                result.Add(branchModel);
             }
 
             return result.OrderBy(x => x.Name);
@@ -72,17 +72,23 @@ namespace TeamMerge.Services
                 Comment = x.Comment,
                 CreationDate = x.CreationDate,
                 Owner = x.OwnerDisplayName
-            });
+            })
+            .OrderByDescending(x => x.CreationDate)
+            .ToList();
         }
 
-        public async Task<IEnumerable<Workspace>> AllWorkspaces()
+        public async Task<IEnumerable<WorkspaceModel>> AllWorkspaces()
         {
-            return await _tfvcService.AllWorkspaces();
+            var workspaces = await _tfvcService.AllWorkspaces();
+
+            return workspaces.Select(x => new WorkspaceModel { Name = x.Name, OwnerName = x.OwnerName });
         }
 
-        public Workspace CurrentWorkspace()
+        public WorkspaceModel CurrentWorkspace()
         {
-            return _tfvcService.CurrentWorkspace();
+            var currentWorkspace = _tfvcService.CurrentWorkspace();
+
+            return currentWorkspace == null ? null : new WorkspaceModel { Name = currentWorkspace.Name, OwnerName = currentWorkspace.OwnerName };
         }
     }
 }

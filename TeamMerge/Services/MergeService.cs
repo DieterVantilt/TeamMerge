@@ -7,13 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using TeamMerge.Services.Models;
 
 namespace TeamMerge.Services
 {
     public interface IMergeService
     {
-        Task MergeBranches(Workspace workspace, string source, string target, int from, int to);
-        Task AddWorkItemsAndNavigate(IEnumerable<int> changesetIds, Workspace workspace);
+        Task MergeBranches(WorkspaceModel workspaceModel, string source, string target, int from, int to);
+        Task AddWorkItemsAndNavigate(IEnumerable<int> changesetIds, WorkspaceModel workspaceModel);
     }
 
     public class MergeService 
@@ -30,13 +31,16 @@ namespace TeamMerge.Services
             _teamExplorer = (ITeamExplorer)_serviceProvider.GetService(typeof(ITeamExplorer));
         }
 
-        public async Task MergeBranches(Workspace workspace, string source, string target, int from, int to)
+        public async Task MergeBranches(WorkspaceModel workspaceModel, string source, string target, int from, int to)
         {
+            var workspace = _tfvcService.GetWorkspace(workspaceModel.Name, workspaceModel.OwnerName);
+
             await _tfvcService.Merge(workspace, source, target, from, to);
         }
 
-        public async Task AddWorkItemsAndNavigate(IEnumerable<int> changesetIds, Workspace workspace)
+        public async Task AddWorkItemsAndNavigate(IEnumerable<int> changesetIds, WorkspaceModel workspaceModel)
         {
+            var workspace = _tfvcService.GetWorkspace(workspaceModel.Name, workspaceModel.OwnerName);
             var workItemIds = new ConcurrentBag<int>();
 
             var tasks = new List<Task>();

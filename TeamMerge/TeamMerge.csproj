@@ -75,9 +75,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Services\Models\Branch.cs" />
+    <Compile Include="Services\Models\BranchModel.cs" />
     <Compile Include="Services\MergeService.cs" />
     <Compile Include="Services\Models\ChangesetModel.cs" />
+    <Compile Include="Services\Models\WorkspaceModel.cs" />
     <Compile Include="Services\TeamService.cs" />
     <Compile Include="Services\TFVCService.cs" />
     <Compile Include="TeamMergeNavigationItem.cs" />

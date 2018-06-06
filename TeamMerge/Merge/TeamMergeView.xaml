@@ -74,12 +74,12 @@
 
         <TextBlock Text="{x:Static resources:Resources.SourceBranch}" />
         <ComboBox ItemsSource="{Binding SourcesBranches}"
-                  SelectedItem="{Binding SourceBranch, UpdateSourceTrigger=PropertyChanged}"
+                  SelectedItem="{Binding SelectedSourceBranch, UpdateSourceTrigger=PropertyChanged}"
                   Margin="0 0 0 10"/>
 
         <TextBlock Text="{x:Static resources:Resources.TargetBranch}" />
         <ComboBox ItemsSource="{Binding TargetBranches}"
-                  SelectedItem="{Binding TargetBranch, UpdateSourceTrigger=PropertyChanged}"
+                  SelectedItem="{Binding SelectedTargetBranch, UpdateSourceTrigger=PropertyChanged}"
                   Margin="0 0 0 20"/>
 
         <ui:ChangesetListBox

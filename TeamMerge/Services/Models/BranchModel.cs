@@ -2,7 +2,7 @@
 
 namespace TeamMerge.Services.Models
 {
-    public class Branch
+    public class BranchModel
     {
         public string Name { get; set; }
 

@@ -1,6 +1,5 @@
 ﻿using Microsoft.TeamFoundation.Controls;
 using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
-using Microsoft.TeamFoundation.VersionControl.Client;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -21,7 +20,7 @@ namespace TeamMerge.Merge
         private readonly ITeamService _teamService;
         private readonly IMergeService _mergeService;
         private readonly IConfigHelper _configHelper;
-        private List<Branch> _currentBranches;
+        private List<BranchModel> _currentBranches;
 
         public TeamMergeViewModel(ITeamService teamService, IMergeService mergeService, IConfigHelper configHelper)
         {
@@ -32,7 +31,7 @@ namespace TeamMerge.Merge
             ViewChangesetDetailsCommand = new RelayCommand(ViewChangeset, CanViewChangeset);
             MergeCommand = new AsyncRelayCommand(MergeAsync, CanMerge);
             FetchChangesetsCommand = new AsyncRelayCommand(FetchChangesetsAsync, CanFetchChangesets);
-            SelectWorkspaceCommand = new RelayCommand<Workspace>(SelectWorkspace);
+            SelectWorkspaceCommand = new RelayCommand<WorkspaceModel>(SelectWorkspace);
 
             SourcesBranches = new ObservableCollection<string>();
             TargetBranches = new ObservableCollection<string>();
@@ -72,15 +71,15 @@ namespace TeamMerge.Merge
             }
         }
 
-        private string _sourceBranch;
+        private string _selectedSourceBranch;
 
-        public string SourceBranch
+        public string SelectedSourceBranch
         {
-            get { return _sourceBranch; }
+            get { return _selectedSourceBranch; }
             set
             {
-                _sourceBranch = value;
-                RaisePropertyChanged(nameof(SourceBranch));
+                _selectedSourceBranch = value;
+                RaisePropertyChanged(nameof(SelectedSourceBranch));
                 InitializeTargetBranches();
 
                 FetchChangesetsCommand.RaiseCanExecuteChanged();
@@ -91,21 +90,21 @@ namespace TeamMerge.Merge
         {
             TargetBranches.Clear();
 
-            if (SourceBranch != null)
+            if (SelectedSourceBranch != null)
             {
-                TargetBranches.AddRange(_currentBranches.Single(x => x.Name == SourceBranch).Branches);
+                TargetBranches.AddRange(_currentBranches.Single(x => x.Name == SelectedSourceBranch).Branches);
             }
         }
 
-        private string _targetBranch;
+        private string _selectedTargetBranch;
 
-        public string TargetBranch
+        public string SelectedTargetBranch
         {
-            get { return _targetBranch; }
+            get { return _selectedTargetBranch; }
             set
             {
-                _targetBranch = value;
-                RaisePropertyChanged(nameof(TargetBranch));
+                _selectedTargetBranch = value;
+                RaisePropertyChanged(nameof(SelectedTargetBranch));
 
                 FetchChangesetsCommand.RaiseCanExecuteChanged();
             }
@@ -157,17 +156,17 @@ namespace TeamMerge.Merge
             }
         }
 
-        private ObservableCollection<Workspace> _workspaces;
+        private ObservableCollection<WorkspaceModel> _workspaces;
 
-        public ObservableCollection<Workspace> Workspaces
+        public ObservableCollection<WorkspaceModel> Workspaces
         {
             get { return _workspaces; }
             set { _workspaces = value; RaisePropertyChanged(nameof(Workspaces)); }
         }
 
-        private Workspace _selectedWorkspace;
+        private WorkspaceModel _selectedWorkspace;
 
-        public Workspace SelectedWorkspace
+        public WorkspaceModel SelectedWorkspace
         {
             get { return _selectedWorkspace; }
             set { _selectedWorkspace = value; RaisePropertyChanged(nameof(SelectedWorkspace)); }
@@ -179,13 +178,13 @@ namespace TeamMerge.Merge
             {
                 var orderedSelectedChangesets = SelectedChangesets.OrderBy(x => x.ChangesetId).ToList();
 
-                await _mergeService.MergeBranches(SelectedWorkspace, SourceBranch, TargetBranch, orderedSelectedChangesets.First().ChangesetId, orderedSelectedChangesets.Last().ChangesetId);
+                await _mergeService.MergeBranches(SelectedWorkspace, SelectedSourceBranch, SelectedTargetBranch, orderedSelectedChangesets.First().ChangesetId, orderedSelectedChangesets.Last().ChangesetId);
 
                 await _mergeService.AddWorkItemsAndNavigate(orderedSelectedChangesets.Select(x => x.ChangesetId), SelectedWorkspace);
 
                 _configHelper.AddValue(ConfigManager.SELECTED_PROJECT_NAME, SelectedProjectName);
-                _configHelper.AddValue(ConfigManager.SOURCE_BRANCH, SourceBranch);
-                _configHelper.AddValue(ConfigManager.TARGET_BRANCH, TargetBranch);
+                _configHelper.AddValue(ConfigManager.SOURCE_BRANCH, SelectedSourceBranch);
+                _configHelper.AddValue(ConfigManager.TARGET_BRANCH, SelectedTargetBranch);
 
                 _configHelper.SaveDictionary();
             });
@@ -205,9 +204,9 @@ namespace TeamMerge.Merge
             {
                 Changesets.Clear();
 
-                var changesets = await _teamService.GetChangesets(SourceBranch, TargetBranch);
+                var changesets = await _teamService.GetChangesets(SelectedSourceBranch, SelectedTargetBranch);
 
-                Changesets = new ObservableCollection<ChangesetModel>(changesets.OrderByDescending(x => x.CreationDate));
+                Changesets = new ObservableCollection<ChangesetModel>(changesets);
             });
 
             MergeCommand.RaiseCanExecuteChanged();
@@ -215,7 +214,7 @@ namespace TeamMerge.Merge
 
         private bool CanFetchChangesets()
         {
-            return SourceBranch != null && TargetBranch != null;
+            return SelectedSourceBranch != null && SelectedTargetBranch != null;
         }
 
         private bool CanViewChangeset()
@@ -228,7 +227,7 @@ namespace TeamMerge.Merge
             TeamExplorerUtils.Instance.NavigateToPage(TeamExplorerPageIds.ChangesetDetails, ServiceProvider, SelectedChangeset.ChangesetId);
         }
 
-        private void SelectWorkspace(Workspace workspace)
+        private void SelectWorkspace(WorkspaceModel workspace)
         {
             SelectedWorkspace = workspace;
         }
@@ -241,7 +240,7 @@ namespace TeamMerge.Merge
             {
                 var projectNames = await _teamService.GetProjectNames();
 
-                Workspaces = new ObservableCollection<Workspace>(await _teamService.AllWorkspaces());
+                Workspaces = new ObservableCollection<WorkspaceModel>(await _teamService.AllWorkspaces());
                 SelectedWorkspace = _teamService.CurrentWorkspace() ?? Workspaces.First();
 
                 projectNames.ToList().ForEach(x => ProjectNames.Add(x));
@@ -254,11 +253,11 @@ namespace TeamMerge.Merge
                 {
                     var projectName = _configHelper.GetValue<string>(ConfigManager.SELECTED_PROJECT_NAME);
 
-                    if (projectName != null)
+                    if (!string.IsNullOrEmpty(projectName))
                     {
                         SelectedProjectName = projectName;
-                        SourceBranch = _configHelper.GetValue<string>(ConfigManager.SOURCE_BRANCH);
-                        TargetBranch = _configHelper.GetValue<string>(ConfigManager.TARGET_BRANCH);
+                        SelectedSourceBranch = _configHelper.GetValue<string>(ConfigManager.SOURCE_BRANCH);
+                        SelectedTargetBranch = _configHelper.GetValue<string>(ConfigManager.TARGET_BRANCH);
                     }
                 }
             });
@@ -272,8 +271,8 @@ namespace TeamMerge.Merge
             {
                 SelectedProjectName = SelectedProjectName,
                 Changesets = Changesets,
-                SourceBranch = SourceBranch,
-                TargetBranch = TargetBranch
+                SourceBranch = SelectedSourceBranch,
+                TargetBranch = SelectedTargetBranch
             };
 
             e.Context = context;
@@ -285,8 +284,8 @@ namespace TeamMerge.Merge
 
             SelectedProjectName = context.SelectedProjectName;
             Changesets = context.Changesets;
-            SourceBranch = context.SourceBranch;
-            TargetBranch = context.TargetBranch;
+            SelectedSourceBranch = context.SourceBranch;
+            SelectedTargetBranch = context.TargetBranch;
         }
 
         public override void Dispose()

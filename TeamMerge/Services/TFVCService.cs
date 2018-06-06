@@ -18,6 +18,7 @@ namespace TeamMerge.Services
         Task Merge(Workspace workspace, string source, string target, int changesetFrom, int changesetTo);
         Task<IEnumerable<Workspace>> AllWorkspaces();
         Workspace CurrentWorkspace();
+        Workspace GetWorkspace(string workspaceName, string workspaceOwner);
     }
 
     public class TFVCService 
@@ -97,6 +98,11 @@ namespace TeamMerge.Services
             }
 
             return result;
+        }
+
+        public Workspace GetWorkspace(string workspaceName, string workspaceOwner)
+        {
+            return _versionControlServer.GetWorkspace(workspaceName, workspaceOwner);
         }
     }
 }
