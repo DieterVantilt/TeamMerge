@@ -5,6 +5,7 @@
         <DisplayName>TeamMerge</DisplayName>
         <Description xml:space="preserve">Merge your branches with all associated work items of the changesets.</Description>
         <License>LICENSE.txt</License>
+        <ReleaseNotes>RELEASE_NOTES.txt</ReleaseNotes>
         <Icon>Resources\TeamMerge.png</Icon>
         <PreviewImage>Resources\TeamMerge.png</PreviewImage>
         <Tags>merge, associated work items, changeset</Tags>
