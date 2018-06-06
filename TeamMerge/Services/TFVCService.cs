@@ -94,7 +94,7 @@ namespace TeamMerge.Services
             {
                 var solutionDir = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
 
-                result = _versionControlServer.GetWorkspace(solutionDir);
+                result = _versionControlServer.TryGetWorkspace(solutionDir);
             }
 
             return result;
