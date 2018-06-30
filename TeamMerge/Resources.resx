@@ -117,22 +117,67 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AutoSelectAllChangesets" xml:space="preserve">
+    <value>Enable auto select all changesets.</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
   <data name="FetchChangesets" xml:space="preserve">
     <value>Fetch changesets</value>
+  </data>
+  <data name="GetLatestConflicts" xml:space="preserve">
+    <value>Conflicts when getting latest. Open the conflict window to resolve these issues.</value>
+  </data>
+  <data name="LatestVersionBranch" xml:space="preserve">
+    <value>Before merging do get latest version on branch:</value>
   </data>
   <data name="Merge" xml:space="preserve">
     <value>Merge</value>
   </data>
+  <data name="None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="NotSelected" xml:space="preserve">
+    <value>(NotSelected)</value>
+  </data>
   <data name="ProjectName" xml:space="preserve">
     <value>Project name:</value>
   </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Successfully saved!</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="SourceAndTarget" xml:space="preserve">
+    <value>Soure and target</value>
+  </data>
   <data name="SourceBranch" xml:space="preserve">
     <value>Source branch</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Target</value>
   </data>
   <data name="TargetBranch" xml:space="preserve">
     <value>Target branch</value>
   </data>
   <data name="TeamMerge" xml:space="preserve">
     <value>Team Merge</value>
+  </data>
+  <data name="TeamMergeSettings" xml:space="preserve">
+    <value>TeamMerge settings</value>
+  </data>
+  <data name="WarningPendingChanges" xml:space="preserve">
+    <value>Enable warning when merging and still got pending changes.</value>
+  </data>
+  <data name="WorkspaceContainsPendingChanges" xml:space="preserve">
+    <value>Your workspace contains pending changes. Clear these before merging.</value>
   </data>
 </root>

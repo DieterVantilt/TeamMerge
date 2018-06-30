@@ -1,5 +1,6 @@
 ﻿using Microsoft.TeamFoundation.Controls;
 using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
+using TeamMerge.Operations;
 using TeamMerge.Services;
 using TeamMerge.Utils;
 
@@ -9,11 +10,20 @@ namespace TeamMerge.Merge
     public class TeamMergeSection 
         : TeamExplorerSectionBase
     {
+        //when editing this function delete everything from this folder: 'C:\Users\YOUR_NAME\AppData\Local\Microsoft\VisualStudio\NUMBER_WITH_EXP_IN'
+        //FYI: This will reset the whole VS experimental instance
+        //or for only resetting the extension find it and delete the folder.
         protected override ITeamExplorerSection CreateViewModel(SectionInitializeEventArgs e)
         {
             var tfvcService = new TFVCService(ServiceProvider);
+            var configHelper = new ConfigHelper();
 
-            return base.CreateViewModel(e) ?? new TeamMergeViewModel(new TeamService(ServiceProvider, tfvcService), new MergeService(ServiceProvider, tfvcService), new ConfigHelper());
+            var teamService = new TeamService(ServiceProvider, tfvcService);
+            var mergeService = new MergeService(ServiceProvider, tfvcService);
+
+            var mergeOperation = new MergeOperation(mergeService, configHelper);
+
+            return base.CreateViewModel(e) ?? new TeamMergeViewModel(teamService, mergeOperation, configHelper);
         }
 
         protected override object CreateView(SectionInitializeEventArgs e)

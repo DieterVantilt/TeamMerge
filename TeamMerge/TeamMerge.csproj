@@ -54,17 +54,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Base\ModelBase.cs" />
     <Compile Include="Base\TeamExplorerViewModelBase.cs" />
     <Compile Include="Commands\AsyncRelayCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
+    <Compile Include="Converters\EnumConverters.cs" />
+    <Compile Include="Exceptions\MergeActionException.cs" />
     <Compile Include="Helpers\CollectionExtensions.cs" />
     <Compile Include="Helpers\VersionControlHelper.cs" />
+    <Compile Include="Instellingen\Dialogs\InstellingenDialog.xaml.cs">
+      <DependentUpon>InstellingenDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Instellingen\Dialogs\InstellingenDialogViewModel.cs" />
+    <Compile Include="Instellingen\Enums\Branch.cs" />
+    <Compile Include="Instellingen\Models\InstellingenModel.cs" />
     <Compile Include="Merge\Context\TeamMergeContext.cs" />
     <Compile Include="Merge\TeamMergeSection.cs" />
     <Compile Include="Merge\TeamMergeView.xaml.cs">
       <DependentUpon>TeamMergeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Merge\TeamMergeViewModel.cs" />
+    <Compile Include="Operations\MergeOperation.cs" />
     <Compile Include="ResourceImage.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -89,7 +99,9 @@
     <Compile Include="UI\ChangesetListBox.cs" />
     <Compile Include="UI\InvertedBooleanConverter.cs" />
     <Compile Include="Utils\ConfigHelper.cs" />
+    <Compile Include="Utils\ConfigKeys.cs" />
     <Compile Include="Utils\ConfigManager.cs" />
+    <Compile Include="Utils\DialogHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
@@ -182,12 +194,17 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Instellingen\Dialogs\InstellingenDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Merge\TeamMergeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

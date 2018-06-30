@@ -13,8 +13,11 @@ namespace TeamMerge.Services
 {
     public interface IMergeService
     {
+        bool HasPendingChanges(WorkspaceModel workspaceModel);
+        Task<bool> GetLatestVersion(WorkspaceModel workspaceModel, params string[] branchNames);
+        Task ResolveConflicts(WorkspaceModel workspaceModel);
         Task MergeBranches(WorkspaceModel workspaceModel, string source, string target, int from, int to);
-        Task AddWorkItemsAndNavigate(IEnumerable<int> changesetIds, WorkspaceModel workspaceModel);
+        Task AddWorkItemsAndNavigate(WorkspaceModel workspaceModel, IEnumerable<int> changesetIds);        
     }
 
     public class MergeService 
@@ -31,6 +34,36 @@ namespace TeamMerge.Services
             _teamExplorer = (ITeamExplorer)_serviceProvider.GetService(typeof(ITeamExplorer));
         }
 
+        public bool HasPendingChanges(WorkspaceModel workspaceModel)
+        {
+            var workspace = _tfvcService.GetWorkspace(workspaceModel.Name, workspaceModel.OwnerName);
+
+            return workspace.GetPendingChanges().Any();
+        }
+
+        public async Task<bool> GetLatestVersion(WorkspaceModel workspaceModel, params string[] branchNames)
+        {
+            var workspace = _tfvcService.GetWorkspace(workspaceModel.Name, workspaceModel.OwnerName);
+
+            return await _tfvcService.GetLatestVersion(workspace, branchNames);
+        }
+
+        public async Task ResolveConflicts(WorkspaceModel workspaceModel)
+        {
+            var workspace = _tfvcService.GetWorkspace(workspaceModel.Name, workspaceModel.OwnerName);
+
+            var conflicts = workspace.QueryConflicts(new string[0], true);
+
+            foreach (var conflict in conflicts)
+            {
+                if (await Task.Run(() => workspace.MergeContent(conflict, true)))
+                {
+                    conflict.Resolution = Resolution.AcceptMerge;
+                    workspace.ResolveConflict(conflict);
+                }
+            }
+        }    
+
         public async Task MergeBranches(WorkspaceModel workspaceModel, string source, string target, int from, int to)
         {
             var workspace = _tfvcService.GetWorkspace(workspaceModel.Name, workspaceModel.OwnerName);
@@ -38,7 +71,7 @@ namespace TeamMerge.Services
             await _tfvcService.Merge(workspace, source, target, from, to);
         }
 
-        public async Task AddWorkItemsAndNavigate(IEnumerable<int> changesetIds, WorkspaceModel workspaceModel)
+        public async Task AddWorkItemsAndNavigate(WorkspaceModel workspaceModel, IEnumerable<int> changesetIds)
         {
             var workspace = _tfvcService.GetWorkspace(workspaceModel.Name, workspaceModel.OwnerName);
             var workItemIds = new ConcurrentBag<int>();

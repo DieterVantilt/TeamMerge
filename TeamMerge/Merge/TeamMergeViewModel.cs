@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using TeamMerge.Base;
 using TeamMerge.Commands;
 using TeamMerge.Helpers;
+using TeamMerge.Instellingen.Dialogs;
 using TeamMerge.Merge.Context;
+using TeamMerge.Operations;
 using TeamMerge.Services;
 using TeamMerge.Services.Models;
 using TeamMerge.Utils;
@@ -18,20 +21,21 @@ namespace TeamMerge.Merge
         : TeamExplorerViewModelBase
     {
         private readonly ITeamService _teamService;
-        private readonly IMergeService _mergeService;
+        private readonly IMergeOperation _mergeOperation;
         private readonly IConfigHelper _configHelper;
         private List<BranchModel> _currentBranches;
 
-        public TeamMergeViewModel(ITeamService teamService, IMergeService mergeService, IConfigHelper configHelper)
+        public TeamMergeViewModel(ITeamService teamService, IMergeOperation mergeOperation, IConfigHelper configHelper)
         {
             _teamService = teamService;
-            _mergeService = mergeService;
+            _mergeOperation = mergeOperation;
             _configHelper = configHelper;
 
             ViewChangesetDetailsCommand = new RelayCommand(ViewChangeset, CanViewChangeset);
             MergeCommand = new AsyncRelayCommand(MergeAsync, CanMerge);
             FetchChangesetsCommand = new AsyncRelayCommand(FetchChangesetsAsync, CanFetchChangesets);
             SelectWorkspaceCommand = new RelayCommand<WorkspaceModel>(SelectWorkspace);
+            OpenSettingsCommand = new RelayCommand(OpenSettings);
 
             SourcesBranches = new ObservableCollection<string>();
             TargetBranches = new ObservableCollection<string>();
@@ -47,6 +51,7 @@ namespace TeamMerge.Merge
         public IRelayCommand MergeCommand { get; private set; }
         public IRelayCommand FetchChangesetsCommand { get; private set; }
         public IRelayCommand SelectWorkspaceCommand { get; private set; }
+        public IRelayCommand OpenSettingsCommand { get; private set; }
 
         public ObservableCollection<string> ProjectNames { get; set; }
         public ObservableCollection<string> SourcesBranches { get; set; }
@@ -178,13 +183,19 @@ namespace TeamMerge.Merge
             {
                 var orderedSelectedChangesets = SelectedChangesets.OrderBy(x => x.ChangesetId).ToList();
 
-                await _mergeService.MergeBranches(SelectedWorkspace, SelectedSourceBranch, SelectedTargetBranch, orderedSelectedChangesets.First().ChangesetId, orderedSelectedChangesets.Last().ChangesetId);
+                await _mergeOperation.Execute(new MergeModel
+                {
+                    WorkspaceModel = SelectedWorkspace,
+                    ChangesetIds = orderedSelectedChangesets.Select(x => x.ChangesetId).ToList(),
+                    SourceBranch = SelectedSourceBranch,
+                    TargetBranch = SelectedTargetBranch,
+                    FromChangesetId = orderedSelectedChangesets.First().ChangesetId,
+                    ToChangesetId = orderedSelectedChangesets.Last().ChangesetId
+                });
 
-                await _mergeService.AddWorkItemsAndNavigate(orderedSelectedChangesets.Select(x => x.ChangesetId), SelectedWorkspace);
-
-                _configHelper.AddValue(ConfigManager.SELECTED_PROJECT_NAME, SelectedProjectName);
-                _configHelper.AddValue(ConfigManager.SOURCE_BRANCH, SelectedSourceBranch);
-                _configHelper.AddValue(ConfigManager.TARGET_BRANCH, SelectedTargetBranch);
+                _configHelper.AddValue(ConfigKeys.SELECTED_PROJECT_NAME, SelectedProjectName);
+                _configHelper.AddValue(ConfigKeys.SOURCE_BRANCH, SelectedSourceBranch);
+                _configHelper.AddValue(ConfigKeys.TARGET_BRANCH, SelectedTargetBranch);
 
                 _configHelper.SaveDictionary();
             });
@@ -251,16 +262,30 @@ namespace TeamMerge.Merge
                 }
                 else
                 {
-                    var projectName = _configHelper.GetValue<string>(ConfigManager.SELECTED_PROJECT_NAME);
+                    var projectName = _configHelper.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME);
 
                     if (!string.IsNullOrEmpty(projectName))
                     {
                         SelectedProjectName = projectName;
-                        SelectedSourceBranch = _configHelper.GetValue<string>(ConfigManager.SOURCE_BRANCH);
-                        SelectedTargetBranch = _configHelper.GetValue<string>(ConfigManager.TARGET_BRANCH);
+                        SelectedSourceBranch = _configHelper.GetValue<string>(ConfigKeys.SOURCE_BRANCH);
+                        SelectedTargetBranch = _configHelper.GetValue<string>(ConfigKeys.TARGET_BRANCH);
                     }
                 }
             });
+        }
+
+        public void OpenSettings()
+        {
+            var viewModel = new InstellingenDialogViewModel(_configHelper);
+            viewModel.Initialize();
+            var window = new InstellingenDialog
+            {
+                DataContext = viewModel
+            };
+            window.Closing += (e, cancelEventArgs) => viewModel.OnCloseWindowRequest(cancelEventArgs);
+            viewModel.RequestClose += () => window.Close();
+
+            window.ShowDialog();
         }
 
         public override void SaveContext(object sender, SectionSaveContextEventArgs e)

@@ -49,23 +49,27 @@
 
     <StackPanel IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBooleanConverter}}"
                 Margin="5">
-        <teamexplorer:DropDownLink ShowArrow="True"
+        <DockPanel>
+            <teamexplorer:DropDownLink ShowArrow="True"
                                    Text="{Binding SelectedWorkspace.Name}"
                                    Margin="0 0 0 10">
-            <teamexplorer:DropDownLink.DropDownMenu>
-                <ContextMenu ItemsSource="{Binding Workspaces}">
-                    <ContextMenu.ItemTemplate>
-                        <DataTemplate>
-                            <MenuItem Command="{Binding DataContext.SelectWorkspaceCommand,
+                <teamexplorer:DropDownLink.DropDownMenu>
+                    <ContextMenu ItemsSource="{Binding Workspaces}">
+                        <ContextMenu.ItemTemplate>
+                            <DataTemplate>
+                                <MenuItem Command="{Binding DataContext.SelectWorkspaceCommand,
                                               RelativeSource={RelativeSource AncestorType=ContextMenu,
                                                                              Mode=FindAncestor}}"
                                       CommandParameter="{Binding .}"
                                       Header="{Binding Name}"/>
-                        </DataTemplate>
-                    </ContextMenu.ItemTemplate>
-                </ContextMenu>
-            </teamexplorer:DropDownLink.DropDownMenu>
-        </teamexplorer:DropDownLink>
+                            </DataTemplate>
+                        </ContextMenu.ItemTemplate>
+                    </ContextMenu>
+                </teamexplorer:DropDownLink.DropDownMenu>
+            </teamexplorer:DropDownLink>
+
+            <Button Command="{Binding OpenSettingsCommand}" Content="{x:Static resources:Resources.Settings}" HorizontalAlignment="Right"/>
+        </DockPanel>  
         
         <TextBlock Text="{x:Static resources:Resources.ProjectName}" />
         <ComboBox ItemsSource="{Binding ProjectNames}"

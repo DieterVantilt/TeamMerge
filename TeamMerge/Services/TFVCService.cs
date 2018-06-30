@@ -19,6 +19,7 @@ namespace TeamMerge.Services
         Task<IEnumerable<Workspace>> AllWorkspaces();
         Workspace CurrentWorkspace();
         Workspace GetWorkspace(string workspaceName, string workspaceOwner);
+        Task<bool> GetLatestVersion(Workspace workspace, params string[] branchNames);
     }
 
     public class TFVCService 
@@ -103,6 +104,15 @@ namespace TeamMerge.Services
         public Workspace GetWorkspace(string workspaceName, string workspaceOwner)
         {
             return _versionControlServer.GetWorkspace(workspaceName, workspaceOwner);
+        }
+
+        public async Task<bool> GetLatestVersion(Workspace workspace, params string[] branchNames)
+        {
+            var getRequests = branchNames.Select(x => new GetRequest(x, RecursionType.Full, VersionSpec.Latest));
+
+            var getStatusResult = await Task.Run(() => workspace.Get(getRequests.ToArray(), GetOptions.None));
+
+            return getStatusResult.NumConflicts > 0;
         }
     }
 }

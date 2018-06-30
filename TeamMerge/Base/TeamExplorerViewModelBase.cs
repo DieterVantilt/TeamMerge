@@ -1,6 +1,7 @@
 ﻿using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 using System;
 using System.Threading.Tasks;
+using TeamMerge.Exceptions;
 
 namespace TeamMerge.Base
 {
@@ -14,6 +15,10 @@ namespace TeamMerge.Base
             try
             {
                 await task();
+            }
+            catch(MergeActionException mergeActionEx)
+            {
+                ShowMessage(mergeActionEx.Message);
             }
             catch (Exception ex)
             {

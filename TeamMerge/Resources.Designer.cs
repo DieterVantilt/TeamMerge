@@ -61,11 +61,47 @@ namespace TeamMerge {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable auto select all changesets..
+        /// </summary>
+        public static string AutoSelectAllChangesets {
+            get {
+                return ResourceManager.GetString("AutoSelectAllChangesets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fetch changesets.
         /// </summary>
         public static string FetchChangesets {
             get {
                 return ResourceManager.GetString("FetchChangesets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Conflicts when getting latest. Open the conflict window to resolve these issues..
+        /// </summary>
+        public static string GetLatestConflicts {
+            get {
+                return ResourceManager.GetString("GetLatestConflicts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Before merging do get latest version on branch:.
+        /// </summary>
+        public static string LatestVersionBranch {
+            get {
+                return ResourceManager.GetString("LatestVersionBranch", resourceCulture);
             }
         }
         
@@ -79,6 +115,24 @@ namespace TeamMerge {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string None {
+            get {
+                return ResourceManager.GetString("None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (NotSelected).
+        /// </summary>
+        public static string NotSelected {
+            get {
+                return ResourceManager.GetString("NotSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Project name:.
         /// </summary>
         public static string ProjectName {
@@ -88,11 +142,65 @@ namespace TeamMerge {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string Save {
+            get {
+                return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully saved!.
+        /// </summary>
+        public static string Saved {
+            get {
+                return ResourceManager.GetString("Saved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Settings.
+        /// </summary>
+        public static string Settings {
+            get {
+                return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Source.
+        /// </summary>
+        public static string Source {
+            get {
+                return ResourceManager.GetString("Source", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Soure and target.
+        /// </summary>
+        public static string SourceAndTarget {
+            get {
+                return ResourceManager.GetString("SourceAndTarget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Source branch.
         /// </summary>
         public static string SourceBranch {
             get {
                 return ResourceManager.GetString("SourceBranch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Target.
+        /// </summary>
+        public static string Target {
+            get {
+                return ResourceManager.GetString("Target", resourceCulture);
             }
         }
         
@@ -111,6 +219,33 @@ namespace TeamMerge {
         public static string TeamMerge {
             get {
                 return ResourceManager.GetString("TeamMerge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TeamMerge settings.
+        /// </summary>
+        public static string TeamMergeSettings {
+            get {
+                return ResourceManager.GetString("TeamMergeSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable warning when merging and still got pending changes..
+        /// </summary>
+        public static string WarningPendingChanges {
+            get {
+                return ResourceManager.GetString("WarningPendingChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your workspace contains pending changes. Clear these before merging..
+        /// </summary>
+        public static string WorkspaceContainsPendingChanges {
+            get {
+                return ResourceManager.GetString("WorkspaceContainsPendingChanges", resourceCulture);
             }
         }
     }

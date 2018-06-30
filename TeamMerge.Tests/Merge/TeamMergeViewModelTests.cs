@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TeamMerge.Merge;
 using TeamMerge.Merge.Context;
+using TeamMerge.Operations;
 using TeamMerge.Services;
 using TeamMerge.Services.Models;
 using TeamMerge.Utils;
@@ -19,7 +20,7 @@ namespace TeamMerge.Tests.Merge
         private TeamMergeViewModel _sut;
         
         private ITeamService _teamService;
-        private IMergeService _mergeService;
+        private IMergeOperation _mergeOperation;
         private IConfigHelper _configHelper;
         private IServiceProvider _serviceProvider;
 
@@ -27,11 +28,11 @@ namespace TeamMerge.Tests.Merge
         public void Initialize()
         {
             _teamService = MockRepository.GenerateStrictMock<ITeamService>();
-            _mergeService = MockRepository.GenerateStrictMock<IMergeService>();
+            _mergeOperation = MockRepository.GenerateStrictMock<IMergeOperation>();
             _configHelper = MockRepository.GenerateStrictMock<IConfigHelper>();
             _serviceProvider = MockRepository.GenerateStrictMock<IServiceProvider>();
 
-            _sut = new TeamMergeViewModel(_teamService, _mergeService, _configHelper);
+            _sut = new TeamMergeViewModel(_teamService, _mergeOperation, _configHelper);
         }
 
         [TestMethod]
@@ -46,7 +47,7 @@ namespace TeamMerge.Tests.Merge
             _teamService.Expect(x => x.AllWorkspaces()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(workspaceModel);
 
-            _configHelper.Expect(x => x.GetValue<string>(ConfigManager.SELECTED_PROJECT_NAME)).Return(null);
+            _configHelper.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return(null);
 
             _sut.Initialize(this, new SectionInitializeEventArgs(_serviceProvider, null));
 
@@ -66,7 +67,7 @@ namespace TeamMerge.Tests.Merge
             _teamService.Expect(x => x.AllWorkspaces()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel1, workspaceModel2 }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(workspaceModel2);
 
-            _configHelper.Expect(x => x.GetValue<string>(ConfigManager.SELECTED_PROJECT_NAME)).Return(null);
+            _configHelper.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return(null);
 
             _sut.Initialize(this, new SectionInitializeEventArgs(_serviceProvider, null));
 
@@ -87,7 +88,7 @@ namespace TeamMerge.Tests.Merge
             _teamService.Expect(x => x.AllWorkspaces()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel1, workspaceModel2 }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(null);
 
-            _configHelper.Expect(x => x.GetValue<string>(ConfigManager.SELECTED_PROJECT_NAME)).Return(null);
+            _configHelper.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return(null);
 
             _sut.Initialize(this, new SectionInitializeEventArgs(_serviceProvider, null));
 
@@ -102,9 +103,9 @@ namespace TeamMerge.Tests.Merge
         {
             TestLoadingFromContextOrFromConfig(() =>
             {
-                _configHelper.Expect(x => x.GetValue<string>(ConfigManager.SELECTED_PROJECT_NAME)).Return("Project1");
-                _configHelper.Expect(x => x.GetValue<string>(ConfigManager.SOURCE_BRANCH)).Return("Branch1");
-                _configHelper.Expect(x => x.GetValue<string>(ConfigManager.TARGET_BRANCH)).Return("SourceBranch1");
+                _configHelper.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return("Project1");
+                _configHelper.Expect(x => x.GetValue<string>(ConfigKeys.SOURCE_BRANCH)).Return("Branch1");
+                _configHelper.Expect(x => x.GetValue<string>(ConfigKeys.TARGET_BRANCH)).Return("SourceBranch1");
 
                 _sut.Initialize(this, new SectionInitializeEventArgs(_serviceProvider, null));
             });
@@ -151,7 +152,7 @@ namespace TeamMerge.Tests.Merge
         public void CleanUp()
         {
             _teamService.VerifyAllExpectations();
-            _mergeService.VerifyAllExpectations();
+            _mergeOperation.VerifyAllExpectations();
             _configHelper.VerifyAllExpectations();
             _serviceProvider.VerifyAllExpectations();
         }

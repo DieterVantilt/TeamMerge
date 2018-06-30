@@ -10,22 +10,19 @@ namespace TeamMerge.Utils
         private static readonly string VS_TEAM_MERGE = "Visual Studio Team Merge";
         private static readonly string CONFIG_NAME = "teammerge.conf";
 
-        public static readonly string SELECTED_PROJECT_NAME = "SelectedProjectName";
-        public static readonly string SOURCE_BRANCH = "SourceBranch";
-        public static readonly string TARGET_BRANCH = "TargetBranch";
-
         private static IDictionary<string, object> _currentDictionary;
 
         public static T GetValue<T>(string key)
         {
             var dictionary = GetDictionary();
+            var result = default(T);
 
-            if (dictionary.TryGetValue(key, out object value))
+            if (dictionary.TryGetValue(key, out var value))
             {
-                return (T) value;
+                result = (T) Convert.ChangeType(value, typeof(T));
             }
 
-            return default(T);
+            return result;
         }
 
         public static void AddValue<T>(string key, T value)
