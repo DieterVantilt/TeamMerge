@@ -70,6 +70,15 @@ namespace TeamMerge {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Checking for included pending changes.
+        /// </summary>
+        public static string CheckingPendingChanges {
+            get {
+                return ResourceManager.GetString("CheckingPendingChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
         public static string Close {
@@ -88,11 +97,20 @@ namespace TeamMerge {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Conflicts when getting latest. Open the conflict window to resolve these issues..
+        ///   Looks up a localized string similar to Conflicts occurred when getting latest. Open the conflict window to resolve these issues..
         /// </summary>
         public static string GetLatestConflicts {
             get {
                 return ResourceManager.GetString("GetLatestConflicts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Getting latest version for {0} branch..
+        /// </summary>
+        public static string GettingLatestVersionForBranch {
+            get {
+                return ResourceManager.GetString("GettingLatestVersionForBranch", resourceCulture);
             }
         }
         
@@ -111,6 +129,15 @@ namespace TeamMerge {
         public static string Merge {
             get {
                 return ResourceManager.GetString("Merge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merging branches.
+        /// </summary>
+        public static string MergingBranches {
+            get {
+                return ResourceManager.GetString("MergingBranches", resourceCulture);
             }
         }
         
@@ -160,11 +187,29 @@ namespace TeamMerge {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Want to save your changes?.
+        /// </summary>
+        public static string SaveYourChanges {
+            get {
+                return ResourceManager.GetString("SaveYourChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Settings.
         /// </summary>
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Should resolve conflicts.
+        /// </summary>
+        public static string ShouldResolveConflicts {
+            get {
+                return ResourceManager.GetString("ShouldResolveConflicts", resourceCulture);
             }
         }
         
@@ -232,7 +277,7 @@ namespace TeamMerge {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable warning when merging and still got pending changes..
+        ///   Looks up a localized string similar to Enable warning when merging with included pending changes in workspace..
         /// </summary>
         public static string WarningPendingChanges {
             get {
@@ -241,7 +286,7 @@ namespace TeamMerge {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your workspace contains pending changes. Clear these before merging..
+        ///   Looks up a localized string similar to Your workspace contains included pending changes. Exclude or undo your included pending changes before merging..
         /// </summary>
         public static string WorkspaceContainsPendingChanges {
             get {

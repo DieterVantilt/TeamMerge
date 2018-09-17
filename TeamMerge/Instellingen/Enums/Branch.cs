@@ -1,16 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
 
 namespace TeamMerge.Instellingen.Enums
 {
     public enum Branch
     {
-        [Display(Description = nameof(Resources.None), ResourceType = typeof(Resources))]
+        [Description("None")]
         None,
-        [Display(Description = nameof(Resources.Source), ResourceType = typeof(Resources))]
+        [Description("Source")]
         Source,
-        [Display(Description = nameof(Resources.Target), ResourceType = typeof(Resources))]
+        [Description("Target")]
         Target,
-        [Display(Description = nameof(Resources.SourceAndTarget), ResourceType = typeof(Resources))]
+        [Description("Source and target")]
         SourceAndTarget
     }
 }

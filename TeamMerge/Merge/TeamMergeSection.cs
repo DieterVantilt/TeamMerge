@@ -15,6 +15,7 @@ namespace TeamMerge.Merge
         //or for only resetting the extension find it and delete the folder.
         protected override ITeamExplorerSection CreateViewModel(SectionInitializeEventArgs e)
         {
+            var logger = new Logger();
             var tfvcService = new TFVCService(ServiceProvider);
             var configHelper = new ConfigHelper();
 
@@ -23,7 +24,7 @@ namespace TeamMerge.Merge
 
             var mergeOperation = new MergeOperation(mergeService, configHelper);
 
-            return base.CreateViewModel(e) ?? new TeamMergeViewModel(teamService, mergeOperation, configHelper);
+            return base.CreateViewModel(e) ?? new TeamMergeViewModel(teamService, mergeOperation, configHelper, logger);
         }
 
         protected override object CreateView(SectionInitializeEventArgs e)

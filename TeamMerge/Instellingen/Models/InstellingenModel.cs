@@ -27,7 +27,24 @@ namespace TeamMerge.Instellingen.Models
         public Branch LatestVersionBranch
         {
             get { return _latestVersionBranch; }
-            set { _latestVersionBranch = value; RaisePropertyChanged(nameof(LatestVersionBranch)); }
+            set
+            {
+                _latestVersionBranch = value;
+                RaisePropertyChanged(nameof(LatestVersionBranch));
+
+                if (LatestVersionBranch == Branch.None)
+                {
+                    ShouldResolveConflicts = false;
+                }
+            }
+        }
+
+        private bool _shouldResolveConflicts;
+
+        public bool ShouldResolveConflicts
+        {
+            get { return _shouldResolveConflicts; }
+            set { _shouldResolveConflicts = value; RaisePropertyChanged(nameof(ShouldResolveConflicts)); }
         }
     }
 }

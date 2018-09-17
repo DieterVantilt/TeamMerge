@@ -49,7 +49,7 @@ namespace TeamMerge.Utils
         {
             if (_currentDictionary == null)
             {
-                var filePath = GetSettingFilePath();
+                var filePath =  GetSettingFilePath();
                 var file = File.ReadAllText(filePath);
 
                 if (string.IsNullOrEmpty(file))
@@ -63,24 +63,11 @@ namespace TeamMerge.Utils
             }
 
             return _currentDictionary;
-        }
+        }        
 
         private static string GetSettingFilePath()
         {
-            var roamingPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var autoMergeFolder = Path.Combine(roamingPath, VS_TEAM_MERGE);
-            if (!Directory.Exists(autoMergeFolder))
-            {
-                Directory.CreateDirectory(autoMergeFolder);
-            }
-            var settingFilePath = Path.Combine(autoMergeFolder, CONFIG_NAME);
-            if (!File.Exists(settingFilePath))
-            {
-                using (File.Create(settingFilePath))
-                {
-                }
-            }
-            return settingFilePath;
+            return FileHelper.CreateFileAndReturnPath(CONFIG_NAME, VS_TEAM_MERGE);
         }
     }
 }

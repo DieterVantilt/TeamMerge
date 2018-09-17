@@ -23,6 +23,7 @@ namespace TeamMerge.Tests.Merge
         private IMergeOperation _mergeOperation;
         private IConfigHelper _configHelper;
         private IServiceProvider _serviceProvider;
+        private ILogger _logger;
 
         [TestInitialize]
         public void Initialize()
@@ -31,8 +32,9 @@ namespace TeamMerge.Tests.Merge
             _mergeOperation = MockRepository.GenerateStrictMock<IMergeOperation>();
             _configHelper = MockRepository.GenerateStrictMock<IConfigHelper>();
             _serviceProvider = MockRepository.GenerateStrictMock<IServiceProvider>();
+            _logger = MockRepository.GenerateStrictMock<ILogger>();
 
-            _sut = new TeamMergeViewModel(_teamService, _mergeOperation, _configHelper);
+            _sut = new TeamMergeViewModel(_teamService, _mergeOperation, _configHelper, _logger);
         }
 
         [TestMethod]
@@ -155,6 +157,7 @@ namespace TeamMerge.Tests.Merge
             _mergeOperation.VerifyAllExpectations();
             _configHelper.VerifyAllExpectations();
             _serviceProvider.VerifyAllExpectations();
+            _logger.VerifyAllExpectations();
         }
     }
 }

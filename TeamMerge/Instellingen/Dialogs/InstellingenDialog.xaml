@@ -19,24 +19,27 @@
                 <x:Type TypeName="enums:Branch" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
-
-        <converters:EnumConverters x:Key="EnumConverter" />        
+        
+        <converters:EnumConverters x:Key="EnumConverter" />
+        <converters:MultiConverter x:Key="IsNotEqualToConverter">
+            <converters:IsEqualConverter />
+            <converters:InvertedBooleanConverter />
+        </converters:MultiConverter>
     </Window.Resources>
 
     <StackPanel Margin="20">
-        <CheckBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 0 0 10"                  
+        <CheckBox Margin="0 0 0 10"                  
                   Content="{x:Static resource:Resources.WarningPendingChanges}"
                   IsChecked="{Binding Model.EnablePendingChangesWarning, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <CheckBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 0 0 10"
+        <CheckBox Margin="0 0 0 10"
                   Content="{x:Static resource:Resources.AutoSelectAllChangesets}"
                   IsChecked="{Binding Model.EnableAutoSelectAllChangesets, UpdateSourceTrigger=PropertyChanged}"/>
 
         <StackPanel Orientation="Horizontal">
-            <Label Grid.Row="2" Grid.Column="0" 
-               Content="{x:Static resource:Resources.LatestVersionBranch}" />
+            <Label Content="{x:Static resource:Resources.LatestVersionBranch}" />
 
-            <ComboBox Grid.Row="2" Grid.Column="1" Width="150" Margin="15 0 20 0"
+            <ComboBox Width="150" Margin="15 0 20 0"
                   SelectedItem="{Binding Model.LatestVersionBranch, UpdateSourceTrigger=PropertyChanged}"
                   ItemsSource="{Binding Source={StaticResource Enumvalues}}">
                 <ComboBox.ItemTemplate>
@@ -46,7 +49,12 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
         </StackPanel>
-        
+
+        <CheckBox Margin="50 0 0 10"
+                  IsEnabled="{Binding Model.LatestVersionBranch, Converter={StaticResource IsNotEqualToConverter}, ConverterParameter={x:Static enums:Branch.None}}"
+                  Content="{x:Static resource:Resources.ShouldResolveConflicts}"
+                  IsChecked="{Binding Model.ShouldResolveConflicts}" />
+
         <Grid Margin="10 25 10 10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />

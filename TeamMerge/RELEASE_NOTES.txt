@@ -1,2 +1,8 @@
 ﻿06/06/2018 (0.9.1)
 Initial release
+
+17/09/2018 (1.0.0)
+First release version:
+- added logging
+- possibility to do get latest version for the source or target branch
+- warning when workspace contains included pending changes

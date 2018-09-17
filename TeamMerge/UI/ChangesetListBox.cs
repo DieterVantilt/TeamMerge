@@ -9,24 +9,30 @@ namespace TeamMerge.UI
     public class ChangesetListBox 
         : ListBox
     {
+        public bool DisableAutoMergeListBox { get; set; }
+
         public ChangesetListBox()
         {
             SelectionChanged += AutoMergeListBox_SelectionChanged;
+            SetSelectedItems(SelectedItems);
         }
 
         private void AutoMergeListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (SelectedItemsList != null)
             {
-                foreach (var removedItem in e.RemovedItems.Cast<ChangesetModel>())
+                if (!DisableAutoMergeListBox)
                 {
-                    SelectedItemsList.Remove(removedItem);
-                }
+                    foreach (var removedItem in e.RemovedItems.Cast<ChangesetModel>())
+                    {
+                        SelectedItemsList.Remove(removedItem);
+                    }
 
-                foreach (var addItem in e.AddedItems.Cast<ChangesetModel>())
-                {
-                    SelectedItemsList.Add(addItem);
-                }
+                    foreach (var addItem in e.AddedItems.Cast<ChangesetModel>())
+                    {
+                        SelectedItemsList.Add(addItem);
+                    }
+                }                
             }
         }
 
@@ -37,6 +43,19 @@ namespace TeamMerge.UI
         }
 
         public static readonly DependencyProperty SelectedItemsListProperty =
-           DependencyProperty.Register("SelectedItemsList", typeof(ObservableCollection<ChangesetModel>), typeof(ChangesetListBox), new PropertyMetadata(null));
+           DependencyProperty.Register(nameof(SelectedItemsList), typeof(ObservableCollection<ChangesetModel>), typeof(ChangesetListBox), new PropertyMetadata(null, null, CoerceVallBack));
+
+        private static object CoerceVallBack(DependencyObject d, object baseValue)
+        {
+            var changesetListBox = ((ChangesetListBox)d);
+
+            changesetListBox.DisableAutoMergeListBox = true;
+
+            changesetListBox.SetSelectedItems(changesetListBox.SelectedItemsList);
+
+            changesetListBox.DisableAutoMergeListBox = false;
+
+            return baseValue;
+        }
     }
 }

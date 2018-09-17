@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="TeamMerge.8b5c44b8-2088-45d4-ae9f-013f61c9cb6d" Version="0.9.1" Language="en-US" Publisher="Dieter Vantilt" />
+        <Identity Id="TeamMerge.8b5c44b8-2088-45d4-ae9f-013f61c9cb6d" Version="1.0.0" Language="en-US" Publisher="Dieter Vantilt" />
         <DisplayName>TeamMerge</DisplayName>
         <Description xml:space="preserve">Merge your branches with all associated work items of the changesets.</Description>
         <License>LICENSE.txt</License>

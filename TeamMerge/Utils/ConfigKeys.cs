@@ -14,5 +14,6 @@ namespace TeamMerge.Utils
         public static readonly string ENABLE_WARNING_WHEN_PENDING_CHANGES = "EnableWarning";
         public static readonly string ENABLE_AUTO_SELECT_ALL_CHANGESETS = "EnableAutoSelectAllChangesets";
         public static readonly string LATEST_VERSION_FOR_BRANCH = "LatestVersionForBranch";
+        public static readonly string SHOULD_RESOLVE_CONFLICTS = "ShouldResolveConflicts";
     }
 }

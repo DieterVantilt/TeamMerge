@@ -52,7 +52,8 @@ namespace TeamMerge.Instellingen.Dialogs
             {
                 EnablePendingChangesWarning = _configHelper.GetValue<bool>(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES),
                 EnableAutoSelectAllChangesets = _configHelper.GetValue<bool>(ConfigKeys.ENABLE_AUTO_SELECT_ALL_CHANGESETS),
-                LatestVersionBranch = (Branch) _configHelper.GetValue<int>(ConfigKeys.LATEST_VERSION_FOR_BRANCH)
+                LatestVersionBranch = (Branch)_configHelper.GetValue<int>(ConfigKeys.LATEST_VERSION_FOR_BRANCH),
+                ShouldResolveConflicts = _configHelper.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS)
             };
 
             IsDirty = false;
@@ -64,6 +65,7 @@ namespace TeamMerge.Instellingen.Dialogs
             _configHelper.AddValue(ConfigKeys.ENABLE_AUTO_SELECT_ALL_CHANGESETS, Model.EnableAutoSelectAllChangesets);
             _configHelper.AddValue(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES, Model.EnablePendingChangesWarning);
             _configHelper.AddValue(ConfigKeys.LATEST_VERSION_FOR_BRANCH, Model.LatestVersionBranch);
+            _configHelper.AddValue(ConfigKeys.SHOULD_RESOLVE_CONFLICTS, Model.ShouldResolveConflicts);
 
             _configHelper.SaveDictionary();
             IsDirty = false;
@@ -73,7 +75,7 @@ namespace TeamMerge.Instellingen.Dialogs
         {
             if (IsDirty)
             {
-                var result = MessageBox.Show("save?", "", MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
+                var result = MessageBox.Show(Resources.SaveYourChanges, Resources.Save, MessageBoxButton.YesNoCancel, MessageBoxImage.Information);
 
                 if (result == MessageBoxResult.OK)
                 {

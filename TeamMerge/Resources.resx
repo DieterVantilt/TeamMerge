@@ -127,7 +127,7 @@
     <value>Fetch changesets</value>
   </data>
   <data name="GetLatestConflicts" xml:space="preserve">
-    <value>Conflicts when getting latest. Open the conflict window to resolve these issues.</value>
+    <value>Conflicts occurred when getting latest. Open the conflict window to resolve these issues.</value>
   </data>
   <data name="LatestVersionBranch" xml:space="preserve">
     <value>Before merging do get latest version on branch:</value>
@@ -150,8 +150,14 @@
   <data name="Saved" xml:space="preserve">
     <value>Successfully saved!</value>
   </data>
+  <data name="SaveYourChanges" xml:space="preserve">
+    <value>Want to save your changes?</value>
+  </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="ShouldResolveConflicts" xml:space="preserve">
+    <value>Should resolve conflicts</value>
   </data>
   <data name="Source" xml:space="preserve">
     <value>Source</value>
@@ -175,9 +181,18 @@
     <value>TeamMerge settings</value>
   </data>
   <data name="WarningPendingChanges" xml:space="preserve">
-    <value>Enable warning when merging and still got pending changes.</value>
+    <value>Enable warning when merging with included pending changes in workspace.</value>
   </data>
   <data name="WorkspaceContainsPendingChanges" xml:space="preserve">
-    <value>Your workspace contains pending changes. Clear these before merging.</value>
+    <value>Your workspace contains included pending changes. Exclude or undo your included pending changes before merging.</value>
+  </data>
+  <data name="CheckingPendingChanges" xml:space="preserve">
+    <value>Checking for included pending changes</value>
+  </data>
+  <data name="GettingLatestVersionForBranch" xml:space="preserve">
+    <value>Getting latest version for {0} branch.</value>
+  </data>
+  <data name="MergingBranches" xml:space="preserve">
+    <value>Merging branches</value>
   </data>
 </root>

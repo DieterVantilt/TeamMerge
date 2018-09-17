@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace TeamMerge.UI
+namespace TeamMerge.Converters
 {
     public class InvertedBooleanConverter
         : IValueConverter

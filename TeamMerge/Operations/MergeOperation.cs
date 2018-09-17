@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using TeamMerge.Exceptions;
+using TeamMerge.Helpers;
 using TeamMerge.Instellingen.Enums;
 using TeamMerge.Services;
 using TeamMerge.Services.Models;
@@ -11,6 +14,7 @@ namespace TeamMerge.Operations
 {
     public interface IMergeOperation
     {
+        event EventHandler<string> MyCurrentAction;
         Task Execute(MergeModel mergeModel);
     }
 
@@ -26,24 +30,27 @@ namespace TeamMerge.Operations
             _configHelper = configHelper;
         }
 
+        public event EventHandler<string> MyCurrentAction;
+
         public async Task Execute(MergeModel mergeModel)
         {
-            CheckIfPendingChanges(mergeModel.WorkspaceModel);
+            await CheckIfWorkspaceHasIncludedPendingChangesAsync(mergeModel.WorkspaceModel);
 
-            await DoGetLatest(mergeModel.WorkspaceModel, mergeModel.SourceBranch, mergeModel.TargetBranch);
+            await DoGetLatestOnBranchAsync(mergeModel.WorkspaceModel, mergeModel.SourceBranch, mergeModel.TargetBranch);
 
-            await _mergeService.MergeBranches(mergeModel.WorkspaceModel, mergeModel.SourceBranch, mergeModel.TargetBranch, mergeModel.FromChangesetId, mergeModel.ToChangesetId);
-
-            await _mergeService.AddWorkItemsAndNavigate(mergeModel.WorkspaceModel, mergeModel.ChangesetIds);
+            SetCurrentAction(Resources.MergingBranches);
+            await _mergeService.MergeBranches(mergeModel.WorkspaceModel, mergeModel.SourceBranch, mergeModel.TargetBranch, mergeModel.OrderedChangesetIds.First(), mergeModel.OrderedChangesetIds.Last());
+            await _mergeService.AddWorkItemsAndNavigate(mergeModel.WorkspaceModel, mergeModel.OrderedChangesetIds);
         }
 
-        private void CheckIfPendingChanges(WorkspaceModel workspaceModel)
+        private async Task CheckIfWorkspaceHasIncludedPendingChangesAsync(WorkspaceModel workspaceModel)
         {
             var shouldCheckForPendingChanges = _configHelper.GetValue<bool>(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES);
 
             if (shouldCheckForPendingChanges)
             {
-                var hasPendingChanges = _mergeService.HasPendingChanges(workspaceModel);
+                SetCurrentAction(Resources.CheckingPendingChanges);
+                var hasPendingChanges = await Task.Run(() => _mergeService.HasIncludedPendingChanges(workspaceModel));
 
                 if (hasPendingChanges)
                 {
@@ -52,26 +59,40 @@ namespace TeamMerge.Operations
             }
         }
 
-        private async Task DoGetLatest(WorkspaceModel workspaceModel, string sourceBranch, string targetBranch)
+        private async Task DoGetLatestOnBranchAsync(WorkspaceModel workspaceModel, string sourceBranch, string targetBranch)
         {
-            var shouldDoGetLatest = _configHelper.GetValue<bool>(ConfigKeys.LATEST_VERSION_FOR_BRANCH);
+            var latestVersionForBranches = (Branch)_configHelper.GetValue<int>(ConfigKeys.LATEST_VERSION_FOR_BRANCH);
 
-            if (shouldDoGetLatest)
+            if (latestVersionForBranches != Branch.None)
             {
-                var branchNamesForLatestVersion = GetBranchesForExecutingGetLatest(sourceBranch, targetBranch);
+                SetCurrentAction(string.Format(CultureInfo.CurrentUICulture, Resources.GettingLatestVersionForBranch, latestVersionForBranches.GetDescription()));
+                var branchNamesForLatestVersion = GetBranchesForExecutingGetLatest(latestVersionForBranches, sourceBranch, targetBranch);
 
-                var hasConflicts = await _mergeService.GetLatestVersion(workspaceModel, branchNamesForLatestVersion.ToArray());
+                var hasConflicts = await _mergeService.GetLatestVersion(workspaceModel, branchNamesForLatestVersion.ToArray());                
 
                 if (hasConflicts)
                 {
-                    throw new MergeActionException(Resources.GetLatestConflicts);
+                    var shouldResolveConflicts = _configHelper.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS);
+
+                    if (shouldResolveConflicts)
+                    {
+                        await _mergeService.ResolveConflicts(workspaceModel);
+
+                        if (_mergeService.HasConflicts(workspaceModel))
+                        {
+                            throw new MergeActionException(Resources.GetLatestConflicts);
+                        }
+                    }
+                    else
+                    {
+                        throw new MergeActionException(Resources.GetLatestConflicts);
+                    }                                       
                 }
             }
         }
 
-        private IEnumerable<string> GetBranchesForExecutingGetLatest(string sourceBranch, string targetBranch)
+        private IEnumerable<string> GetBranchesForExecutingGetLatest(Branch latestVersionForBranches, string sourceBranch, string targetBranch)
         {
-            var latestVersionForBranches = (Branch) _configHelper.GetValue<int>(ConfigKeys.LATEST_VERSION_FOR_BRANCH);
             var branches = new List<string>();
 
             switch (latestVersionForBranches)
@@ -90,15 +111,18 @@ namespace TeamMerge.Operations
 
             return branches;
         }
+
+        private void SetCurrentAction(string currentAction)
+        {
+            MyCurrentAction?.Invoke(this, currentAction);
+        }
     }
 
     public class MergeModel
     {
         public WorkspaceModel WorkspaceModel { get; set; }
-        public IEnumerable<int> ChangesetIds { get; set; }
+        public IEnumerable<int> OrderedChangesetIds { get; set; }
         public string SourceBranch { get; set; }
         public string TargetBranch { get; set; }
-        public int FromChangesetId { get; set; }
-        public int ToChangesetId { get; set; }
     }
 }

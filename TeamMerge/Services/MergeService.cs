@@ -13,7 +13,8 @@ namespace TeamMerge.Services
 {
     public interface IMergeService
     {
-        bool HasPendingChanges(WorkspaceModel workspaceModel);
+        bool HasIncludedPendingChanges(WorkspaceModel workspaceModel);
+        bool HasConflicts(WorkspaceModel workspaceModel);
         Task<bool> GetLatestVersion(WorkspaceModel workspaceModel, params string[] branchNames);
         Task ResolveConflicts(WorkspaceModel workspaceModel);
         Task MergeBranches(WorkspaceModel workspaceModel, string source, string target, int from, int to);
@@ -34,11 +35,20 @@ namespace TeamMerge.Services
             _teamExplorer = (ITeamExplorer)_serviceProvider.GetService(typeof(ITeamExplorer));
         }
 
-        public bool HasPendingChanges(WorkspaceModel workspaceModel)
+        public bool HasIncludedPendingChanges(WorkspaceModel workspaceModel)
         {
             var workspace = _tfvcService.GetWorkspace(workspaceModel.Name, workspaceModel.OwnerName);
 
-            return workspace.GetPendingChanges().Any();
+            var anyIncludedPendingChanges = workspace.GetPendingChanges().Select(x => !workspace.LastSavedCheckin.IsExcluded(x.ServerItem)).Any(x => x);
+
+            return anyIncludedPendingChanges;
+        }
+
+        public bool HasConflicts(WorkspaceModel workspaceModel)
+        {
+            var workspace = _tfvcService.GetWorkspace(workspaceModel.Name, workspaceModel.OwnerName);
+
+            return workspace.QueryConflicts(new string[0], true).Any();
         }
 
         public async Task<bool> GetLatestVersion(WorkspaceModel workspaceModel, params string[] branchNames)
@@ -62,7 +72,7 @@ namespace TeamMerge.Services
                     workspace.ResolveConflict(conflict);
                 }
             }
-        }    
+        }  
 
         public async Task MergeBranches(WorkspaceModel workspaceModel, string source, string target, int from, int to)
         {

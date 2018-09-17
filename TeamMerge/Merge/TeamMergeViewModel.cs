@@ -25,7 +25,8 @@ namespace TeamMerge.Merge
         private readonly IConfigHelper _configHelper;
         private List<BranchModel> _currentBranches;
 
-        public TeamMergeViewModel(ITeamService teamService, IMergeOperation mergeOperation, IConfigHelper configHelper)
+        public TeamMergeViewModel(ITeamService teamService, IMergeOperation mergeOperation, IConfigHelper configHelper, ILogger logger)
+            : base(logger)
         {
             _teamService = teamService;
             _mergeOperation = mergeOperation;
@@ -177,20 +178,32 @@ namespace TeamMerge.Merge
             set { _selectedWorkspace = value; RaisePropertyChanged(nameof(SelectedWorkspace)); }
         }
 
+        private string _myCurrentAction;
+
+        public string MyCurrentAction
+        {
+            get { return _myCurrentAction; }
+            set
+            {
+                _myCurrentAction = value;
+                RaisePropertyChanged(nameof(MyCurrentAction));
+            }
+        }
+
         private async Task MergeAsync()
         {
             await SetBusyWhileExecutingAsync(async () =>
             {
                 var orderedSelectedChangesets = SelectedChangesets.OrderBy(x => x.ChangesetId).ToList();
 
+                _mergeOperation.MyCurrentAction += MergeOperation_MyCurrentAction;
+
                 await _mergeOperation.Execute(new MergeModel
                 {
                     WorkspaceModel = SelectedWorkspace,
-                    ChangesetIds = orderedSelectedChangesets.Select(x => x.ChangesetId).ToList(),
+                    OrderedChangesetIds = orderedSelectedChangesets.Select(x => x.ChangesetId).ToList(),
                     SourceBranch = SelectedSourceBranch,
-                    TargetBranch = SelectedTargetBranch,
-                    FromChangesetId = orderedSelectedChangesets.First().ChangesetId,
-                    ToChangesetId = orderedSelectedChangesets.Last().ChangesetId
+                    TargetBranch = SelectedTargetBranch
                 });
 
                 _configHelper.AddValue(ConfigKeys.SELECTED_PROJECT_NAME, SelectedProjectName);
@@ -199,6 +212,14 @@ namespace TeamMerge.Merge
 
                 _configHelper.SaveDictionary();
             });
+
+            MyCurrentAction = null;
+            _mergeOperation.MyCurrentAction -= MergeOperation_MyCurrentAction;
+        }
+
+        private void MergeOperation_MyCurrentAction(object sender, string e)
+        {
+            MyCurrentAction = e;
         }
 
         private bool CanMerge()
@@ -218,6 +239,12 @@ namespace TeamMerge.Merge
                 var changesets = await _teamService.GetChangesets(SelectedSourceBranch, SelectedTargetBranch);
 
                 Changesets = new ObservableCollection<ChangesetModel>(changesets);
+
+                if (_configHelper.GetValue<bool>(ConfigKeys.ENABLE_AUTO_SELECT_ALL_CHANGESETS))
+                {
+                    SelectedChangesets.AddRange(Changesets.Except(SelectedChangesets));
+                    RaisePropertyChanged(nameof(SelectedChangesets));
+                }
             });
 
             MergeCommand.RaiseCanExecuteChanged();
