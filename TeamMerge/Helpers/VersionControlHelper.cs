@@ -10,7 +10,7 @@ namespace TeamMerge.Helpers
             var context = GetTeamFoundationContext(provider);
             if (context != null)
             {
-                return context.HasCollection && context.HasTeamProject 
+                return context.HasCollection && context.HasTeamProject
                     && context is TeamFoundationContext tfContext && tfContext.SourceControlType == TeamFoundationSourceControlType.TFVC;
             }
 
@@ -19,14 +19,9 @@ namespace TeamMerge.Helpers
 
         public static ITeamFoundationContext GetTeamFoundationContext(IServiceProvider serviceProvider)
         {
-            if (serviceProvider != null)
-            {
-                var tfContextManager = (ITeamFoundationContextManager) serviceProvider.GetService(typeof(ITeamFoundationContextManager));
+            var tfContextManager = (ITeamFoundationContextManager)serviceProvider?.GetService(typeof(ITeamFoundationContextManager));
 
-                return tfContextManager?.CurrentContext;
-            }
-
-            return null;
+            return tfContextManager?.CurrentContext;
         }
     }
 }

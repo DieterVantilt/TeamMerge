@@ -6,7 +6,7 @@ using System.Windows.Data;
 
 namespace TeamMerge.Converters
 {
-    public class MultiConverter 
+    public class MultiConverter
         : List<IValueConverter>, IValueConverter
     {
 

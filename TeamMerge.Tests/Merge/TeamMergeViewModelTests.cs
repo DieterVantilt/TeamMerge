@@ -18,12 +18,13 @@ namespace TeamMerge.Tests.Merge
     public class TeamMergeViewModelTests
     {
         private TeamMergeViewModel _sut;
-        
+
         private ITeamService _teamService;
         private IMergeOperation _mergeOperation;
         private IConfigHelper _configHelper;
         private IServiceProvider _serviceProvider;
         private ILogger _logger;
+        private ISolutionService _solutionService;
 
         [TestInitialize]
         public void Initialize()
@@ -33,8 +34,9 @@ namespace TeamMerge.Tests.Merge
             _configHelper = MockRepository.GenerateStrictMock<IConfigHelper>();
             _serviceProvider = MockRepository.GenerateStrictMock<IServiceProvider>();
             _logger = MockRepository.GenerateStrictMock<ILogger>();
+            _solutionService = MockRepository.GenerateStrictMock<ISolutionService>();
 
-            _sut = new TeamMergeViewModel(_teamService, _mergeOperation, _configHelper, _logger);
+            _sut = new TeamMergeViewModel(_teamService, _mergeOperation, _configHelper, _logger, _solutionService);
         }
 
         [TestMethod]
@@ -49,6 +51,7 @@ namespace TeamMerge.Tests.Merge
             _teamService.Expect(x => x.AllWorkspaces()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(workspaceModel);
 
+            _configHelper.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(false);
             _configHelper.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return(null);
 
             _sut.Initialize(this, new SectionInitializeEventArgs(_serviceProvider, null));
@@ -56,6 +59,63 @@ namespace TeamMerge.Tests.Merge
             Assert.AreEqual(2, _sut.ProjectNames.Count);
             Assert.IsTrue(_sut.ProjectNames.Contains(projectName1));
             Assert.IsTrue(_sut.ProjectNames.Contains(projectName2));
+        }
+
+        [TestMethod]
+        public void TeamMergeViewModel_Initialize_WhenSavePerSolution_AndSolutionHasSavedPreferences_ThenRestoreFromSavedPreferences()
+        {
+            var workspaceModel = new WorkspaceModel { Name = "Go test", OwnerName = "14525" };
+
+            const string solutionName = "Solution";
+            const string projectName = "Project";
+            const string selectedSource = "$/TFS/Dev";
+            const string selectedTarget = "$/TFS/Main";
+
+            var defaultMergeSetting = new DefaultMergeSettings(solutionName, projectName, selectedSource, selectedTarget);
+
+            _teamService.Expect(x => x.GetProjectNames()).Return(Task.FromResult<IEnumerable<string>>(new List<string> { projectName }));
+
+            _teamService.Expect(x => x.AllWorkspaces()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel }));
+            _teamService.Expect(x => x.CurrentWorkspace()).Return(workspaceModel);
+            _teamService.Expect(x => x.GetBranches(projectName)).Return(new List<BranchModel>() { new BranchModel() { Name = selectedSource, Branches = new List<string>() { selectedTarget } } });
+
+            _solutionService.Expect(x => x.GetDefaultMergeSettingsForCurrentSolution()).Return(defaultMergeSetting);
+
+            _configHelper.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(true);
+
+            _sut.Initialize(this, new SectionInitializeEventArgs(_serviceProvider, null));
+
+            Assert.IsTrue(_sut.SelectedProjectName == projectName);
+            Assert.IsTrue(_sut.SelectedSourceBranch == selectedSource);
+            Assert.IsTrue(_sut.SelectedTargetBranch == selectedTarget);
+        }
+
+        [TestMethod]
+        public void TeamMergeViewModel_Initialize_WhenSavePerSolution_ButSolutionHasNoPreferencesYet_ThenRestoreFromDefaultPreference()
+        {
+            var workspaceModel = new WorkspaceModel { Name = "Go test", OwnerName = "14525" };
+            const string projectName = "Project";
+            const string selectedSource = "$/TFS/Dev";
+            const string selectedTarget = "$/TFS/Main";
+
+            _teamService.Expect(x => x.GetProjectNames()).Return(Task.FromResult<IEnumerable<string>>(new List<string> { projectName }));
+
+            _teamService.Expect(x => x.AllWorkspaces()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel }));
+            _teamService.Expect(x => x.CurrentWorkspace()).Return(workspaceModel);
+            _teamService.Expect(x => x.GetBranches(projectName)).Return(new List<BranchModel>() { new BranchModel() { Name = selectedSource, Branches = new List<string>() { selectedTarget } } });
+
+            _solutionService.Expect(x => x.GetDefaultMergeSettingsForCurrentSolution()).Return(null);
+
+            _configHelper.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(true);
+            _configHelper.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return(projectName);
+            _configHelper.Expect(x => x.GetValue<string>(ConfigKeys.SOURCE_BRANCH)).Return(selectedSource);
+            _configHelper.Expect(x => x.GetValue<string>(ConfigKeys.TARGET_BRANCH)).Return(selectedTarget);
+
+            _sut.Initialize(this, new SectionInitializeEventArgs(_serviceProvider, null));
+
+            Assert.IsTrue(_sut.SelectedProjectName == projectName);
+            Assert.IsTrue(_sut.SelectedSourceBranch == selectedSource);
+            Assert.IsTrue(_sut.SelectedTargetBranch == selectedTarget);
         }
 
         [TestMethod]
@@ -69,6 +129,7 @@ namespace TeamMerge.Tests.Merge
             _teamService.Expect(x => x.AllWorkspaces()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel1, workspaceModel2 }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(workspaceModel2);
 
+            _configHelper.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(false);
             _configHelper.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return(null);
 
             _sut.Initialize(this, new SectionInitializeEventArgs(_serviceProvider, null));
@@ -90,6 +151,7 @@ namespace TeamMerge.Tests.Merge
             _teamService.Expect(x => x.AllWorkspaces()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel1, workspaceModel2 }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(null);
 
+            _configHelper.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(false);
             _configHelper.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return(null);
 
             _sut.Initialize(this, new SectionInitializeEventArgs(_serviceProvider, null));
@@ -105,6 +167,7 @@ namespace TeamMerge.Tests.Merge
         {
             TestLoadingFromContextOrFromConfig(() =>
             {
+                _configHelper.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(false);
                 _configHelper.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return("Project1");
                 _configHelper.Expect(x => x.GetValue<string>(ConfigKeys.SOURCE_BRANCH)).Return("Branch1");
                 _configHelper.Expect(x => x.GetValue<string>(ConfigKeys.TARGET_BRANCH)).Return("SourceBranch1");

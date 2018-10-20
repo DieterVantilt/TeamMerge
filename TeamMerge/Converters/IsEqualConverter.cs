@@ -9,12 +9,7 @@ namespace TeamMerge.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (Equals(value, parameter))
-            {
-                return true;
-            }
-
-            return false;
+            return Equals(value, parameter);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

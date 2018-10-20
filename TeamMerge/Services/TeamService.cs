@@ -1,5 +1,4 @@
-﻿using Microsoft.TeamFoundation.VersionControl.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +15,7 @@ namespace TeamMerge.Services
         WorkspaceModel CurrentWorkspace();
     }
 
-    public class TeamService 
+    public class TeamService
         : ITeamService
     {
         private readonly IServiceProvider _serviceProvider;
@@ -41,7 +40,7 @@ namespace TeamMerge.Services
 
             var branches = _tfvcService.ListBranches(projectName);
 
-            foreach(var branchObject in branches)
+            foreach (var branchObject in branches)
             {
                 var branchModel = new BranchModel
                 {
@@ -62,8 +61,6 @@ namespace TeamMerge.Services
 
         public async Task<IEnumerable<ChangesetModel>> GetChangesets(string source, string target)
         {
-            var changesets = new List<ChangesetModel>();
-
             var mergeCandidates = await _tfvcService.GetMergeCandidates(source, target);
 
             return mergeCandidates.Select(x => new ChangesetModel
