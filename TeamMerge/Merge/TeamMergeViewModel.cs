@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using TeamMerge.Base;
 using TeamMerge.Commands;
 using TeamMerge.Helpers;
@@ -17,20 +16,22 @@ using TeamMerge.Utils;
 
 namespace TeamMerge.Merge
 {
-    public class TeamMergeViewModel 
+    public class TeamMergeViewModel
         : TeamExplorerViewModelBase
     {
         private readonly ITeamService _teamService;
         private readonly IMergeOperation _mergeOperation;
         private readonly IConfigHelper _configHelper;
+        private readonly ISolutionService _solutionService;
         private List<BranchModel> _currentBranches;
 
-        public TeamMergeViewModel(ITeamService teamService, IMergeOperation mergeOperation, IConfigHelper configHelper, ILogger logger)
+        public TeamMergeViewModel(ITeamService teamService, IMergeOperation mergeOperation, IConfigHelper configHelper, ILogger logger, ISolutionService solutionService)
             : base(logger)
         {
             _teamService = teamService;
             _mergeOperation = mergeOperation;
             _configHelper = configHelper;
+            _solutionService = solutionService;
 
             ViewChangesetDetailsCommand = new RelayCommand(ViewChangeset, CanViewChangeset);
             MergeCommand = new AsyncRelayCommand(MergeAsync, CanMerge);
@@ -48,11 +49,11 @@ namespace TeamMerge.Merge
             Title = Resources.TeamMerge;
         }
 
-        public IRelayCommand ViewChangesetDetailsCommand { get; private set; }
-        public IRelayCommand MergeCommand { get; private set; }
-        public IRelayCommand FetchChangesetsCommand { get; private set; }
-        public IRelayCommand SelectWorkspaceCommand { get; private set; }
-        public IRelayCommand OpenSettingsCommand { get; private set; }
+        public IRelayCommand ViewChangesetDetailsCommand { get; }
+        public IRelayCommand MergeCommand { get; }
+        public IRelayCommand FetchChangesetsCommand { get; }
+        public IRelayCommand SelectWorkspaceCommand { get; }
+        public IRelayCommand OpenSettingsCommand { get; }
 
         public ObservableCollection<string> ProjectNames { get; set; }
         public ObservableCollection<string> SourcesBranches { get; set; }
@@ -206,15 +207,49 @@ namespace TeamMerge.Merge
                     TargetBranch = SelectedTargetBranch
                 });
 
-                _configHelper.AddValue(ConfigKeys.SELECTED_PROJECT_NAME, SelectedProjectName);
-                _configHelper.AddValue(ConfigKeys.SOURCE_BRANCH, SelectedSourceBranch);
-                _configHelper.AddValue(ConfigKeys.TARGET_BRANCH, SelectedTargetBranch);
+
+                SaveDefaultSettings();
+                SaveDefaultSettingsSolutionWide();
 
                 _configHelper.SaveDictionary();
             });
 
             MyCurrentAction = null;
             _mergeOperation.MyCurrentAction -= MergeOperation_MyCurrentAction;
+        }
+
+        private void SaveDefaultSettingsSolutionWide()
+        {
+            var saveSelectedBranchSettingsBySolution = _configHelper.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION);
+            if (saveSelectedBranchSettingsBySolution)
+            {
+                var currentSolution = _solutionService.GetActiveSolution()?.FullName;
+
+                if (!string.IsNullOrWhiteSpace(currentSolution))
+                {
+                    var currentSettings = _configHelper.GetValue<List<DefaultMergeSettings>>(ConfigKeys.SOLUTIONWISE_SELECTEDMERGE_SETTINGS) ?? new List<DefaultMergeSettings>();
+                    var currentSolutionSetting = currentSettings.SingleOrDefault(c => c.Solution == currentSolution);
+                    if (currentSolutionSetting != null)
+                    {
+                        currentSolutionSetting.SourceBranch = SelectedSourceBranch;
+                        currentSolutionSetting.TargetBranch = SelectedTargetBranch;
+                        currentSolutionSetting.ProjectName = SelectedProjectName;
+                    }
+                    else
+                    {
+                        currentSettings.Add(new DefaultMergeSettings(currentSolution, SelectedProjectName, SelectedSourceBranch, SelectedTargetBranch));
+                    }
+
+                    _configHelper.AddValue(ConfigKeys.SOLUTIONWISE_SELECTEDMERGE_SETTINGS, currentSettings);
+                }
+            }
+        }
+
+        private void SaveDefaultSettings()
+        {
+            _configHelper.AddValue(ConfigKeys.SELECTED_PROJECT_NAME, SelectedProjectName);
+            _configHelper.AddValue(ConfigKeys.SOURCE_BRANCH, SelectedSourceBranch);
+            _configHelper.AddValue(ConfigKeys.TARGET_BRANCH, SelectedTargetBranch);
         }
 
         private void MergeOperation_MyCurrentAction(object sender, string e)
@@ -289,26 +324,62 @@ namespace TeamMerge.Merge
                 }
                 else
                 {
-                    var projectName = _configHelper.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME);
-
-                    if (!string.IsNullOrEmpty(projectName))
-                    {
-                        SelectedProjectName = projectName;
-                        SelectedSourceBranch = _configHelper.GetValue<string>(ConfigKeys.SOURCE_BRANCH);
-                        SelectedTargetBranch = _configHelper.GetValue<string>(ConfigKeys.TARGET_BRANCH);
-                    }
+                    SetSavedSelectedBranches();
                 }
             });
+        }
+
+        private void SetSavedSelectedBranches()
+        {
+            var saveSelectedBranchSettingsBySolution = _configHelper.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION);
+            if (saveSelectedBranchSettingsBySolution)
+            {
+                SetDefaultSelectedSettingsPerSolution();
+            }
+            else
+            {
+                SetDefaultSelectedSettings();
+            }
+        }
+
+        private void SetDefaultSelectedSettingsPerSolution()
+        {
+            var defaultMergeSettings = _solutionService.GetDefaultMergeSettingsForCurrentSolution();
+
+            if (defaultMergeSettings != null && defaultMergeSettings.IsValidSettings())
+            {
+                SelectedProjectName = defaultMergeSettings.ProjectName;
+                SelectedSourceBranch = defaultMergeSettings.SourceBranch;
+                SelectedTargetBranch = defaultMergeSettings.TargetBranch;
+            }
+            else
+            {
+                SetDefaultSelectedSettings();
+            }
+        }
+
+        private void SetDefaultSelectedSettings()
+        {
+            var projectName = _configHelper.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME);
+
+            if (!string.IsNullOrWhiteSpace(projectName))
+            {
+                SelectedProjectName = projectName;
+                SelectedSourceBranch = _configHelper.GetValue<string>(ConfigKeys.SOURCE_BRANCH);
+                SelectedTargetBranch = _configHelper.GetValue<string>(ConfigKeys.TARGET_BRANCH);
+            }
         }
 
         public void OpenSettings()
         {
             var viewModel = new InstellingenDialogViewModel(_configHelper);
             viewModel.Initialize();
+
             var window = new InstellingenDialog
             {
                 DataContext = viewModel
             };
+
             window.Closing += (e, cancelEventArgs) => viewModel.OnCloseWindowRequest(cancelEventArgs);
             viewModel.RequestClose += () => window.Close();
 
@@ -332,7 +403,7 @@ namespace TeamMerge.Merge
 
         private void RestoreContext(SectionInitializeEventArgs e)
         {
-            var context = (TeamMergeContext) e.Context;
+            var context = (TeamMergeContext)e.Context;
 
             SelectedProjectName = context.SelectedProjectName;
             Changesets = context.Changesets;

@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.IO;
 
@@ -7,8 +7,8 @@ namespace TeamMerge.Utils
 {
     public static class ConfigManager
     {
-        private static readonly string VS_TEAM_MERGE = "Visual Studio Team Merge";
-        private static readonly string CONFIG_NAME = "teammerge.conf";
+        private const string VS_TEAM_MERGE = "Visual Studio Team Merge";
+        private static readonly string ConfigName = "teammerge.conf";
 
         private static IDictionary<string, object> _currentDictionary;
 
@@ -19,7 +19,19 @@ namespace TeamMerge.Utils
 
             if (dictionary.TryGetValue(key, out var value))
             {
-                result = (T) Convert.ChangeType(value, typeof(T));
+                //If value is given type, cast it and return it
+                if (value is T castedValue)
+                {
+                    result = castedValue;
+                }
+                else
+                {
+                    //If value is a JArray, we can safely assume it is a collection. To get the actual .NET Collection, we need to do ToObject
+                    if (value is JArray jsonArray)
+                    {
+                        result = jsonArray.ToObject<T>();
+                    }
+                }
             }
 
             return result;
@@ -49,25 +61,18 @@ namespace TeamMerge.Utils
         {
             if (_currentDictionary == null)
             {
-                var filePath =  GetSettingFilePath();
+                var filePath = GetSettingFilePath();
                 var file = File.ReadAllText(filePath);
 
-                if (string.IsNullOrEmpty(file))
-                {
-                    _currentDictionary = new Dictionary<string, object>();
-                }
-                else
-                {
-                    _currentDictionary = JsonConvert.DeserializeObject<IDictionary<string, object>>(file);
-                }
+                _currentDictionary = string.IsNullOrWhiteSpace(file) ? new Dictionary<string, object>() : JsonConvert.DeserializeObject<IDictionary<string, object>>(file);
             }
 
             return _currentDictionary;
-        }        
+        }
 
         private static string GetSettingFilePath()
         {
-            return FileHelper.CreateFileAndReturnPath(CONFIG_NAME, VS_TEAM_MERGE);
+            return FileHelper.CreateFileAndReturnPath(ConfigName, VS_TEAM_MERGE);
         }
     }
 }

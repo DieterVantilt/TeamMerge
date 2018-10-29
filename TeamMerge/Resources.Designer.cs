@@ -187,6 +187,15 @@ namespace TeamMerge {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save selected branches per solution: .
+        /// </summary>
+        public static string SaveSelectedBranchPerSolution {
+            get {
+                return ResourceManager.GetString("SaveSelectedBranchPerSolution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Want to save your changes?.
         /// </summary>
         public static string SaveYourChanges {

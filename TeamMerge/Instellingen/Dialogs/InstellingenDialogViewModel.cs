@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.TeamFoundation.MVVM;
+using System;
 using System.ComponentModel;
 using System.Windows;
-using Microsoft.TeamFoundation.MVVM;
 using TeamMerge.Commands;
 using TeamMerge.Instellingen.Enums;
 using TeamMerge.Instellingen.Models;
@@ -13,7 +13,7 @@ namespace TeamMerge.Instellingen.Dialogs
     public class InstellingenDialogViewModel
         : ViewModelBase
     {
-        private IConfigHelper _configHelper;
+        private readonly IConfigHelper _configHelper;
 
         public InstellingenDialogViewModel(IConfigHelper configHelper)
         {
@@ -40,7 +40,8 @@ namespace TeamMerge.Instellingen.Dialogs
         public bool IsDirty
         {
             get { return _isDirty; }
-            set {
+            set
+            {
                 _isDirty = value;
                 RaisePropertyChanged(nameof(IsDirty));
             }
@@ -53,7 +54,8 @@ namespace TeamMerge.Instellingen.Dialogs
                 EnablePendingChangesWarning = _configHelper.GetValue<bool>(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES),
                 EnableAutoSelectAllChangesets = _configHelper.GetValue<bool>(ConfigKeys.ENABLE_AUTO_SELECT_ALL_CHANGESETS),
                 LatestVersionBranch = (Branch)_configHelper.GetValue<int>(ConfigKeys.LATEST_VERSION_FOR_BRANCH),
-                ShouldResolveConflicts = _configHelper.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS)
+                ShouldResolveConflicts = _configHelper.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS),
+                SaveSelectedBranchPerSolution = _configHelper.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)
             };
 
             IsDirty = false;
@@ -66,8 +68,10 @@ namespace TeamMerge.Instellingen.Dialogs
             _configHelper.AddValue(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES, Model.EnablePendingChangesWarning);
             _configHelper.AddValue(ConfigKeys.LATEST_VERSION_FOR_BRANCH, Model.LatestVersionBranch);
             _configHelper.AddValue(ConfigKeys.SHOULD_RESOLVE_CONFLICTS, Model.ShouldResolveConflicts);
+            _configHelper.AddValue(ConfigKeys.SAVE_BRANCH_PERSOLUTION, Model.SaveSelectedBranchPerSolution);
 
             _configHelper.SaveDictionary();
+
             IsDirty = false;
         }
 
@@ -84,7 +88,7 @@ namespace TeamMerge.Instellingen.Dialogs
                 else if (result == MessageBoxResult.Cancel)
                 {
                     e.Cancel = true;
-                }                
+                }
             }
         }
 

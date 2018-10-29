@@ -7,7 +7,7 @@ using TeamMerge.Utils;
 namespace TeamMerge.Merge
 {
     [TeamExplorerSection(Guids.TeamMergeSectionId, Guids.TeamMergePageId, 10)]
-    public class TeamMergeSection 
+    public class TeamMergeSection
         : TeamExplorerSectionBase
     {
         //when editing this function delete everything from this folder: 'C:\Users\YOUR_NAME\AppData\Local\Microsoft\VisualStudio\NUMBER_WITH_EXP_IN'
@@ -16,15 +16,17 @@ namespace TeamMerge.Merge
         protected override ITeamExplorerSection CreateViewModel(SectionInitializeEventArgs e)
         {
             var logger = new Logger();
-            var tfvcService = new TFVCService(ServiceProvider);
             var configHelper = new ConfigHelper();
+
+            var solutionService = new SolutionService(ServiceProvider, configHelper);
+            var tfvcService = new TFVCService(ServiceProvider, solutionService);
 
             var teamService = new TeamService(ServiceProvider, tfvcService);
             var mergeService = new MergeService(ServiceProvider, tfvcService);
 
             var mergeOperation = new MergeOperation(mergeService, configHelper);
 
-            return base.CreateViewModel(e) ?? new TeamMergeViewModel(teamService, mergeOperation, configHelper, logger);
+            return base.CreateViewModel(e) ?? new TeamMergeViewModel(teamService, mergeOperation, configHelper, logger, solutionService);
         }
 
         protected override object CreateView(SectionInitializeEventArgs e)

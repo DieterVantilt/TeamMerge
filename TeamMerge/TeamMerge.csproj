@@ -93,7 +93,10 @@
     <Compile Include="Services\Models\BranchModel.cs" />
     <Compile Include="Services\MergeService.cs" />
     <Compile Include="Services\Models\ChangesetModel.cs" />
+    <Compile Include="Services\Models\DefaultMergeSettings.cs" />
+    <Compile Include="Services\Models\SolutionModel.cs" />
     <Compile Include="Services\Models\WorkspaceModel.cs" />
+    <Compile Include="Services\SolutionService.cs" />
     <Compile Include="Services\TeamService.cs" />
     <Compile Include="Services\TFVCService.cs" />
     <Compile Include="TeamMergeNavigationItem.cs" />
@@ -141,6 +144,7 @@
     <EmbeddedResource Include="Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>

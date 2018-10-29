@@ -11,7 +11,7 @@ namespace TeamMerge.Base
     {
         private readonly ILogger _logger;
 
-        public TeamExplorerViewModelBase(ILogger logger)
+        protected TeamExplorerViewModelBase(ILogger logger)
         {
             _logger = logger;
         }

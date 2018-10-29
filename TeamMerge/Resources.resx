@@ -120,6 +120,9 @@
   <data name="AutoSelectAllChangesets" xml:space="preserve">
     <value>Enable auto select all changesets.</value>
   </data>
+  <data name="SaveSelectedBranchPerSolution" xml:space="preserve">
+    <value>Save selected branches per solution: </value>
+  </data>
   <data name="Close" xml:space="preserve">
     <value>Close</value>
   </data>

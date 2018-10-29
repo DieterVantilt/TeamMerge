@@ -1,6 +1,4 @@
-﻿using EnvDTE;
-using Microsoft.TeamFoundation.Client;
-using Microsoft.TeamFoundation.VersionControl.Client;
+﻿using Microsoft.TeamFoundation.VersionControl.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,18 +20,17 @@ namespace TeamMerge.Services
         Task<bool> GetLatestVersion(Workspace workspace, params string[] branchNames);
     }
 
-    public class TFVCService 
+    public class TFVCService
         : ITFVCService
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly ITeamFoundationContext _context;
+        private readonly ISolutionService _solutionService;
         private readonly VersionControlServer _versionControlServer;
 
-        public TFVCService(IServiceProvider serviceProvider)
+        public TFVCService(IServiceProvider serviceProvider, ISolutionService solutionService)
         {
-            _serviceProvider = serviceProvider;
-            _context = VersionControlHelper.GetTeamFoundationContext(_serviceProvider);
-            _versionControlServer = _context.TeamProjectCollection.GetService<VersionControlServer>();
+            _solutionService = solutionService;
+            var context = VersionControlHelper.GetTeamFoundationContext(serviceProvider);
+            _versionControlServer = context.TeamProjectCollection.GetService<VersionControlServer>();
         }
 
         public async Task<IEnumerable<TeamProject>> ListTfsProjects()
@@ -44,7 +41,7 @@ namespace TeamMerge.Services
         public IEnumerable<BranchObject> ListBranches(string projectName)
         {
             var branchObjects = _versionControlServer.QueryRootBranchObjects(RecursionType.Full);
-            
+
             var result = new List<BranchObject>();
             foreach (var branchObject in branchObjects)
             {
@@ -53,7 +50,7 @@ namespace TeamMerge.Services
                 if (!ro.IsDeleted && ro.Item.Replace(@"$/", "").StartsWith(projectName + @"/"))
                 {
                     result.Add(branchObject);
-                }                    
+                }
             }
 
             return result;
@@ -66,7 +63,7 @@ namespace TeamMerge.Services
 
         public async Task<Changeset> GetChangeset(int changesetId)
         {
-            var changeset = await Task.Run(() =>_versionControlServer.GetChangeset(changesetId, false, false));
+            var changeset = await Task.Run(() => _versionControlServer.GetChangeset(changesetId, false, false));
 
             return changeset;
         }
@@ -87,13 +84,11 @@ namespace TeamMerge.Services
         {
             Workspace result = null;
 
-            var dte = (DTE)_serviceProvider.GetService(typeof(DTE));
+            var fullName = _solutionService.GetActiveSolution().FullName;
 
-            var fullName = dte.Solution.FullName;
-
-            if (!string.IsNullOrEmpty(fullName))
+            if (!string.IsNullOrWhiteSpace(fullName))
             {
-                var solutionDir = System.IO.Path.GetDirectoryName(dte.Solution.FullName);
+                var solutionDir = System.IO.Path.GetDirectoryName(fullName);
 
                 result = _versionControlServer.TryGetWorkspace(solutionDir);
             }
@@ -105,6 +100,8 @@ namespace TeamMerge.Services
         {
             return _versionControlServer.GetWorkspace(workspaceName, workspaceOwner);
         }
+
+
 
         public async Task<bool> GetLatestVersion(Workspace workspace, params string[] branchNames)
         {
