@@ -207,11 +207,8 @@ namespace TeamMerge.Merge
                     TargetBranch = SelectedTargetBranch
                 });
 
-
                 SaveDefaultSettings();
                 SaveDefaultSettingsSolutionWide();
-
-                _configHelper.SaveDictionary();
             });
 
             MyCurrentAction = null;
@@ -220,29 +217,12 @@ namespace TeamMerge.Merge
 
         private void SaveDefaultSettingsSolutionWide()
         {
-            var saveSelectedBranchSettingsBySolution = _configHelper.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION);
-            if (saveSelectedBranchSettingsBySolution)
+            _solutionService.SaveDefaultMergeSettingsForCurrentSolution(new DefaultMergeSettings
             {
-                var currentSolution = _solutionService.GetActiveSolution()?.FullName;
-
-                if (!string.IsNullOrWhiteSpace(currentSolution))
-                {
-                    var currentSettings = _configHelper.GetValue<List<DefaultMergeSettings>>(ConfigKeys.SOLUTIONWISE_SELECTEDMERGE_SETTINGS) ?? new List<DefaultMergeSettings>();
-                    var currentSolutionSetting = currentSettings.SingleOrDefault(c => c.Solution == currentSolution);
-                    if (currentSolutionSetting != null)
-                    {
-                        currentSolutionSetting.SourceBranch = SelectedSourceBranch;
-                        currentSolutionSetting.TargetBranch = SelectedTargetBranch;
-                        currentSolutionSetting.ProjectName = SelectedProjectName;
-                    }
-                    else
-                    {
-                        currentSettings.Add(new DefaultMergeSettings(currentSolution, SelectedProjectName, SelectedSourceBranch, SelectedTargetBranch));
-                    }
-
-                    _configHelper.AddValue(ConfigKeys.SOLUTIONWISE_SELECTEDMERGE_SETTINGS, currentSettings);
-                }
-            }
+                ProjectName = _selectedProjectName,
+                SourceBranch = _selectedSourceBranch,
+                TargetBranch = _selectedTargetBranch
+            });
         }
 
         private void SaveDefaultSettings()
@@ -250,6 +230,8 @@ namespace TeamMerge.Merge
             _configHelper.AddValue(ConfigKeys.SELECTED_PROJECT_NAME, SelectedProjectName);
             _configHelper.AddValue(ConfigKeys.SOURCE_BRANCH, SelectedSourceBranch);
             _configHelper.AddValue(ConfigKeys.TARGET_BRANCH, SelectedTargetBranch);
+
+            _configHelper.SaveDictionary();
         }
 
         private void MergeOperation_MyCurrentAction(object sender, string e)

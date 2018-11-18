@@ -71,7 +71,12 @@ namespace TeamMerge.Tests.Merge
             const string selectedSource = "$/TFS/Dev";
             const string selectedTarget = "$/TFS/Main";
 
-            var defaultMergeSetting = new DefaultMergeSettings(solutionName, projectName, selectedSource, selectedTarget);
+            var defaultMergeSetting = new DefaultMergeSettings{
+                Solution = solutionName,
+                ProjectName = projectName,
+                SourceBranch = selectedSource,
+                TargetBranch = selectedTarget
+            };
 
             _teamService.Expect(x => x.GetProjectNames()).Return(Task.FromResult<IEnumerable<string>>(new List<string> { projectName }));
 

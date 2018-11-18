@@ -11,9 +11,11 @@ namespace TeamMerge.Services
     {
         SolutionModel GetActiveSolution();
         DefaultMergeSettings GetDefaultMergeSettingsForCurrentSolution();
+        void SaveDefaultMergeSettingsForCurrentSolution(DefaultMergeSettings defaultMergeSettings);
     }
 
-    public class SolutionService : ISolutionService
+    public class SolutionService 
+        : ISolutionService
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IConfigHelper _configHelper;
@@ -39,7 +41,7 @@ namespace TeamMerge.Services
 
             if (!string.IsNullOrWhiteSpace(solution?.FullName))
             {
-                var defaultMergeSettings = _configHelper.GetValue<List<DefaultMergeSettings>>(ConfigKeys.SOLUTIONWISE_SELECTEDMERGE_SETTINGS) ?? new List<DefaultMergeSettings>();
+                var defaultMergeSettings = _configHelper.GetValue<List<DefaultMergeSettings>>(ConfigKeys.SOLUTIONWIDE_SELECTEDMERGE_SETTINGS) ?? new List<DefaultMergeSettings>();
                 if (defaultMergeSettings.Any())
                 {
                     var currentSolutionInCache = defaultMergeSettings.SingleOrDefault(m => m.Solution == solution.FullName);
@@ -48,10 +50,38 @@ namespace TeamMerge.Services
                         settings = currentSolutionInCache;
                     }
                 }
-
             }
 
             return settings;
+        }
+
+        public void SaveDefaultMergeSettingsForCurrentSolution(DefaultMergeSettings defaultMergeSettings)
+        {
+            var saveSelectedBranchSettingsBySolution = _configHelper.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION);
+            if (saveSelectedBranchSettingsBySolution)
+            {
+                var currentSolutionName = GetActiveSolution()?.FullName;
+                defaultMergeSettings.Solution = currentSolutionName;
+
+                if (!string.IsNullOrWhiteSpace(currentSolutionName))
+                {
+                    var currentSettings = _configHelper.GetValue<List<DefaultMergeSettings>>(ConfigKeys.SOLUTIONWIDE_SELECTEDMERGE_SETTINGS) ?? new List<DefaultMergeSettings>();
+                    var currentSolutionSetting = currentSettings.SingleOrDefault(c => c.Solution == currentSolutionName);
+                    if (currentSolutionSetting != null)
+                    {
+                        currentSolutionSetting.SourceBranch = defaultMergeSettings.SourceBranch;
+                        currentSolutionSetting.TargetBranch = defaultMergeSettings.TargetBranch;
+                        currentSolutionSetting.ProjectName = defaultMergeSettings.ProjectName;
+                    }
+                    else
+                    {
+                        currentSettings.Add(defaultMergeSettings);
+                    }
+
+                    _configHelper.AddValue(ConfigKeys.SOLUTIONWIDE_SELECTEDMERGE_SETTINGS, currentSettings);
+                    _configHelper.SaveDictionary();
+                }
+            }
         }
     }
 }

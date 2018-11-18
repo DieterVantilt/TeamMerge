@@ -47,13 +47,12 @@ namespace TeamMerge.Instellingen.Models
             set { _shouldResolveConflicts = value; RaisePropertyChanged(nameof(ShouldResolveConflicts)); }
         }
 
+        private bool _saveSelectedBranchPerSolution;
+
         public bool SaveSelectedBranchPerSolution
         {
             get { return _saveSelectedBranchPerSolution; }
             set { _saveSelectedBranchPerSolution = value; RaisePropertyChanged(nameof(SaveSelectedBranchPerSolution)); }
         }
-
-
-        private bool _saveSelectedBranchPerSolution;
     }
 }

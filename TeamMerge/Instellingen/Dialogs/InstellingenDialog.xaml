@@ -15,70 +15,66 @@
         d:DataContext="{d:DesignInstance dialogs:InstellingenDialogViewModel}"
         Title="{x:Static resource:Resources.TeamMergeSettings}">
 
-  <Window.Resources>
-    <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="Enumvalues">
-      <ObjectDataProvider.MethodParameters>
-        <x:Type TypeName="enums:Branch" />
-      </ObjectDataProvider.MethodParameters>
-    </ObjectDataProvider>
+    <Window.Resources>
+        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="Enumvalues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="enums:Branch" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
 
-    <converters:EnumConverters x:Key="EnumConverter" />
-    <converters:MultiConverter x:Key="IsNotEqualToConverter">
-      <converters:IsEqualConverter />
-      <converters:InvertedBooleanConverter />
-    </converters:MultiConverter>
-  </Window.Resources>
+        <converters:EnumConverters x:Key="EnumConverter" />
+        <converters:MultiConverter x:Key="IsNotEqualToConverter">
+            <converters:IsEqualConverter />
+            <converters:InvertedBooleanConverter />
+        </converters:MultiConverter>
+    </Window.Resources>
 
-  <StackPanel Margin="20">
-    <CheckBox Margin="0 0 0 10"
-              Content="{x:Static resource:Resources.WarningPendingChanges}"
-              IsChecked="{Binding Model.EnablePendingChangesWarning, UpdateSourceTrigger=PropertyChanged}"/>
+    <StackPanel Margin="20">
+        <CheckBox Margin="0 0 0 10"
+                  Content="{x:Static resource:Resources.WarningPendingChanges}"
+                  IsChecked="{Binding Model.EnablePendingChangesWarning, UpdateSourceTrigger=PropertyChanged}"/>
 
-    <CheckBox Margin="0 0 0 10"
-              Content="{x:Static resource:Resources.AutoSelectAllChangesets}"
-              IsChecked="{Binding Model.EnableAutoSelectAllChangesets, UpdateSourceTrigger=PropertyChanged}"/>
+        <CheckBox Margin="0 0 0 10"
+                  Content="{x:Static resource:Resources.AutoSelectAllChangesets}"
+                  IsChecked="{Binding Model.EnableAutoSelectAllChangesets, UpdateSourceTrigger=PropertyChanged}"/>
 
-    <StackPanel Orientation="Horizontal">
-      <Label Content="{x:Static resource:Resources.LatestVersionBranch}" />
+        <StackPanel Orientation="Horizontal">
+            <Label Content="{x:Static resource:Resources.LatestVersionBranch}" />
 
-      <ComboBox Width="150" Margin="15 0 20 0"
-            SelectedItem="{Binding Model.LatestVersionBranch, UpdateSourceTrigger=PropertyChanged}"
-            ItemsSource="{Binding Source={StaticResource Enumvalues}}">
-        <ComboBox.ItemTemplate>
-          <DataTemplate>
-            <TextBlock Text="{Binding Path=., Converter={StaticResource EnumConverter}}" />
-          </DataTemplate>
-        </ComboBox.ItemTemplate>
-      </ComboBox>
+            <ComboBox Width="150" Margin="15 0 20 0"
+                      SelectedItem="{Binding Model.LatestVersionBranch, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding Source={StaticResource Enumvalues}}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Path=., Converter={StaticResource EnumConverter}}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+
+        <CheckBox Margin="50 0 0 10"
+                  IsEnabled="{Binding Model.LatestVersionBranch, Converter={StaticResource IsNotEqualToConverter}, ConverterParameter={x:Static enums:Branch.None}}"
+                  Content="{x:Static resource:Resources.ShouldResolveConflicts}"
+                  IsChecked="{Binding Model.ShouldResolveConflicts}" />
+
+        <CheckBox Margin="0 0 0 10"
+                  Content="{x:Static resource:Resources.SaveSelectedBranchPerSolution}"
+                  IsChecked="{Binding Model.SaveSelectedBranchPerSolution, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+        <Grid Margin="10 25 10 10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Button Margin="0 0 10 0" IsEnabled="{Binding IsDirty}"
+                    Content="{x:Static resource:Resources.Save}"
+                    Command="{Binding SaveCommand}"/>
+
+            <Button Margin="0 0 10 0" Grid.Column="1"
+                    Content="{x:Static resource:Resources.Close}"
+                    Command="{Binding CloseCommand}"/>
+        </Grid>
     </StackPanel>
-
-    <CheckBox Margin="50 0 0 10"
-              IsEnabled="{Binding Model.LatestVersionBranch, Converter={StaticResource IsNotEqualToConverter}, ConverterParameter={x:Static enums:Branch.None}}"
-              Content="{x:Static resource:Resources.ShouldResolveConflicts}"
-              IsChecked="{Binding Model.ShouldResolveConflicts}" />
-
-    <CheckBox Margin="50 0 0 10"
-              Content="{x:Static resource:Resources.AutoSelectAllChangesets}"
-              IsChecked="{Binding Model.EnableAutoSelectAllChangesets}" />
-
-    <CheckBox Margin="0 0 0 10"
-              Content="{x:Static resource:Resources.SaveSelectedBranchPerSolution}"
-              IsChecked="{Binding Model.SaveSelectedBranchPerSolution, UpdateSourceTrigger=PropertyChanged}"/>
-
-
-    <Grid Margin="10 25 10 10">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition />
-        <ColumnDefinition />
-      </Grid.ColumnDefinitions>
-
-      <Button Margin="0 0 10 0" IsEnabled="{Binding IsDirty}"
-          Content="{x:Static resource:Resources.Save}"
-          Command="{Binding SaveCommand}"/>
-
-      <Button Margin="0 0 10 0" Grid.Column="1"
-              Content="{x:Static resource:Resources.Close}"
-              Command="{Binding CloseCommand}"/>
-    </Grid>
-  </StackPanel>
 </Window>
