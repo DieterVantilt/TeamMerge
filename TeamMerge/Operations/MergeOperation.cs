@@ -40,7 +40,9 @@ namespace TeamMerge.Operations
 
             SetCurrentAction(Resources.MergingBranches);
             await _mergeService.MergeBranches(mergeModel.WorkspaceModel, mergeModel.SourceBranch, mergeModel.TargetBranch, mergeModel.OrderedChangesetIds.First(), mergeModel.OrderedChangesetIds.Last());
-            await _mergeService.AddWorkItemsAndNavigate(mergeModel.WorkspaceModel, mergeModel.OrderedChangesetIds);
+
+            var workItemIds = await _mergeService.GetWorkItemIds(mergeModel.OrderedChangesetIds, _configHelper.GetValue<IEnumerable<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE));
+             _mergeService.AddWorkItemsAndNavigate(mergeModel.WorkspaceModel, workItemIds);
         }
 
         private async Task CheckIfWorkspaceHasIncludedPendingChangesAsync(WorkspaceModel workspaceModel)

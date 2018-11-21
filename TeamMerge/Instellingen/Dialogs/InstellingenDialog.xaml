@@ -3,17 +3,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:enums="clr-namespace:TeamMerge.Instellingen.Enums"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:resource="clr-namespace:TeamMerge"
         xmlns:converters="clr-namespace:TeamMerge.Converters"
         xmlns:dialogs="clr-namespace:TeamMerge.Instellingen.Dialogs"
+        xmlns:behaviors="clr-namespace:TeamMerge.Behaviors"
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         d:DataContext="{d:DesignInstance dialogs:InstellingenDialogViewModel}"
-        Title="{x:Static resource:Resources.TeamMergeSettings}">
+        Title="{x:Static resource:Resources.TeamMergeSettings}"
+        x:Name="InstellingenView">
 
     <Window.Resources>
         <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="Enumvalues">
@@ -27,6 +30,8 @@
             <converters:IsEqualConverter />
             <converters:InvertedBooleanConverter />
         </converters:MultiConverter>
+
+        <Image x:Key="AddImage"  Source="/TeamMerge;component/Resources/AddIcon.png"/>
     </Window.Resources>
 
     <StackPanel Margin="20">
@@ -61,6 +66,46 @@
                   Content="{x:Static resource:Resources.SaveSelectedBranchPerSolution}"
                   IsChecked="{Binding Model.SaveSelectedBranchPerSolution, UpdateSourceTrigger=PropertyChanged}"/>
 
+        <Separator />
+
+        <Label Content="{x:Static resource:Resources.WorkItemTypesToExclude}" />
+
+        <Grid Height="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="22" />
+            </Grid.ColumnDefinitions>
+            
+            <ComboBox IsEditable="True"
+                      Text="{Binding SelectedWorkItemType}"
+                      ItemsSource="{Binding WorkItemTypes}">
+                <i:Interaction.Behaviors>
+                    <behaviors:EventToCommandBehavior Command="{Binding AddWorkItemTypeToExcludeCommand}" Event="KeyUp" PassArguments="True" />
+                </i:Interaction.Behaviors>
+            </ComboBox>
+            <Button Margin="2 0 0 0" Grid.Column="1" Command="{Binding AddWorkItemTypeToExcludeCommand}" Content="{StaticResource AddImage}" />
+        </Grid>        
+
+        <ItemsControl Margin="0 2 0 2" ItemsSource="{Binding Model.WorkItemTypesToExclude}" HorizontalContentAlignment="Stretch" >
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid Height="20" Margin="0 2 0 2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="20" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="{Binding }" />
+                        <Button Grid.Column="1" Command="{Binding DataContext.RemoveWorkItemTypeCommand, ElementName=InstellingenView}" 
+                                CommandParameter="{Binding }"  >
+                            <Button.Content>
+                                <Image Source="/TeamMerge;component/Resources/DeleteIcon.png" />
+                            </Button.Content>
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
         <Grid Margin="10 25 10 10">
             <Grid.ColumnDefinitions>
@@ -73,6 +118,7 @@
                     Command="{Binding SaveCommand}"/>
 
             <Button Margin="0 0 10 0" Grid.Column="1"
+                    IsCancel="True"
                     Content="{x:Static resource:Resources.Close}"
                     Command="{Binding CloseCommand}"/>
         </Grid>

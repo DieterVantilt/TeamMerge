@@ -1,4 +1,6 @@
-﻿using Microsoft.TeamFoundation.VersionControl.Client;
+﻿using Microsoft.TeamFoundation.Client;
+using Microsoft.TeamFoundation.VersionControl.Client;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,7 @@ namespace TeamMerge.Services
         Workspace CurrentWorkspace();
         Workspace GetWorkspace(string workspaceName, string workspaceOwner);
         Task<bool> GetLatestVersion(Workspace workspace, params string[] branchNames);
+        IEnumerable<string> GetAllWorkItemTypes();
     }
 
     public class TFVCService
@@ -101,8 +104,6 @@ namespace TeamMerge.Services
             return _versionControlServer.GetWorkspace(workspaceName, workspaceOwner);
         }
 
-
-
         public async Task<bool> GetLatestVersion(Workspace workspace, params string[] branchNames)
         {
             var getRequests = branchNames.Select(x => new GetRequest(x, RecursionType.Full, VersionSpec.Latest));
@@ -110,6 +111,18 @@ namespace TeamMerge.Services
             var getStatusResult = await Task.Run(() => workspace.Get(getRequests.ToArray(), GetOptions.None));
 
             return getStatusResult.NumConflicts > 0;
+        }
+
+        public IEnumerable<string> GetAllWorkItemTypes()
+        {
+            var wis = _versionControlServer.TeamProjectCollection.GetService<WorkItemStore>();
+
+            return wis.Projects.Cast<Project>()
+                .SelectMany(x => x.WorkItemTypes.Cast<WorkItemType>())
+                .Select(x => x.Name)
+                .Distinct()
+                .OrderBy(x => x)
+                .ToList();
         }
     }
 }

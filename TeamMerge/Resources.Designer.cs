@@ -187,7 +187,7 @@ namespace TeamMerge {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save selected branches per solution: .
+        ///   Looks up a localized string similar to Save selected branches per solution.
         /// </summary>
         public static string SaveSelectedBranchPerSolution {
             get {
@@ -291,6 +291,15 @@ namespace TeamMerge {
         public static string WarningPendingChanges {
             get {
                 return ResourceManager.GetString("WarningPendingChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Work item types to exclude:.
+        /// </summary>
+        public static string WorkItemTypesToExclude {
+            get {
+                return ResourceManager.GetString("WorkItemTypesToExclude", resourceCulture);
             }
         }
         

@@ -354,7 +354,7 @@ namespace TeamMerge.Merge
 
         public void OpenSettings()
         {
-            var viewModel = new InstellingenDialogViewModel(_configHelper);
+            var viewModel = new InstellingenDialogViewModel(_configHelper, _teamService);
             viewModel.Initialize();
 
             var window = new InstellingenDialog

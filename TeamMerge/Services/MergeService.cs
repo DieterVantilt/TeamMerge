@@ -18,7 +18,8 @@ namespace TeamMerge.Services
         Task<bool> GetLatestVersion(WorkspaceModel workspaceModel, params string[] branchNames);
         Task ResolveConflicts(WorkspaceModel workspaceModel);
         Task MergeBranches(WorkspaceModel workspaceModel, string source, string target, int from, int to);
-        Task AddWorkItemsAndNavigate(WorkspaceModel workspaceModel, IEnumerable<int> changesetIds);        
+        Task<IEnumerable<int>> GetWorkItemIds(IEnumerable<int> changesetIds, IEnumerable<string> workItemTypesToExclude);
+        void AddWorkItemsAndNavigate(WorkspaceModel workspaceModel, IEnumerable<int> workItemIds);        
     }
 
     public class MergeService 
@@ -81,19 +82,36 @@ namespace TeamMerge.Services
             await _tfvcService.Merge(workspace, source, target, from, to);
         }
 
-        public async Task AddWorkItemsAndNavigate(WorkspaceModel workspaceModel, IEnumerable<int> changesetIds)
+        public async Task<IEnumerable<int>> GetWorkItemIds(IEnumerable<int> changesetIds, IEnumerable<string> workItemTypesToExclude)
         {
-            var workspace = _tfvcService.GetWorkspace(workspaceModel.Name, workspaceModel.OwnerName);
             var workItemIds = new ConcurrentBag<int>();
 
             var tasks = new List<Task>();
 
-            foreach(var changesetId in changesetIds)
+            foreach (var changesetId in changesetIds)
             {
-                tasks.Add(GetAssociatedWorkItemIds(changesetId, workItemIds));
+                tasks.Add(GetAssociatedWorkItemIds(changesetId, workItemIds, workItemTypesToExclude));
             }
 
             await Task.WhenAll(tasks.ToArray());
+
+            return workItemIds.ToList();
+        }
+
+        private async Task GetAssociatedWorkItemIds(int changesetId, ConcurrentBag<int> concurrentbag, IEnumerable<string> workItemTypesToExclude)
+        {
+            var changeset = await _tfvcService.GetChangeset(changesetId);
+
+            var associatedWorkItemIds = changeset.AssociatedWorkItems?
+                .Where(x => !workItemTypesToExclude.Contains(x.WorkItemType))
+                .Select(x => x.Id) ?? new List<int>();
+
+            associatedWorkItemIds.ToList().ForEach(x => concurrentbag.Add(x));
+        }
+
+        public void AddWorkItemsAndNavigate(WorkspaceModel workspaceModel, IEnumerable<int> workItemIds)
+        {
+            var workspace = _tfvcService.GetWorkspace(workspaceModel.Name, workspaceModel.OwnerName);
 
             var pendingChangePage = (TeamExplorerPageBase)_teamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.PendingChanges), null);
             var pendingChangeModel = (IPendingCheckin) pendingChangePage.Model;
@@ -105,15 +123,6 @@ namespace TeamMerge.Services
 
             var method = modelType.GetMethod("AddWorkItemsByIdAsync", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
             method.Invoke(pendingChangeModel, new object[] { workItemIds.ToArray(), 1 });
-        }
-
-        private async Task GetAssociatedWorkItemIds(int changesetId, ConcurrentBag<int> concurrentbag)
-        {
-            var changeset = await _tfvcService.GetChangeset(changesetId);
-
-            var associatedWorkItemIds = changeset.AssociatedWorkItems?.Select(x => x.Id) ?? new List<int>();
-
-            associatedWorkItemIds.ToList().ForEach(x => concurrentbag.Add(x));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using TeamMerge.Base;
+﻿using System.Collections.ObjectModel;
+using TeamMerge.Base;
 using TeamMerge.Instellingen.Enums;
 
 namespace TeamMerge.Instellingen.Models
@@ -6,6 +7,11 @@ namespace TeamMerge.Instellingen.Models
     public class InstellingenModel
         : ModelBase
     {
+        public InstellingenModel()
+        {
+            WorkItemTypesToExclude = new ObservableCollection<string>();
+        }
+
         private bool _enablePendingChangesWarning;
 
         public bool EnablePendingChangesWarning
@@ -53,6 +59,11 @@ namespace TeamMerge.Instellingen.Models
         {
             get { return _saveSelectedBranchPerSolution; }
             set { _saveSelectedBranchPerSolution = value; RaisePropertyChanged(nameof(SaveSelectedBranchPerSolution)); }
+        }
+
+        public ObservableCollection<string> WorkItemTypesToExclude
+        {
+            get; set;
         }
     }
 }

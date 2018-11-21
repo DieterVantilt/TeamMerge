@@ -13,6 +13,7 @@ namespace TeamMerge.Services
         Task<IEnumerable<string>> GetProjectNames();
         Task<IEnumerable<WorkspaceModel>> AllWorkspaces();
         WorkspaceModel CurrentWorkspace();
+        IEnumerable<string> GetAllWorkItemTypes();
     }
 
     public class TeamService
@@ -86,6 +87,11 @@ namespace TeamMerge.Services
             var currentWorkspace = _tfvcService.CurrentWorkspace();
 
             return currentWorkspace == null ? null : new WorkspaceModel { Name = currentWorkspace.Name, OwnerName = currentWorkspace.OwnerName };
+        }
+
+        public IEnumerable<string> GetAllWorkItemTypes()
+        {
+            return _tfvcService.GetAllWorkItemTypes();
         }
     }
 }

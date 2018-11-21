@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Base\ModelBase.cs" />
     <Compile Include="Base\TeamExplorerViewModelBase.cs" />
+    <Compile Include="Behaviors\EventToCommandBehavior.cs" />
     <Compile Include="Commands\AsyncRelayCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Converters\EnumConverters.cs" />
@@ -130,7 +131,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Resource Include="Resources\AddIcon.png" />
     <Content Include="Resources\Command1Package.ico" />
+    <Resource Include="Resources\DeleteIcon.png" />
     <Content Include="Resources\TeamMerge.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -190,6 +193,9 @@
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.VersionControl.Common">
       <HintPath>..\Lib\15.0\Microsoft.TeamFoundation.VersionControl.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Client">
+      <HintPath>..\Lib\15.0\Microsoft.TeamFoundation.WorkItemTracking.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.15.0, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <EmbedInteropTypes>False</EmbedInteropTypes>

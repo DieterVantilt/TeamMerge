@@ -17,5 +17,6 @@ namespace TeamMerge.Utils
         public static readonly string SHOULD_RESOLVE_CONFLICTS = "ShouldResolveConflicts";
         public static readonly string SAVE_BRANCH_PERSOLUTION = "SaveSelectedBranchPerSolution";
         public static readonly string SOLUTIONWIDE_SELECTEDMERGE_SETTINGS = "SolutionWideSelectedMergeSettings";
+        public static readonly string WORK_ITEM_TYPES_TO_EXCLUDE = "WorkItemTypesToExclude";
     }
 }

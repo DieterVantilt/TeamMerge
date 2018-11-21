@@ -121,7 +121,7 @@
     <value>Enable auto select all changesets.</value>
   </data>
   <data name="SaveSelectedBranchPerSolution" xml:space="preserve">
-    <value>Save selected branches per solution: </value>
+    <value>Save selected branches per solution</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>Close</value>
@@ -197,5 +197,8 @@
   </data>
   <data name="MergingBranches" xml:space="preserve">
     <value>Merging branches</value>
+  </data>
+  <data name="WorkItemTypesToExclude" xml:space="preserve">
+    <value>Work item types to exclude:</value>
   </data>
 </root>

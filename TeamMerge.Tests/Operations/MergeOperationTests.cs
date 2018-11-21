@@ -161,8 +161,16 @@ namespace TeamMerge.Tests.Operations
                 Assert.AreEqual(Resources.MergingBranches, action);
             };
 
+            var excludedWorkItemTypes = new List<string> { "Code Review Request" };
+
+            _configHelper.Expect(x => x.GetValue<IEnumerable<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE))
+                .Return(excludedWorkItemTypes);
+
+            var workItemsToAdd = new List<int> { 5, 75, 85 };
+
             _mergeService.Expect(x => x.MergeBranches(_currentWorkspaceModel, _sourceBranchName, _targetbranchName, 2, 8)).Return(Task.CompletedTask);
-            _mergeService.Expect(x => x.AddWorkItemsAndNavigate(_currentWorkspaceModel, orderedChangesetIds)).Return(Task.CompletedTask);
+            _mergeService.Expect(x => x.GetWorkItemIds(orderedChangesetIds, excludedWorkItemTypes)).Return(Task.FromResult<IEnumerable<int>>(workItemsToAdd));
+            _mergeService.Expect(x => x.AddWorkItemsAndNavigate(_currentWorkspaceModel, workItemsToAdd));
 
             await _sut.Execute(new MergeModel
             {
