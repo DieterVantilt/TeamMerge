@@ -1,6 +1,5 @@
 ﻿using Microsoft.TeamFoundation.MVVM;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,23 +7,23 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using TeamMerge.Commands;
-using TeamMerge.Instellingen.Enums;
-using TeamMerge.Instellingen.Models;
 using TeamMerge.Services;
+using TeamMerge.Settings.Enums;
+using TeamMerge.Settings.Models;
 using TeamMerge.Utils;
 using RelayCommand = TeamMerge.Commands.RelayCommand;
 
-namespace TeamMerge.Instellingen.Dialogs
+namespace TeamMerge.Settings.Dialogs
 {
-    public class InstellingenDialogViewModel
+    public class SettingsDialogViewModel
         : ViewModelBase
     {
-        private readonly IConfigHelper _configHelper;
+        private readonly IConfigManager _configManager;
         private readonly ITeamService _teamService;
 
-        public InstellingenDialogViewModel(IConfigHelper configHelper, ITeamService teamService)
+        public SettingsDialogViewModel(IConfigManager configManager, ITeamService teamService)
         {
-            _configHelper = configHelper;
+            _configManager = configManager;
             _teamService = teamService;
 
             SaveCommand = new RelayCommand(Save);
@@ -54,9 +53,9 @@ namespace TeamMerge.Instellingen.Dialogs
             set { _selectedWorkItemType = value; RaisePropertyChanged(nameof(SelectedWorkItemType)); }
         }
 
-        private InstellingenModel _model;
+        private SettingsModel _model;
 
-        public InstellingenModel Model
+        public SettingsModel Model
         {
             get { return _model; }
             set { _model = value; RaisePropertyChanged(nameof(Model)); }
@@ -96,14 +95,14 @@ namespace TeamMerge.Instellingen.Dialogs
         {
             WorkItemTypes = _teamService.GetAllWorkItemTypes();
 
-            Model = new InstellingenModel
+            Model = new SettingsModel
             {
-                EnablePendingChangesWarning = _configHelper.GetValue<bool>(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES),
-                EnableAutoSelectAllChangesets = _configHelper.GetValue<bool>(ConfigKeys.ENABLE_AUTO_SELECT_ALL_CHANGESETS),
-                LatestVersionBranch = (Branch)_configHelper.GetValue<int>(ConfigKeys.LATEST_VERSION_FOR_BRANCH),
-                ShouldResolveConflicts = _configHelper.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS),
-                SaveSelectedBranchPerSolution = _configHelper.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION),
-                WorkItemTypesToExclude = new ObservableCollection<string>(_configHelper.GetValue<ObservableCollection<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE) ?? Enumerable.Empty<string>()) 
+                EnablePendingChangesWarning = _configManager.GetValue<bool>(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES),
+                EnableAutoSelectAllChangesets = _configManager.GetValue<bool>(ConfigKeys.ENABLE_AUTO_SELECT_ALL_CHANGESETS),
+                LatestVersionBranch = _configManager.GetValue<Branch>(ConfigKeys.LATEST_VERSION_FOR_BRANCH),
+                ShouldResolveConflicts = _configManager.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS),
+                SaveSelectedBranchPerSolution = _configManager.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION),
+                WorkItemTypesToExclude = new ObservableCollection<string>(_configManager.GetValue<ObservableCollection<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE) ?? Enumerable.Empty<string>()) 
             };
 
             IsDirty = false;
@@ -113,14 +112,14 @@ namespace TeamMerge.Instellingen.Dialogs
 
         public void Save()
         {
-            _configHelper.AddValue(ConfigKeys.ENABLE_AUTO_SELECT_ALL_CHANGESETS, Model.EnableAutoSelectAllChangesets);
-            _configHelper.AddValue(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES, Model.EnablePendingChangesWarning);
-            _configHelper.AddValue(ConfigKeys.LATEST_VERSION_FOR_BRANCH, Model.LatestVersionBranch);
-            _configHelper.AddValue(ConfigKeys.SHOULD_RESOLVE_CONFLICTS, Model.ShouldResolveConflicts);
-            _configHelper.AddValue(ConfigKeys.SAVE_BRANCH_PERSOLUTION, Model.SaveSelectedBranchPerSolution);
-            _configHelper.AddValue(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE, Model.WorkItemTypesToExclude);
+            _configManager.AddValue(ConfigKeys.ENABLE_AUTO_SELECT_ALL_CHANGESETS, Model.EnableAutoSelectAllChangesets);
+            _configManager.AddValue(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES, Model.EnablePendingChangesWarning);
+            _configManager.AddValue(ConfigKeys.LATEST_VERSION_FOR_BRANCH, Model.LatestVersionBranch);
+            _configManager.AddValue(ConfigKeys.SHOULD_RESOLVE_CONFLICTS, Model.ShouldResolveConflicts);
+            _configManager.AddValue(ConfigKeys.SAVE_BRANCH_PERSOLUTION, Model.SaveSelectedBranchPerSolution);
+            _configManager.AddValue(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE, Model.WorkItemTypesToExclude);
 
-            _configHelper.SaveDictionary();
+            _configManager.SaveDictionary();
 
             IsDirty = false;
         }

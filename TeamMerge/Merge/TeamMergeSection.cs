@@ -16,7 +16,7 @@ namespace TeamMerge.Merge
         protected override ITeamExplorerSection CreateViewModel(SectionInitializeEventArgs e)
         {
             var logger = new Logger();
-            var configHelper = new ConfigHelper();
+            var configHelper = new ConfigManager(new ConfigFileHelper());
 
             var solutionService = new SolutionService(ServiceProvider, configHelper);
             var tfvcService = new TFVCService(ServiceProvider, solutionService);

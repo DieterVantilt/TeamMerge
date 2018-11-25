@@ -1,43 +1,58 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace TeamMerge.Utils
 {
-    public static class ConfigManager
+    public interface IConfigManager
     {
-        private const string VS_TEAM_MERGE = "Visual Studio Team Merge";
-        private static readonly string ConfigName = "teammerge.conf";
+        T GetValue<T>(string key);
+        void AddValue<T>(string key, T value);
+        void SaveDictionary();
+    }
 
-        private static IDictionary<string, object> _currentDictionary;
+    public class ConfigManager
+        : IConfigManager
+    {
+        private readonly IConfigFileHelper _configFileHelper;
 
-        public static T GetValue<T>(string key)
+        private IDictionary<string, object> _currentDictionary;
+
+        public ConfigManager(IConfigFileHelper configFileHelper)
+        {
+            _configFileHelper = configFileHelper;
+        }
+
+        public T GetValue<T>(string key)
         {
             var dictionary = GetDictionary();
             var result = default(T);
 
             if (dictionary.TryGetValue(key, out var value))
-            {
-                //If value is given type, cast it and return it
-                if (value is T castedValue)
+            {                
+                if (value is T outValue)
                 {
-                    result = castedValue;
+                    result = outValue;
+                }
+                else if (value is JArray jsonArray) //If value is a JArray, we can safely assume it is a collection. To get the actual .NET Collection, we need to do ToObject
+                {
+                    result = jsonArray.ToObject<T>();
+                }
+                else if (typeof(T).IsEnum)
+                {
+                    result = (T)Convert.ChangeType(value, TypeCode.Int32);
                 }
                 else
                 {
-                    //If value is a JArray, we can safely assume it is a collection. To get the actual .NET Collection, we need to do ToObject
-                    if (value is JArray jsonArray)
-                    {
-                        result = jsonArray.ToObject<T>();
-                    }
+                    //If this exception happened make sur you modify the configmanagertest for extra tests after you solved it.
+                    throw new NotImplementedException("Can't convert the value to a type of " + typeof(T));
                 }
             }
 
             return result;
         }
 
-        public static void AddValue<T>(string key, T value)
+        public void AddValue<T>(string key, T value)
         {
             var dictionary = GetDictionary();
 
@@ -49,30 +64,22 @@ namespace TeamMerge.Utils
             dictionary.Add(key, value);
         }
 
-        public static void SaveDictionary()
+        public void SaveDictionary()
         {
             if (_currentDictionary != null)
             {
-                File.WriteAllText(GetSettingFilePath(), JsonConvert.SerializeObject(_currentDictionary));
+                _configFileHelper.SaveDictionary(_currentDictionary);
             }
         }
 
-        private static IDictionary<string, object> GetDictionary()
+        private IDictionary<string, object> GetDictionary()
         {
             if (_currentDictionary == null)
             {
-                var filePath = GetSettingFilePath();
-                var file = File.ReadAllText(filePath);
-
-                _currentDictionary = string.IsNullOrWhiteSpace(file) ? new Dictionary<string, object>() : JsonConvert.DeserializeObject<IDictionary<string, object>>(file);
+                _currentDictionary = _configFileHelper.GetDictionary();
             }
 
             return _currentDictionary;
         }
-
-        private static string GetSettingFilePath()
-        {
-            return FileHelper.CreateFileAndReturnPath(ConfigName, VS_TEAM_MERGE);
-        }
-    }
+    }    
 }

@@ -1,16 +1,13 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TeamMerge.Exceptions;
 using TeamMerge.Helpers;
-using TeamMerge.Instellingen.Enums;
 using TeamMerge.Operations;
 using TeamMerge.Services;
 using TeamMerge.Services.Models;
+using TeamMerge.Settings.Enums;
 using TeamMerge.Utils;
 
 namespace TeamMerge.Tests.Operations
@@ -24,7 +21,7 @@ namespace TeamMerge.Tests.Operations
         private MergeOperation _sut;
 
         private IMergeService _mergeService;
-        private IConfigHelper _configHelper;
+        private IConfigManager _configManager;
 
         private WorkspaceModel _currentWorkspaceModel;
         private string _sourceBranchName;
@@ -34,9 +31,9 @@ namespace TeamMerge.Tests.Operations
         public void Initialize()
         {
             _mergeService = MockRepository.GenerateStrictMock<IMergeService>();
-            _configHelper = MockRepository.GenerateStrictMock<IConfigHelper>();
+            _configManager = MockRepository.GenerateStrictMock<IConfigManager>();
 
-            _sut = new MergeOperation(_mergeService, _configHelper);
+            _sut = new MergeOperation(_mergeService, _configManager);
 
             _currentWorkspaceModel = new WorkspaceModel
             {
@@ -52,7 +49,7 @@ namespace TeamMerge.Tests.Operations
         [ExpectedException(typeof(MergeActionException))]
         public async Task MergeOperation_CheckIfWorkspaceHasIncludedPendingChangesAsync_WhenCalledWithPendingChangesInWorkspace_ThenThrowsException()
         {
-            _configHelper.Expect(x => x.GetValue<bool>(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES))
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES))
                 .Return(true);
 
             _mergeService.Expect(x => x.HasIncludedPendingChanges(_currentWorkspaceModel))
@@ -75,13 +72,13 @@ namespace TeamMerge.Tests.Operations
         {
             ChecksIfMyCurrentActionIsCorrectlySet(Branch.Source);
 
-            _configHelper.Expect(x => x.GetValue<int>(ConfigKeys.LATEST_VERSION_FOR_BRANCH))
-                .Return((int) Branch.Source);
+            _configManager.Expect(x => x.GetValue<Branch>(ConfigKeys.LATEST_VERSION_FOR_BRANCH))
+                .Return(Branch.Source);
 
             _mergeService.Expect(x => x.GetLatestVersion(_currentWorkspaceModel, _sourceBranchName))
                 .Return(Task.FromResult(true));
 
-            _configHelper.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS))
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS))
                 .Return(false);
 
             var obj = new PrivateObject(_sut);
@@ -94,13 +91,13 @@ namespace TeamMerge.Tests.Operations
         {
             ChecksIfMyCurrentActionIsCorrectlySet(Branch.Target);
 
-            _configHelper.Expect(x => x.GetValue<int>(ConfigKeys.LATEST_VERSION_FOR_BRANCH))
-                .Return((int)Branch.Target);
+            _configManager.Expect(x => x.GetValue<Branch>(ConfigKeys.LATEST_VERSION_FOR_BRANCH))
+                .Return(Branch.Target);
 
             _mergeService.Expect(x => x.GetLatestVersion(_currentWorkspaceModel, _targetbranchName))
                 .Return(Task.FromResult(true));
 
-            _configHelper.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS))
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS))
                 .Return(true);
 
             _mergeService.Expect(x => x.ResolveConflicts(_currentWorkspaceModel))
@@ -118,13 +115,13 @@ namespace TeamMerge.Tests.Operations
         {
             ChecksIfMyCurrentActionIsCorrectlySet(Branch.SourceAndTarget);
 
-            _configHelper.Expect(x => x.GetValue<int>(ConfigKeys.LATEST_VERSION_FOR_BRANCH))
-                .Return((int)Branch.SourceAndTarget);
+            _configManager.Expect(x => x.GetValue<Branch>(ConfigKeys.LATEST_VERSION_FOR_BRANCH))
+                .Return(Branch.SourceAndTarget);
 
             _mergeService.Expect(x => x.GetLatestVersion(_currentWorkspaceModel, _targetbranchName, _sourceBranchName))
                 .Return(Task.FromResult(true));
 
-            _configHelper.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS))
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS))
                 .Return(true);
 
             _mergeService.Expect(x => x.ResolveConflicts(_currentWorkspaceModel))
@@ -150,11 +147,11 @@ namespace TeamMerge.Tests.Operations
         {
             var orderedChangesetIds = new List<int> { 2, 5, 7, 8 };
 
-            _configHelper.Expect(x => x.GetValue<bool>(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES))
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES))
                 .Return(false);
 
-            _configHelper.Expect(x => x.GetValue<int>(ConfigKeys.LATEST_VERSION_FOR_BRANCH))
-                .Return((int)Branch.None);
+            _configManager.Expect(x => x.GetValue<Branch>(ConfigKeys.LATEST_VERSION_FOR_BRANCH))
+                .Return(Branch.None);
 
             _sut.MyCurrentAction += (s, action) =>
             {
@@ -163,7 +160,7 @@ namespace TeamMerge.Tests.Operations
 
             var excludedWorkItemTypes = new List<string> { "Code Review Request" };
 
-            _configHelper.Expect(x => x.GetValue<IEnumerable<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE))
+            _configManager.Expect(x => x.GetValue<IEnumerable<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE))
                 .Return(excludedWorkItemTypes);
 
             var workItemsToAdd = new List<int> { 5, 75, 85 };
@@ -185,7 +182,7 @@ namespace TeamMerge.Tests.Operations
         public void CleanUp()
         {
             _mergeService.VerifyAllExpectations();
-            _configHelper.VerifyAllExpectations();
+            _configManager.VerifyAllExpectations();
         }
     }
 }

@@ -1,13 +1,13 @@
 ﻿using System.Collections.ObjectModel;
 using TeamMerge.Base;
-using TeamMerge.Instellingen.Enums;
+using TeamMerge.Settings.Enums;
 
-namespace TeamMerge.Instellingen.Models
+namespace TeamMerge.Settings.Models
 {
-    public class InstellingenModel
+    public class SettingsModel
         : ModelBase
     {
-        public InstellingenModel()
+        public SettingsModel()
         {
             WorkItemTypesToExclude = new ObservableCollection<string>();
         }

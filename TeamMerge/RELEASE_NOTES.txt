@@ -11,3 +11,6 @@ First release version:
 - Ability to save last merge selections per solution (thanks Maikel Tielens for this implementation https://github.com/maikelt)
 - Settings screen: Solved issue where sometimes the settings screen wouldn't save
 - You can now exclude work item types from associated work items of the merging changesets
+
+25/11/2018 (1.1.1)
+- Fixed issue where settings would not select the saved branch to do get latest on before merging

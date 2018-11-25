@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using TeamMerge.Exceptions;
 using TeamMerge.Helpers;
-using TeamMerge.Instellingen.Enums;
 using TeamMerge.Services;
 using TeamMerge.Services.Models;
+using TeamMerge.Settings.Enums;
 using TeamMerge.Utils;
 
 namespace TeamMerge.Operations
@@ -22,12 +22,12 @@ namespace TeamMerge.Operations
         : IMergeOperation
     {
         private readonly IMergeService _mergeService;
-        private readonly IConfigHelper _configHelper;
+        private readonly IConfigManager _configManager;
 
-        public MergeOperation(IMergeService mergeService, IConfigHelper configHelper)
+        public MergeOperation(IMergeService mergeService, IConfigManager configManager)
         {
             _mergeService = mergeService;
-            _configHelper = configHelper;
+            _configManager = configManager;
         }
 
         public event EventHandler<string> MyCurrentAction;
@@ -41,13 +41,13 @@ namespace TeamMerge.Operations
             SetCurrentAction(Resources.MergingBranches);
             await _mergeService.MergeBranches(mergeModel.WorkspaceModel, mergeModel.SourceBranch, mergeModel.TargetBranch, mergeModel.OrderedChangesetIds.First(), mergeModel.OrderedChangesetIds.Last());
 
-            var workItemIds = await _mergeService.GetWorkItemIds(mergeModel.OrderedChangesetIds, _configHelper.GetValue<IEnumerable<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE));
+            var workItemIds = await _mergeService.GetWorkItemIds(mergeModel.OrderedChangesetIds, _configManager.GetValue<IEnumerable<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE));
              _mergeService.AddWorkItemsAndNavigate(mergeModel.WorkspaceModel, workItemIds);
         }
 
         private async Task CheckIfWorkspaceHasIncludedPendingChangesAsync(WorkspaceModel workspaceModel)
         {
-            var shouldCheckForPendingChanges = _configHelper.GetValue<bool>(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES);
+            var shouldCheckForPendingChanges = _configManager.GetValue<bool>(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES);
 
             if (shouldCheckForPendingChanges)
             {
@@ -63,7 +63,7 @@ namespace TeamMerge.Operations
 
         private async Task DoGetLatestOnBranchAsync(WorkspaceModel workspaceModel, string sourceBranch, string targetBranch)
         {
-            var latestVersionForBranches = (Branch)_configHelper.GetValue<int>(ConfigKeys.LATEST_VERSION_FOR_BRANCH);
+            var latestVersionForBranches = _configManager.GetValue<Branch>(ConfigKeys.LATEST_VERSION_FOR_BRANCH);
 
             if (latestVersionForBranches != Branch.None)
             {
@@ -74,7 +74,7 @@ namespace TeamMerge.Operations
 
                 if (hasConflicts)
                 {
-                    var shouldResolveConflicts = _configHelper.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS);
+                    var shouldResolveConflicts = _configManager.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS);
 
                     if (shouldResolveConflicts)
                     {

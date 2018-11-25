@@ -1,22 +1,22 @@
-﻿<Window x:Class="TeamMerge.Instellingen.Dialogs.InstellingenDialog"
+﻿<Window x:Class="TeamMerge.Settings.Dialogs.SettingsDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-        xmlns:enums="clr-namespace:TeamMerge.Instellingen.Enums"
+        xmlns:enums="clr-namespace:TeamMerge.Settings.Enums"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:resource="clr-namespace:TeamMerge"
         xmlns:converters="clr-namespace:TeamMerge.Converters"
-        xmlns:dialogs="clr-namespace:TeamMerge.Instellingen.Dialogs"
+        xmlns:dialogs="clr-namespace:TeamMerge.Settings.Dialogs"
         xmlns:behaviors="clr-namespace:TeamMerge.Behaviors"
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
-        d:DataContext="{d:DesignInstance dialogs:InstellingenDialogViewModel}"
+        d:DataContext="{d:DesignInstance dialogs:SettingsDialogViewModel}"
         Title="{x:Static resource:Resources.TeamMergeSettings}"
-        x:Name="InstellingenView">
+        x:Name="SettingsView">
 
     <Window.Resources>
         <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="Enumvalues">
@@ -96,7 +96,7 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Column="0" Text="{Binding }" />
-                        <Button Grid.Column="1" Command="{Binding DataContext.RemoveWorkItemTypeCommand, ElementName=InstellingenView}" 
+                        <Button Grid.Column="1" Command="{Binding DataContext.RemoveWorkItemTypeCommand, ElementName=SettingsView}" 
                                 CommandParameter="{Binding }"  >
                             <Button.Content>
                                 <Image Source="/TeamMerge;component/Resources/DeleteIcon.png" />

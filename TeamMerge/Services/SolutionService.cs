@@ -18,12 +18,12 @@ namespace TeamMerge.Services
         : ISolutionService
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly IConfigHelper _configHelper;
+        private readonly IConfigManager _configManager;
 
-        public SolutionService(IServiceProvider serviceProvider, IConfigHelper configHelper)
+        public SolutionService(IServiceProvider serviceProvider, IConfigManager configManager)
         {
             _serviceProvider = serviceProvider;
-            _configHelper = configHelper;
+            _configManager = configManager;
         }
 
         public SolutionModel GetActiveSolution()
@@ -41,7 +41,7 @@ namespace TeamMerge.Services
 
             if (!string.IsNullOrWhiteSpace(solution?.FullName))
             {
-                var defaultMergeSettings = _configHelper.GetValue<List<DefaultMergeSettings>>(ConfigKeys.SOLUTIONWIDE_SELECTEDMERGE_SETTINGS) ?? new List<DefaultMergeSettings>();
+                var defaultMergeSettings = _configManager.GetValue<List<DefaultMergeSettings>>(ConfigKeys.SOLUTIONWIDE_SELECTEDMERGE_SETTINGS) ?? new List<DefaultMergeSettings>();
                 if (defaultMergeSettings.Any())
                 {
                     var currentSolutionInCache = defaultMergeSettings.SingleOrDefault(m => m.Solution == solution.FullName);
@@ -57,7 +57,7 @@ namespace TeamMerge.Services
 
         public void SaveDefaultMergeSettingsForCurrentSolution(DefaultMergeSettings defaultMergeSettings)
         {
-            var saveSelectedBranchSettingsBySolution = _configHelper.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION);
+            var saveSelectedBranchSettingsBySolution = _configManager.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION);
             if (saveSelectedBranchSettingsBySolution)
             {
                 var currentSolutionName = GetActiveSolution()?.FullName;
@@ -65,7 +65,7 @@ namespace TeamMerge.Services
 
                 if (!string.IsNullOrWhiteSpace(currentSolutionName))
                 {
-                    var currentSettings = _configHelper.GetValue<List<DefaultMergeSettings>>(ConfigKeys.SOLUTIONWIDE_SELECTEDMERGE_SETTINGS) ?? new List<DefaultMergeSettings>();
+                    var currentSettings = _configManager.GetValue<List<DefaultMergeSettings>>(ConfigKeys.SOLUTIONWIDE_SELECTEDMERGE_SETTINGS) ?? new List<DefaultMergeSettings>();
                     var currentSolutionSetting = currentSettings.SingleOrDefault(c => c.Solution == currentSolutionName);
                     if (currentSolutionSetting != null)
                     {
@@ -78,8 +78,8 @@ namespace TeamMerge.Services
                         currentSettings.Add(defaultMergeSettings);
                     }
 
-                    _configHelper.AddValue(ConfigKeys.SOLUTIONWIDE_SELECTEDMERGE_SETTINGS, currentSettings);
-                    _configHelper.SaveDictionary();
+                    _configManager.AddValue(ConfigKeys.SOLUTIONWIDE_SELECTEDMERGE_SETTINGS, currentSettings);
+                    _configManager.SaveDictionary();
                 }
             }
         }

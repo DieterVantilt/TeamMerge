@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace TeamMerge.Instellingen.Enums
+namespace TeamMerge.Settings.Enums
 {
     public enum Branch
     {

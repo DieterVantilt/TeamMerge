@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using TeamMerge.Base;
 using TeamMerge.Commands;
 using TeamMerge.Helpers;
-using TeamMerge.Instellingen.Dialogs;
+using TeamMerge.Settings.Dialogs;
 using TeamMerge.Merge.Context;
 using TeamMerge.Operations;
 using TeamMerge.Services;
@@ -21,16 +21,16 @@ namespace TeamMerge.Merge
     {
         private readonly ITeamService _teamService;
         private readonly IMergeOperation _mergeOperation;
-        private readonly IConfigHelper _configHelper;
+        private readonly IConfigManager _configManager;
         private readonly ISolutionService _solutionService;
         private List<BranchModel> _currentBranches;
 
-        public TeamMergeViewModel(ITeamService teamService, IMergeOperation mergeOperation, IConfigHelper configHelper, ILogger logger, ISolutionService solutionService)
+        public TeamMergeViewModel(ITeamService teamService, IMergeOperation mergeOperation, IConfigManager configManager, ILogger logger, ISolutionService solutionService)
             : base(logger)
         {
             _teamService = teamService;
             _mergeOperation = mergeOperation;
-            _configHelper = configHelper;
+            _configManager = configManager;
             _solutionService = solutionService;
 
             ViewChangesetDetailsCommand = new RelayCommand(ViewChangeset, CanViewChangeset);
@@ -227,11 +227,11 @@ namespace TeamMerge.Merge
 
         private void SaveDefaultSettings()
         {
-            _configHelper.AddValue(ConfigKeys.SELECTED_PROJECT_NAME, SelectedProjectName);
-            _configHelper.AddValue(ConfigKeys.SOURCE_BRANCH, SelectedSourceBranch);
-            _configHelper.AddValue(ConfigKeys.TARGET_BRANCH, SelectedTargetBranch);
+            _configManager.AddValue(ConfigKeys.SELECTED_PROJECT_NAME, SelectedProjectName);
+            _configManager.AddValue(ConfigKeys.SOURCE_BRANCH, SelectedSourceBranch);
+            _configManager.AddValue(ConfigKeys.TARGET_BRANCH, SelectedTargetBranch);
 
-            _configHelper.SaveDictionary();
+            _configManager.SaveDictionary();
         }
 
         private void MergeOperation_MyCurrentAction(object sender, string e)
@@ -257,7 +257,7 @@ namespace TeamMerge.Merge
 
                 Changesets = new ObservableCollection<ChangesetModel>(changesets);
 
-                if (_configHelper.GetValue<bool>(ConfigKeys.ENABLE_AUTO_SELECT_ALL_CHANGESETS))
+                if (_configManager.GetValue<bool>(ConfigKeys.ENABLE_AUTO_SELECT_ALL_CHANGESETS))
                 {
                     SelectedChangesets.AddRange(Changesets.Except(SelectedChangesets));
                     RaisePropertyChanged(nameof(SelectedChangesets));
@@ -313,7 +313,7 @@ namespace TeamMerge.Merge
 
         private void SetSavedSelectedBranches()
         {
-            var saveSelectedBranchSettingsBySolution = _configHelper.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION);
+            var saveSelectedBranchSettingsBySolution = _configManager.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION);
             if (saveSelectedBranchSettingsBySolution)
             {
                 SetDefaultSelectedSettingsPerSolution();
@@ -342,22 +342,22 @@ namespace TeamMerge.Merge
 
         private void SetDefaultSelectedSettings()
         {
-            var projectName = _configHelper.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME);
+            var projectName = _configManager.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME);
 
             if (!string.IsNullOrWhiteSpace(projectName))
             {
                 SelectedProjectName = projectName;
-                SelectedSourceBranch = _configHelper.GetValue<string>(ConfigKeys.SOURCE_BRANCH);
-                SelectedTargetBranch = _configHelper.GetValue<string>(ConfigKeys.TARGET_BRANCH);
+                SelectedSourceBranch = _configManager.GetValue<string>(ConfigKeys.SOURCE_BRANCH);
+                SelectedTargetBranch = _configManager.GetValue<string>(ConfigKeys.TARGET_BRANCH);
             }
         }
 
         public void OpenSettings()
         {
-            var viewModel = new InstellingenDialogViewModel(_configHelper, _teamService);
+            var viewModel = new SettingsDialogViewModel(_configManager, _teamService);
             viewModel.Initialize();
 
-            var window = new InstellingenDialog
+            var window = new SettingsDialog
             {
                 DataContext = viewModel
             };
