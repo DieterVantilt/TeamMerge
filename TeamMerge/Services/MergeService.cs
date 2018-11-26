@@ -102,6 +102,8 @@ namespace TeamMerge.Services
         {
             var changeset = await _tfvcService.GetChangeset(changesetId);
 
+            workItemTypesToExclude = workItemTypesToExclude ?? Enumerable.Empty<string>();
+
             var associatedWorkItemIds = changeset.AssociatedWorkItems?
                 .Where(x => !workItemTypesToExclude.Contains(x.WorkItemType))
                 .Select(x => x.Id) ?? new List<int>();
