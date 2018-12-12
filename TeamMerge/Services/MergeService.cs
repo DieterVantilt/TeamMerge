@@ -88,6 +88,8 @@ namespace TeamMerge.Services
 
             var tasks = new List<Task>();
 
+            workItemTypesToExclude = workItemTypesToExclude ?? Enumerable.Empty<string>();
+
             foreach (var changesetId in changesetIds)
             {
                 tasks.Add(GetAssociatedWorkItemIds(changesetId, workItemIds, workItemTypesToExclude));
@@ -100,9 +102,7 @@ namespace TeamMerge.Services
 
         private async Task GetAssociatedWorkItemIds(int changesetId, ConcurrentBag<int> concurrentbag, IEnumerable<string> workItemTypesToExclude)
         {
-            var changeset = await _tfvcService.GetChangeset(changesetId);
-
-            workItemTypesToExclude = workItemTypesToExclude ?? Enumerable.Empty<string>();
+            var changeset = await _tfvcService.GetChangeset(changesetId);           
 
             var associatedWorkItemIds = changeset.AssociatedWorkItems?
                 .Where(x => !workItemTypesToExclude.Contains(x.WorkItemType))
