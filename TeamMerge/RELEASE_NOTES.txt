@@ -14,3 +14,6 @@ First release version:
 
 25/11/2018 (1.1.1)
 - Fixed issue where settings would not select the saved branch to do get latest on before merging
+
+12/12/2018 (1.1.2)
+- Solved issue when no settings where configured, merge would not fetch the associated work items
