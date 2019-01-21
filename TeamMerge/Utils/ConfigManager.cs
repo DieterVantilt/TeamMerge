@@ -29,7 +29,7 @@ namespace TeamMerge.Utils
             var result = default(T);
 
             if (dictionary.TryGetValue(key, out var value))
-            {                
+            {
                 if (value is T outValue)
                 {
                     result = outValue;
@@ -41,6 +41,10 @@ namespace TeamMerge.Utils
                 else if (typeof(T).IsEnum)
                 {
                     result = (T)Convert.ChangeType(value, TypeCode.Int32);
+                }
+                else if (value is null)
+                {
+                    //intentional: default is always null
                 }
                 else
                 {

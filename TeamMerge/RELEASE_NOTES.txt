@@ -17,3 +17,6 @@ First release version:
 
 12/12/2018 (1.1.2)
 - Solved issue when no settings where configured, merge would not fetch the associated work items
+
+21/01/2019 (1.2.0)
+- Add a comment to your pending changes before check-in

@@ -1,16 +1,16 @@
-﻿using System.ComponentModel;
+﻿using TeamMerge.Utils;
 
 namespace TeamMerge.Settings.Enums
 {
     public enum Branch
     {
-        [Description("None")]
+        [LocalizedDescription(nameof(Resources.None), typeof(Resources))]
         None,
-        [Description("Source")]
+        [LocalizedDescription(nameof(Resources.Source), typeof(Resources))]
         Source,
-        [Description("Target")]
+        [LocalizedDescription(nameof(Resources.Target), typeof(Resources))]
         Target,
-        [Description("Source and target")]
+        [LocalizedDescription(nameof(Resources.SourceAndTarget), typeof(Resources))]
         SourceAndTarget
     }
 }

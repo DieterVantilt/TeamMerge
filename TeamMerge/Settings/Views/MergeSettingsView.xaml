@@ -1,0 +1,133 @@
+﻿<UserControl x:Class="TeamMerge.Settings.Views.MergeSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:enums="clr-namespace:TeamMerge.Settings.Enums"
+             xmlns:local="clr-namespace:TeamMerge.Settings.Views"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:converters="clr-namespace:TeamMerge.Converters"
+             xmlns:behaviors="clr-namespace:TeamMerge.Behaviors"
+             xmlns:resource="clr-namespace:TeamMerge"
+             xmlns:dialogs="clr-namespace:TeamMerge.Settings.Dialogs"
+             d:DataContext="{d:DesignInstance dialogs:SettingsDialogViewModel}"
+             x:Name="mergeSettingsView"
+             Margin="5"
+             mc:Ignorable="d">
+    
+    <UserControl.Resources>
+        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="BranchEnumvalues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="enums:Branch" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="CheckInEnumvalues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="enums:CheckInComment" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <converters:EnumConverters x:Key="EnumConverter" />
+        <converters:MultiConverter x:Key="IsNotEqualToConverter">
+            <converters:IsEqualConverter />
+            <converters:InvertedBooleanConverter />
+        </converters:MultiConverter>
+
+        <converters:IsEqualConverter x:Key="EqualToConverter" />
+
+        <Image x:Key="AddImage"  Source="/TeamMerge;component/Resources/AddIcon.png"/>
+    </UserControl.Resources>
+    
+    <StackPanel>
+        <DockPanel>
+            <Label Content="{x:Static resource:Resources.LatestVersionBranch}" />
+
+            <ComboBox SelectedItem="{Binding Model.LatestVersionBranch, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding Source={StaticResource BranchEnumvalues}}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Path=., Converter={StaticResource EnumConverter}}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </DockPanel>
+        
+        <CheckBox Margin="20 0 0 5"
+                  IsEnabled="{Binding Model.LatestVersionBranch, Converter={StaticResource IsNotEqualToConverter}, ConverterParameter={x:Static enums:Branch.None}}"
+                  Content="{x:Static resource:Resources.ShouldResolveConflicts}"
+                  IsChecked="{Binding Model.ShouldResolveConflicts}" />
+
+        <Separator />
+
+        <DockPanel Margin="0 5 0 0">
+            <Label Content="{x:Static resource:Resources.CheckInComment}" Margin="0 0 20 0" />
+
+            <ComboBox HorizontalAlignment="Stretch"
+                      SelectedItem="{Binding Model.CheckInComment, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding Source={StaticResource CheckInEnumvalues}}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Path=., Converter={StaticResource EnumConverter}}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </DockPanel>
+
+        <TextBox Margin="0 5 0 5"
+                 IsEnabled="{Binding Model.CheckInComment, Converter={StaticResource IsNotEqualToConverter}, ConverterParameter={x:Static enums:CheckInComment.None}}"
+                 Text="{Binding Model.CommenFormat, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <StackPanel Orientation="Horizontal">
+            <Label Content="{x:Static resource:Resources.CommentOutput}" />
+            <TextBlock FontWeight="Bold" Text="{Binding CommentOutput, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" />
+        </StackPanel>        
+
+        <Separator />
+
+        <Label Content="{x:Static resource:Resources.WorkItemTypesToExclude}" />
+
+        <Grid Height="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="44" />
+            </Grid.ColumnDefinitions>
+
+            <ComboBox IsEditable="True"
+                      Text="{Binding SelectedWorkItemType}"
+                      ItemsSource="{Binding WorkItemTypes}">
+                <i:Interaction.Behaviors>
+                    <behaviors:EventToCommandBehavior Command="{Binding AddWorkItemTypeToExcludeCommand}" Event="KeyUp" PassArguments="True" />
+                </i:Interaction.Behaviors>
+            </ComboBox>
+            
+            <Button Grid.Column="1" Margin="2 0 0 0" Width="22" HorizontalAlignment="Left" Command="{Binding AddWorkItemTypeToExcludeCommand}" Content="{StaticResource AddImage}" />
+        </Grid>
+
+        <ScrollViewer VerticalScrollBarVisibility="Visible" Height="150">
+            <ItemsControl Margin="0 2 0 2" ItemsSource="{Binding Model.WorkItemTypesToExclude}" HorizontalContentAlignment="Stretch">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Height="20" Margin="0 2 0 2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="25" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0" Text="{Binding }" />
+                            <Button Grid.Column="1" Width="22" HorizontalAlignment="Left" Command="{Binding DataContext.RemoveWorkItemTypeCommand, ElementName=mergeSettingsView}" 
+                                CommandParameter="{Binding }"  >
+                                <Button.Content>
+                                    <Image Source="/TeamMerge;component/Resources/DeleteIcon.png" />
+                                </Button.Content>
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        
+
+    </StackPanel>
+</UserControl>

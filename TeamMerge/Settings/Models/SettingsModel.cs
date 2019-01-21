@@ -61,6 +61,43 @@ namespace TeamMerge.Settings.Models
             set { _saveSelectedBranchPerSolution = value; RaisePropertyChanged(nameof(SaveSelectedBranchPerSolution)); }
         }
 
+        private CheckInComment _checkInComment;
+
+        public CheckInComment CheckInComment
+        {
+            get { return _checkInComment; }
+            set
+            {
+                _checkInComment = value;
+                RaisePropertyChanged(nameof(CheckInComment));
+
+                if (_checkInComment == CheckInComment.None)
+                {
+                    CommenFormat = null;
+                }
+                else if (_checkInComment == CheckInComment.BranchDirection)
+                {
+                    CommenFormat = Resources.BranchDirectionFormat;
+                }
+                else if (_checkInComment == CheckInComment.WorkItemIds)
+                {
+                    CommenFormat = Resources.WorkItemIdsFormat;
+                }
+                else if (_checkInComment == CheckInComment.Fixed)
+                {
+                    CommenFormat = string.Empty;
+                }
+            }
+        }
+
+        private string _commentFormat;
+
+        public string CommenFormat
+        {
+            get { return _commentFormat; }
+            set { _commentFormat = value; RaisePropertyChanged(nameof(CommenFormat)); }
+        }
+
         public ObservableCollection<string> WorkItemTypesToExclude
         {
             get; set;

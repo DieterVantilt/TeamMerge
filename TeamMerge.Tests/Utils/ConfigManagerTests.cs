@@ -1,11 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 using Rhino.Mocks;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TeamMerge.Settings.Enums;
 using TeamMerge.Utils;
 
@@ -63,6 +60,18 @@ namespace TeamMerge.Tests.Utils
         }
 
         [TestMethod]
+        public void ConfigManager_GetValue_WhenTypeOfString_ThenReturnsNullWhenDictionaryContainsANullString()
+        {
+            var dictionary = new Dictionary<string, object> { { "test", null } };
+
+            _configFileHelper.Expect(x => x.GetDictionary()).Return(dictionary);
+
+            var result = _sut.GetValue<string>("test");
+
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
         public void ConfigManager_GetValue_WhenTypeOfEnumerableString_ThenReturnsEnumerableOfTypeStringWhenDictionaryContainsAnListOfString()
         {
             var dictionary = new Dictionary<string, object> { { "test", new List<string> { "MyString" } } };
@@ -89,6 +98,6 @@ namespace TeamMerge.Tests.Utils
             Assert.IsTrue(result.Any());
             Assert.AreEqual("Code Review Request", result.First());
             Assert.AreEqual("Code Review Response", result.Last());
-        }
+        }        
     }
 }

@@ -201,4 +201,31 @@
   <data name="WorkItemTypesToExclude" xml:space="preserve">
     <value>Work item types to exclude:</value>
   </data>
+  <data name="General" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="CheckInComment" xml:space="preserve">
+    <value>Check-in comment:</value>
+  </data>
+  <data name="BranchDirectionComment" xml:space="preserve">
+    <value>Branch direction</value>
+  </data>
+  <data name="BranchDirectionFormat" xml:space="preserve">
+    <value>Merge {0} --&gt; {1}</value>
+  </data>
+  <data name="FixedComment" xml:space="preserve">
+    <value>Fixed</value>
+  </data>
+  <data name="WorkItemIdsComment" xml:space="preserve">
+    <value>Work item ids</value>
+  </data>
+  <data name="WorkItemIdsFormat" xml:space="preserve">
+    <value>Merged work item ids: {0}</value>
+  </data>
+  <data name="CommentOutput" xml:space="preserve">
+    <value>Comment output:</value>
+  </data>
+  <data name="InvalidFormat" xml:space="preserve">
+    <value>Invalid format</value>
+  </data>
 </root>

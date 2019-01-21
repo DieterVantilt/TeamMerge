@@ -66,13 +66,16 @@
     <Compile Include="Converters\NullableToBooleanConverter.cs" />
     <Compile Include="Exceptions\MergeActionException.cs" />
     <Compile Include="Helpers\CollectionExtensions.cs" />
+    <Compile Include="Helpers\CommentOutputHelper.cs" />
     <Compile Include="Helpers\EnumExtensions.cs" />
+    <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\VersionControlHelper.cs" />
     <Compile Include="Settings\Dialogs\SettingsDialog.xaml.cs">
       <DependentUpon>SettingsDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\Dialogs\SettingsDialogViewModel.cs" />
     <Compile Include="Settings\Enums\Branch.cs" />
+    <Compile Include="Settings\Enums\CheckInComment.cs" />
     <Compile Include="Settings\Models\SettingsModel.cs" />
     <Compile Include="Merge\Context\TeamMergeContext.cs" />
     <Compile Include="Merge\TeamMergeSection.cs" />
@@ -100,6 +103,12 @@
     <Compile Include="Services\SolutionService.cs" />
     <Compile Include="Services\TeamService.cs" />
     <Compile Include="Services\TFVCService.cs" />
+    <Compile Include="Settings\Views\GeneralSettingsView.xaml.cs">
+      <DependentUpon>GeneralSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\Views\MergeSettingsView.xaml.cs">
+      <DependentUpon>MergeSettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TeamMergeNavigationItem.cs" />
     <Compile Include="TeamMergePackage.cs" />
     <Compile Include="Guids.cs" />
@@ -111,6 +120,7 @@
     <Compile Include="Utils\ConfigManager.cs" />
     <Compile Include="Utils\DialogHelper.cs" />
     <Compile Include="Utils\FileHelper.cs" />
+    <Compile Include="Utils\LocalizedDescriptionAttribute.cs" />
     <Compile Include="Utils\Logger.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -222,6 +232,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Merge\TeamMergeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Settings\Views\GeneralSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Settings\Views\MergeSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

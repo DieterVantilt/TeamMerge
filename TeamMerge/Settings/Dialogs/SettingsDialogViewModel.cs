@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using TeamMerge.Commands;
+using TeamMerge.Helpers;
 using TeamMerge.Services;
 using TeamMerge.Settings.Enums;
 using TeamMerge.Settings.Models;
@@ -18,6 +19,9 @@ namespace TeamMerge.Settings.Dialogs
     public class SettingsDialogViewModel
         : ViewModelBase
     {
+        private const string SOURCE_BRANCH_NAME_EXAMPLE = "$/DEV";
+        private const string TARGET_BRANCH_NAME_EXAMPLE = "$/MAIN";
+
         private readonly IConfigManager _configManager;
         private readonly ITeamService _teamService;
 
@@ -72,6 +76,11 @@ namespace TeamMerge.Settings.Dialogs
                 RaisePropertyChanged(nameof(IsDirty));
             }
         }
+        
+        public string CommentOutput
+        {
+            get { return CommentOutputHelper.GetCheckInComment(Model.CheckInComment, Model.CommenFormat, SOURCE_BRANCH_NAME_EXAMPLE, TARGET_BRANCH_NAME_EXAMPLE, new List<int> { 5, 12, 235 }); }
+        }
 
         private void AddWorkItemTypeToExclude(KeyEventArgs obj)
         {
@@ -102,12 +111,26 @@ namespace TeamMerge.Settings.Dialogs
                 LatestVersionBranch = _configManager.GetValue<Branch>(ConfigKeys.LATEST_VERSION_FOR_BRANCH),
                 ShouldResolveConflicts = _configManager.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS),
                 SaveSelectedBranchPerSolution = _configManager.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION),
+                CheckInComment = _configManager.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION),
+                CommenFormat = _configManager.GetValue<string>(ConfigKeys.COMMENT_FORMAT),
                 WorkItemTypesToExclude = new ObservableCollection<string>(_configManager.GetValue<ObservableCollection<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE) ?? Enumerable.Empty<string>()) 
             };
 
             IsDirty = false;
-            Model.PropertyChanged += (s, ea) => IsDirty = true;
+            Model.PropertyChanged += Model_PropertyChanged;
             Model.WorkItemTypesToExclude.CollectionChanged += (s, ea) => IsDirty = true;
+
+            RaisePropertyChanged(nameof(CommentOutput));
+        }
+
+        private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            IsDirty = true;
+
+            if (e.PropertyName == nameof(SettingsModel.CommenFormat))
+            {
+                RaisePropertyChanged(nameof(CommentOutput));
+            }
         }
 
         public void Save()
@@ -118,6 +141,8 @@ namespace TeamMerge.Settings.Dialogs
             _configManager.AddValue(ConfigKeys.SHOULD_RESOLVE_CONFLICTS, Model.ShouldResolveConflicts);
             _configManager.AddValue(ConfigKeys.SAVE_BRANCH_PERSOLUTION, Model.SaveSelectedBranchPerSolution);
             _configManager.AddValue(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE, Model.WorkItemTypesToExclude);
+            _configManager.AddValue(ConfigKeys.CHECK_IN_COMMENT_OPTION, Model.CheckInComment);
+            _configManager.AddValue(ConfigKeys.COMMENT_FORMAT, Model.CommenFormat);
 
             _configManager.SaveDictionary();
 

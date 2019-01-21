@@ -42,7 +42,9 @@ namespace TeamMerge.Operations
             await _mergeService.MergeBranches(mergeModel.WorkspaceModel, mergeModel.SourceBranch, mergeModel.TargetBranch, mergeModel.OrderedChangesetIds.First(), mergeModel.OrderedChangesetIds.Last());
 
             var workItemIds = await _mergeService.GetWorkItemIds(mergeModel.OrderedChangesetIds, _configManager.GetValue<IEnumerable<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE));
-             _mergeService.AddWorkItemsAndNavigate(mergeModel.WorkspaceModel, workItemIds);
+            var comment = GetCommentForMerge(mergeModel.SourceBranch, mergeModel.TargetBranch, workItemIds);
+
+            _mergeService.AddWorkItemsAndCommentThenNavigate(mergeModel.WorkspaceModel, comment, workItemIds);
         }
 
         private async Task CheckIfWorkspaceHasIncludedPendingChangesAsync(WorkspaceModel workspaceModel)
@@ -67,7 +69,7 @@ namespace TeamMerge.Operations
 
             if (latestVersionForBranches != Branch.None)
             {
-                SetCurrentAction(string.Format(CultureInfo.CurrentUICulture, Resources.GettingLatestVersionForBranch, latestVersionForBranches.GetDescription()));
+                SetCurrentAction(string.Format(CultureInfo.CurrentUICulture, Resources.GettingLatestVersionForBranch, latestVersionForBranches.GetDescription().ToLower()));
                 var branchNamesForLatestVersion = GetBranchesForExecutingGetLatest(latestVersionForBranches, sourceBranch, targetBranch);
 
                 var hasConflicts = await _mergeService.GetLatestVersion(workspaceModel, branchNamesForLatestVersion.ToArray());                
@@ -112,6 +114,14 @@ namespace TeamMerge.Operations
             }
 
             return branches;
+        }
+
+        private string GetCommentForMerge(string sourceBranch, string targetBranch, IEnumerable<int> workItemIds)
+        {
+            var checkInCommentChoice = _configManager.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION);
+            var commentFormat = _configManager.GetValue<string>(ConfigKeys.COMMENT_FORMAT);
+
+            return CommentOutputHelper.GetCheckInComment(checkInCommentChoice, commentFormat, sourceBranch, targetBranch, workItemIds);
         }
 
         private void SetCurrentAction(string currentAction)

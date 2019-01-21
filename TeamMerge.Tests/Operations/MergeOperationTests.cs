@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TeamMerge.Exceptions;
 using TeamMerge.Helpers;
@@ -17,6 +18,7 @@ namespace TeamMerge.Tests.Operations
     {
         private const string DO_GET_LATEST_ON_BRANCH_METHOD_NAME = "DoGetLatestOnBranchAsync";
         private const string CHECK_WORKSPACE_METHOD_NAME = "CheckIfWorkspaceHasIncludedPendingChangesAsync";
+        private const string GETCOMMENT_METHOD_NAME = "GetCommentForMerge";
 
         private MergeOperation _sut;
 
@@ -138,8 +140,87 @@ namespace TeamMerge.Tests.Operations
         {
             _sut.MyCurrentAction += (s, action) =>
             {
-                Assert.IsTrue(action.Contains(branch.GetDescription()));
+                Assert.IsTrue(action.Contains(branch.GetDescription().ToLower()));
             };
+        }
+
+        [TestMethod]
+        public void MergeOperation_GetCommentForMerge_WhenCalledAndCheckInCommentOptionIsNone_ThenReturnsEmtpyString()
+        {
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.None);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(string.Empty);
+
+            var obj = new PrivateObject(_sut);
+            var result = (string) obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>());
+
+            Assert.AreEqual(string.Empty, result);
+        }
+
+        [TestMethod]
+        public void MergeOperation_GetCommentForMerge_WhenCalledAndCheckInCommentOptionIsBranchDirection_ThenReturnsBranchDirectionString()
+        {
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.BranchDirection);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return("Merge {0} --> {1}");
+
+            var obj = new PrivateObject(_sut);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>());
+
+            Assert.IsTrue(result.Contains(_sourceBranchName));
+            Assert.IsTrue(result.Contains(_targetbranchName));
+        }
+
+        [TestMethod]
+        public void MergeOperation_GetCommentForMerge_WhenCalledAndCheckInCommentOptionIsBranchDirectionWithOnlySourceBranchInFormat_ThenReturnsBranchDirectionStringWithOnlySourceBranch()
+        {
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.BranchDirection);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return("Merge {0}");
+
+            var obj = new PrivateObject(_sut);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>());
+
+            Assert.IsTrue(result.Contains(_sourceBranchName));
+            Assert.IsFalse(result.Contains(_targetbranchName));
+        }
+
+        [TestMethod]
+        public void MergeOperation_GetCommentForMerge_WhenCalledAndCheckInCommentOptionIsBranchDirectionWithOnlyTargetBranchInFormat_ThenReturnsBranchDirectionStringWithOnlyTargetBranch()
+        {
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.BranchDirection);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return("Merge {1}");
+
+            var obj = new PrivateObject(_sut);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>());
+
+            Assert.IsFalse(result.Contains(_sourceBranchName));
+            Assert.IsTrue(result.Contains(_targetbranchName));
+        }
+
+        [TestMethod]
+        public void MergeOperation_GetCommentForMerge_WhenCalledAndCheckInCommentOptionIsWorkItemIds_ThenReturnsAllAssociatedWorkItemIds()
+        {
+            var workitemIds = new List<int> { 5, 10, 16, 18 };
+
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.WorkItemIds);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return("Merge work item ids: {0}");
+
+            var obj = new PrivateObject(_sut);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds);
+
+            Assert.IsTrue(result.Contains(string.Join(", ", workitemIds)));
+        }
+
+        [TestMethod]
+        public void MergeOperation_GetCommentForMerge_WhenCalledAndCheckInCommentOptionIsFixedComment_ThenReturnsFixedComment()
+        {
+            var awesomeCheckInComment = "Merging my things :o";
+
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.Fixed);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
+
+            var obj = new PrivateObject(_sut);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>());
+
+            Assert.AreEqual(result, awesomeCheckInComment);
         }
 
         [TestMethod]
@@ -165,9 +246,13 @@ namespace TeamMerge.Tests.Operations
 
             var workItemsToAdd = new List<int> { 5, 75, 85 };
 
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION))
+                .Return(CheckInComment.None);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(string.Empty);
+
             _mergeService.Expect(x => x.MergeBranches(_currentWorkspaceModel, _sourceBranchName, _targetbranchName, 2, 8)).Return(Task.CompletedTask);
             _mergeService.Expect(x => x.GetWorkItemIds(orderedChangesetIds, excludedWorkItemTypes)).Return(Task.FromResult<IEnumerable<int>>(workItemsToAdd));
-            _mergeService.Expect(x => x.AddWorkItemsAndNavigate(_currentWorkspaceModel, workItemsToAdd));
+            _mergeService.Expect(x => x.AddWorkItemsAndCommentThenNavigate(_currentWorkspaceModel, string.Empty, workItemsToAdd));
 
             await _sut.Execute(new MergeModel
             {

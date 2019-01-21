@@ -70,6 +70,33 @@ namespace TeamMerge {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Branch direction.
+        /// </summary>
+        public static string BranchDirectionComment {
+            get {
+                return ResourceManager.GetString("BranchDirectionComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merge {0} --&gt; {1}.
+        /// </summary>
+        public static string BranchDirectionFormat {
+            get {
+                return ResourceManager.GetString("BranchDirectionFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check-in comment:.
+        /// </summary>
+        public static string CheckInComment {
+            get {
+                return ResourceManager.GetString("CheckInComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Checking for included pending changes.
         /// </summary>
         public static string CheckingPendingChanges {
@@ -88,11 +115,38 @@ namespace TeamMerge {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Comment output:.
+        /// </summary>
+        public static string CommentOutput {
+            get {
+                return ResourceManager.GetString("CommentOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fetch changesets.
         /// </summary>
         public static string FetchChangesets {
             get {
                 return ResourceManager.GetString("FetchChangesets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fixed.
+        /// </summary>
+        public static string FixedComment {
+            get {
+                return ResourceManager.GetString("FixedComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string General {
+            get {
+                return ResourceManager.GetString("General", resourceCulture);
             }
         }
         
@@ -111,6 +165,15 @@ namespace TeamMerge {
         public static string GettingLatestVersionForBranch {
             get {
                 return ResourceManager.GetString("GettingLatestVersionForBranch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid format.
+        /// </summary>
+        public static string InvalidFormat {
+            get {
+                return ResourceManager.GetString("InvalidFormat", resourceCulture);
             }
         }
         
@@ -291,6 +354,24 @@ namespace TeamMerge {
         public static string WarningPendingChanges {
             get {
                 return ResourceManager.GetString("WarningPendingChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Work item ids.
+        /// </summary>
+        public static string WorkItemIdsComment {
+            get {
+                return ResourceManager.GetString("WorkItemIdsComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merged work item ids: {0}.
+        /// </summary>
+        public static string WorkItemIdsFormat {
+            get {
+                return ResourceManager.GetString("WorkItemIdsFormat", resourceCulture);
             }
         }
         

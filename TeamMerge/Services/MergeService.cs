@@ -19,7 +19,7 @@ namespace TeamMerge.Services
         Task ResolveConflicts(WorkspaceModel workspaceModel);
         Task MergeBranches(WorkspaceModel workspaceModel, string source, string target, int from, int to);
         Task<IEnumerable<int>> GetWorkItemIds(IEnumerable<int> changesetIds, IEnumerable<string> workItemTypesToExclude);
-        void AddWorkItemsAndNavigate(WorkspaceModel workspaceModel, IEnumerable<int> workItemIds);        
+        void AddWorkItemsAndCommentThenNavigate(WorkspaceModel workspaceModel, string comment, IEnumerable<int> workItemIds);        
     }
 
     public class MergeService 
@@ -97,7 +97,7 @@ namespace TeamMerge.Services
 
             await Task.WhenAll(tasks.ToArray());
 
-            return workItemIds.ToList();
+            return workItemIds.Distinct().OrderBy(x => x).ToList();
         }
 
         private async Task GetAssociatedWorkItemIds(int changesetId, ConcurrentBag<int> concurrentbag, IEnumerable<string> workItemTypesToExclude)
@@ -111,12 +111,12 @@ namespace TeamMerge.Services
             associatedWorkItemIds.ToList().ForEach(x => concurrentbag.Add(x));
         }
 
-        public void AddWorkItemsAndNavigate(WorkspaceModel workspaceModel, IEnumerable<int> workItemIds)
+        public void AddWorkItemsAndCommentThenNavigate(WorkspaceModel workspaceModel, string comment, IEnumerable<int> workItemIds)
         {
             var workspace = _tfvcService.GetWorkspace(workspaceModel.Name, workspaceModel.OwnerName);
 
             var pendingChangePage = (TeamExplorerPageBase)_teamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.PendingChanges), null);
-            var pendingChangeModel = (IPendingCheckin) pendingChangePage.Model;
+            var pendingChangeModel = (IPendingCheckin) pendingChangePage.Model;            
 
             var modelType = pendingChangeModel.GetType();
 
@@ -125,6 +125,11 @@ namespace TeamMerge.Services
 
             var method = modelType.GetMethod("AddWorkItemsByIdAsync", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
             method.Invoke(pendingChangeModel, new object[] { workItemIds.ToArray(), 1 });
+
+            pendingChangeModel.PendingChanges.Comment = comment;
+
+            //For later releases
+            //((RelayCommand)pendingChangePage.ViewModel.GetType().GetProperty("CheckInCommand").GetValue(pendingChangePage.ViewModel, null)).Execute(null);            
         }
     }
 }
