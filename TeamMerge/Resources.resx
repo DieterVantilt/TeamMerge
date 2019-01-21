@@ -207,8 +207,8 @@
   <data name="CheckInComment" xml:space="preserve">
     <value>Check-in comment:</value>
   </data>
-  <data name="BranchDirectionComment" xml:space="preserve">
-    <value>Branch direction</value>
+  <data name="MergeDirectionComment" xml:space="preserve">
+    <value>Merge direction</value>
   </data>
   <data name="BranchDirectionFormat" xml:space="preserve">
     <value>Merge {0} --&gt; {1}</value>

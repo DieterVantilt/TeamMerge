@@ -70,15 +70,6 @@ namespace TeamMerge {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Branch direction.
-        /// </summary>
-        public static string BranchDirectionComment {
-            get {
-                return ResourceManager.GetString("BranchDirectionComment", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Merge {0} --&gt; {1}.
         /// </summary>
         public static string BranchDirectionFormat {
@@ -192,6 +183,15 @@ namespace TeamMerge {
         public static string Merge {
             get {
                 return ResourceManager.GetString("Merge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merge direction.
+        /// </summary>
+        public static string MergeDirectionComment {
+            get {
+                return ResourceManager.GetString("MergeDirectionComment", resourceCulture);
             }
         }
         

@@ -13,7 +13,7 @@ namespace TeamMerge.Helpers
 
             try
             {
-                if (checkInCommentChoice == CheckInComment.BranchDirection)
+                if (checkInCommentChoice == CheckInComment.MergeDirection)
                 {
                     comment = string.Format(CultureInfo.CurrentCulture, commentFormat, sourceBranch.GetBranchName(), targetBranch.GetBranchName());
                 }

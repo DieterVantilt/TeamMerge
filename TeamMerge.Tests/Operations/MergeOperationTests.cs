@@ -159,7 +159,7 @@ namespace TeamMerge.Tests.Operations
         [TestMethod]
         public void MergeOperation_GetCommentForMerge_WhenCalledAndCheckInCommentOptionIsBranchDirection_ThenReturnsBranchDirectionString()
         {
-            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.BranchDirection);
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirection);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return("Merge {0} --> {1}");
 
             var obj = new PrivateObject(_sut);
@@ -172,7 +172,7 @@ namespace TeamMerge.Tests.Operations
         [TestMethod]
         public void MergeOperation_GetCommentForMerge_WhenCalledAndCheckInCommentOptionIsBranchDirectionWithOnlySourceBranchInFormat_ThenReturnsBranchDirectionStringWithOnlySourceBranch()
         {
-            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.BranchDirection);
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirection);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return("Merge {0}");
 
             var obj = new PrivateObject(_sut);
@@ -185,7 +185,7 @@ namespace TeamMerge.Tests.Operations
         [TestMethod]
         public void MergeOperation_GetCommentForMerge_WhenCalledAndCheckInCommentOptionIsBranchDirectionWithOnlyTargetBranchInFormat_ThenReturnsBranchDirectionStringWithOnlyTargetBranch()
         {
-            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.BranchDirection);
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirection);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return("Merge {1}");
 
             var obj = new PrivateObject(_sut);

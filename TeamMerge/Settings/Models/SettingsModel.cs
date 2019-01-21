@@ -75,7 +75,7 @@ namespace TeamMerge.Settings.Models
                 {
                     CommenFormat = null;
                 }
-                else if (_checkInComment == CheckInComment.BranchDirection)
+                else if (_checkInComment == CheckInComment.MergeDirection)
                 {
                     CommenFormat = Resources.BranchDirectionFormat;
                 }

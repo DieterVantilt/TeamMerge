@@ -6,8 +6,8 @@ namespace TeamMerge.Settings.Enums
     {
         [LocalizedDescription(nameof(Resources.None), typeof(Resources))]
         None,
-        [LocalizedDescription(nameof(Resources.BranchDirectionComment), typeof(Resources))]
-        BranchDirection,
+        [LocalizedDescription(nameof(Resources.MergeDirectionComment), typeof(Resources))]
+        MergeDirection,
         [LocalizedDescription(nameof(Resources.WorkItemIdsComment), typeof(Resources))]
         WorkItemIds,
         [LocalizedDescription(nameof(Resources.FixedComment), typeof(Resources))]
