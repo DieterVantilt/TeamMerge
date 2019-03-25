@@ -9,9 +9,9 @@ namespace TeamMerge.Services
     public interface ITeamService
     {
         IEnumerable<BranchModel> GetBranches(string projectName);
-        Task<IEnumerable<ChangesetModel>> GetChangesets(string source, string target);
-        Task<IEnumerable<string>> GetProjectNames();
-        Task<IEnumerable<WorkspaceModel>> AllWorkspaces();
+        Task<IEnumerable<ChangesetModel>> GetChangesetsAsync(string source, string target);
+        Task<IEnumerable<string>> GetProjectNamesAsync();
+        Task<IEnumerable<WorkspaceModel>> AllWorkspacesAsync();
         WorkspaceModel CurrentWorkspace();
         IEnumerable<string> GetAllWorkItemTypes();
     }
@@ -28,9 +28,9 @@ namespace TeamMerge.Services
             _tfvcService = tFVCService;
         }
 
-        public async Task<IEnumerable<string>> GetProjectNames()
+        public async Task<IEnumerable<string>> GetProjectNamesAsync()
         {
-            var projects = await _tfvcService.ListTfsProjects();
+            var projects = await _tfvcService.ListTfsProjectsAsync();
 
             return projects.Select(x => x.Name).ToList();
         }
@@ -60,9 +60,9 @@ namespace TeamMerge.Services
             return result.OrderBy(x => x.Name);
         }
 
-        public async Task<IEnumerable<ChangesetModel>> GetChangesets(string source, string target)
+        public async Task<IEnumerable<ChangesetModel>> GetChangesetsAsync(string source, string target)
         {
-            var mergeCandidates = await _tfvcService.GetMergeCandidates(source, target);
+            var mergeCandidates = await _tfvcService.GetMergeCandidatesAsync(source, target);
 
             return mergeCandidates.Select(x => new ChangesetModel
             {
@@ -75,9 +75,9 @@ namespace TeamMerge.Services
             .ToList();
         }
 
-        public async Task<IEnumerable<WorkspaceModel>> AllWorkspaces()
+        public async Task<IEnumerable<WorkspaceModel>> AllWorkspacesAsync()
         {
-            var workspaces = await _tfvcService.AllWorkspaces();
+            var workspaces = await _tfvcService.AllWorkspacesAsync();
 
             return workspaces.Select(x => new WorkspaceModel { Name = x.Name, OwnerName = x.OwnerName });
         }

@@ -1,0 +1,11 @@
+﻿
+// This file is used by Code Analysis to maintain SuppressMessage 
+// attributes that are applied to this project.
+// Project-level suppressions either have no target or are given 
+// a specific target and scoped to a namespace, type, member, etc.
+
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "VSTHRD200:Use \"Async\" suffix for async methods", Justification = "Test don't need async prefix", Scope = "member", Target = "~M:TeamMerge.Tests.Operations.MergeOperationTests.MergeOperation_CheckIfWorkspaceHasIncludedPendingChangesAsync_WhenCalledWithPendingChangesInWorkspace_ThenThrowsException~System.Threading.Tasks.Task")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "VSTHRD200:Use \"Async\" suffix for async methods", Justification = "Test don't need async prefix", Scope = "member", Target = "~M:TeamMerge.Tests.Operations.MergeOperationTests.MergeOperation_DoGetLatestOnBranchAsync_WhenCalledAndShouldNotResolveConflicts_ConflictsOccur_ThenThrowsException~System.Threading.Tasks.Task")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "VSTHRD200:Use \"Async\" suffix for async methods", Justification = "Test don't need async prefix", Scope = "member", Target = "~M:TeamMerge.Tests.Operations.MergeOperationTests.MergeOperation_DoGetLatestOnBranchAsync_WhenCalledAndShouldResolveConflicts_AndEverythingGoesRight_ThenNothingHappens~System.Threading.Tasks.Task")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "VSTHRD200:Use \"Async\" suffix for async methods", Justification = "Test don't need async prefix", Scope = "member", Target = "~M:TeamMerge.Tests.Operations.MergeOperationTests.MergeOperation_DoGetLatestOnBranchAsync_WhenCalledAndShouldResolveConflicts_ButUserCancelsTheResolve_ThenThrowsException~System.Threading.Tasks.Task")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "VSTHRD200:Use \"Async\" suffix for async methods", Justification = "Test don't need async prefix", Scope = "member", Target = "~M:TeamMerge.Tests.Operations.MergeOperationTests.MergeOperation_Execute_WhenCalled_NothingGoesWrong~System.Threading.Tasks.Task")]

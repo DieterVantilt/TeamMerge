@@ -199,7 +199,7 @@ namespace TeamMerge.Merge
 
                 _mergeOperation.MyCurrentAction += MergeOperation_MyCurrentAction;
 
-                await _mergeOperation.Execute(new MergeModel
+                await _mergeOperation.ExecuteAsync(new MergeModel
                 {
                     WorkspaceModel = SelectedWorkspace,
                     OrderedChangesetIds = orderedSelectedChangesets.Select(x => x.ChangesetId).ToList(),
@@ -253,7 +253,7 @@ namespace TeamMerge.Merge
             {
                 Changesets.Clear();
 
-                var changesets = await _teamService.GetChangesets(SelectedSourceBranch, SelectedTargetBranch);
+                var changesets = await _teamService.GetChangesetsAsync(SelectedSourceBranch, SelectedTargetBranch);
 
                 Changesets = new ObservableCollection<ChangesetModel>(changesets);
 
@@ -293,9 +293,9 @@ namespace TeamMerge.Merge
 
             await SetBusyWhileExecutingAsync(async () =>
             {
-                var projectNames = await _teamService.GetProjectNames();
+                var projectNames = await _teamService.GetProjectNamesAsync();
 
-                Workspaces = new ObservableCollection<WorkspaceModel>(await _teamService.AllWorkspaces());
+                Workspaces = new ObservableCollection<WorkspaceModel>(await _teamService.AllWorkspacesAsync());
                 SelectedWorkspace = _teamService.CurrentWorkspace() ?? Workspaces.First();
 
                 projectNames.ToList().ForEach(x => ProjectNames.Add(x));

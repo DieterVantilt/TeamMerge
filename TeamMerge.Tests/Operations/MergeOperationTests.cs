@@ -77,7 +77,7 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<Branch>(ConfigKeys.LATEST_VERSION_FOR_BRANCH))
                 .Return(Branch.Source);
 
-            _mergeService.Expect(x => x.GetLatestVersion(_currentWorkspaceModel, _sourceBranchName))
+            _mergeService.Expect(x => x.GetLatestVersionAsync(_currentWorkspaceModel, _sourceBranchName))
                 .Return(Task.FromResult(true));
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS))
@@ -96,13 +96,13 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<Branch>(ConfigKeys.LATEST_VERSION_FOR_BRANCH))
                 .Return(Branch.Target);
 
-            _mergeService.Expect(x => x.GetLatestVersion(_currentWorkspaceModel, _targetbranchName))
+            _mergeService.Expect(x => x.GetLatestVersionAsync(_currentWorkspaceModel, _targetbranchName))
                 .Return(Task.FromResult(true));
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS))
                 .Return(true);
 
-            _mergeService.Expect(x => x.ResolveConflicts(_currentWorkspaceModel))
+            _mergeService.Expect(x => x.ResolveConflictsAsync(_currentWorkspaceModel))
                 .Return(Task.FromResult(0));
 
             _mergeService.Expect(x => x.HasConflicts(_currentWorkspaceModel))
@@ -120,13 +120,13 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<Branch>(ConfigKeys.LATEST_VERSION_FOR_BRANCH))
                 .Return(Branch.SourceAndTarget);
 
-            _mergeService.Expect(x => x.GetLatestVersion(_currentWorkspaceModel, _targetbranchName, _sourceBranchName))
+            _mergeService.Expect(x => x.GetLatestVersionAsync(_currentWorkspaceModel, _targetbranchName, _sourceBranchName))
                 .Return(Task.FromResult(true));
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS))
                 .Return(true);
 
-            _mergeService.Expect(x => x.ResolveConflicts(_currentWorkspaceModel))
+            _mergeService.Expect(x => x.ResolveConflictsAsync(_currentWorkspaceModel))
                 .Return(Task.CompletedTask);
 
             _mergeService.Expect(x => x.HasConflicts(_currentWorkspaceModel))
@@ -250,11 +250,11 @@ namespace TeamMerge.Tests.Operations
                 .Return(CheckInComment.None);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(string.Empty);
 
-            _mergeService.Expect(x => x.MergeBranches(_currentWorkspaceModel, _sourceBranchName, _targetbranchName, 2, 8)).Return(Task.CompletedTask);
-            _mergeService.Expect(x => x.GetWorkItemIds(orderedChangesetIds, excludedWorkItemTypes)).Return(Task.FromResult<IEnumerable<int>>(workItemsToAdd));
+            _mergeService.Expect(x => x.MergeBranchesAsync(_currentWorkspaceModel, _sourceBranchName, _targetbranchName, 2, 8)).Return(Task.CompletedTask);
+            _mergeService.Expect(x => x.GetWorkItemIdsAsync(orderedChangesetIds, excludedWorkItemTypes)).Return(Task.FromResult<IEnumerable<int>>(workItemsToAdd));
             _mergeService.Expect(x => x.AddWorkItemsAndCommentThenNavigate(_currentWorkspaceModel, string.Empty, workItemsToAdd));
 
-            await _sut.Execute(new MergeModel
+            await _sut.ExecuteAsync(new MergeModel
             {
                 OrderedChangesetIds = new List<int> { 2, 5, 7, 8 },
                 SourceBranch = _sourceBranchName,

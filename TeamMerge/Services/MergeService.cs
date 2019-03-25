@@ -15,10 +15,10 @@ namespace TeamMerge.Services
     {
         bool HasIncludedPendingChanges(WorkspaceModel workspaceModel);
         bool HasConflicts(WorkspaceModel workspaceModel);
-        Task<bool> GetLatestVersion(WorkspaceModel workspaceModel, params string[] branchNames);
-        Task ResolveConflicts(WorkspaceModel workspaceModel);
-        Task MergeBranches(WorkspaceModel workspaceModel, string source, string target, int from, int to);
-        Task<IEnumerable<int>> GetWorkItemIds(IEnumerable<int> changesetIds, IEnumerable<string> workItemTypesToExclude);
+        Task<bool> GetLatestVersionAsync(WorkspaceModel workspaceModel, params string[] branchNames);
+        Task ResolveConflictsAsync(WorkspaceModel workspaceModel);
+        Task MergeBranchesAsync(WorkspaceModel workspaceModel, string source, string target, int from, int to);
+        Task<IEnumerable<int>> GetWorkItemIdsAsync(IEnumerable<int> changesetIds, IEnumerable<string> workItemTypesToExclude);
         void AddWorkItemsAndCommentThenNavigate(WorkspaceModel workspaceModel, string comment, IEnumerable<int> workItemIds);        
     }
 
@@ -52,14 +52,14 @@ namespace TeamMerge.Services
             return workspace.QueryConflicts(new string[0], true).Any();
         }
 
-        public async Task<bool> GetLatestVersion(WorkspaceModel workspaceModel, params string[] branchNames)
+        public async Task<bool> GetLatestVersionAsync(WorkspaceModel workspaceModel, params string[] branchNames)
         {
             var workspace = _tfvcService.GetWorkspace(workspaceModel.Name, workspaceModel.OwnerName);
 
-            return await _tfvcService.GetLatestVersion(workspace, branchNames);
+            return await _tfvcService.GetLatestVersionAsync(workspace, branchNames);
         }
 
-        public async Task ResolveConflicts(WorkspaceModel workspaceModel)
+        public async Task ResolveConflictsAsync(WorkspaceModel workspaceModel)
         {
             var workspace = _tfvcService.GetWorkspace(workspaceModel.Name, workspaceModel.OwnerName);
 
@@ -75,14 +75,14 @@ namespace TeamMerge.Services
             }
         }  
 
-        public async Task MergeBranches(WorkspaceModel workspaceModel, string source, string target, int from, int to)
+        public async Task MergeBranchesAsync(WorkspaceModel workspaceModel, string source, string target, int from, int to)
         {
             var workspace = _tfvcService.GetWorkspace(workspaceModel.Name, workspaceModel.OwnerName);
 
-            await _tfvcService.Merge(workspace, source, target, from, to);
+            await _tfvcService.MergeAsync(workspace, source, target, from, to);
         }
 
-        public async Task<IEnumerable<int>> GetWorkItemIds(IEnumerable<int> changesetIds, IEnumerable<string> workItemTypesToExclude)
+        public async Task<IEnumerable<int>> GetWorkItemIdsAsync(IEnumerable<int> changesetIds, IEnumerable<string> workItemTypesToExclude)
         {
             var workItemIds = new ConcurrentBag<int>();
 
@@ -92,7 +92,7 @@ namespace TeamMerge.Services
 
             foreach (var changesetId in changesetIds)
             {
-                tasks.Add(GetAssociatedWorkItemIds(changesetId, workItemIds, workItemTypesToExclude));
+                tasks.Add(GetAssociatedWorkItemIdsAsync(changesetId, workItemIds, workItemTypesToExclude));
             }
 
             await Task.WhenAll(tasks.ToArray());
@@ -100,9 +100,9 @@ namespace TeamMerge.Services
             return workItemIds.Distinct().OrderBy(x => x).ToList();
         }
 
-        private async Task GetAssociatedWorkItemIds(int changesetId, ConcurrentBag<int> concurrentbag, IEnumerable<string> workItemTypesToExclude)
+        private async Task GetAssociatedWorkItemIdsAsync(int changesetId, ConcurrentBag<int> concurrentbag, IEnumerable<string> workItemTypesToExclude)
         {
-            var changeset = await _tfvcService.GetChangeset(changesetId);           
+            var changeset = await _tfvcService.GetChangesetAsync(changesetId);           
 
             var associatedWorkItemIds = changeset.AssociatedWorkItems?
                 .Where(x => !workItemTypesToExclude.Contains(x.WorkItemType))

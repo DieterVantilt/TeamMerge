@@ -15,7 +15,7 @@ namespace TeamMerge.Operations
     public interface IMergeOperation
     {
         event EventHandler<string> MyCurrentAction;
-        Task Execute(MergeModel mergeModel);
+        Task ExecuteAsync(MergeModel mergeModel);
     }
 
     public class MergeOperation
@@ -32,16 +32,16 @@ namespace TeamMerge.Operations
 
         public event EventHandler<string> MyCurrentAction;
 
-        public async Task Execute(MergeModel mergeModel)
+        public async Task ExecuteAsync(MergeModel mergeModel)
         {
             await CheckIfWorkspaceHasIncludedPendingChangesAsync(mergeModel.WorkspaceModel);
 
             await DoGetLatestOnBranchAsync(mergeModel.WorkspaceModel, mergeModel.SourceBranch, mergeModel.TargetBranch);
 
             SetCurrentAction(Resources.MergingBranches);
-            await _mergeService.MergeBranches(mergeModel.WorkspaceModel, mergeModel.SourceBranch, mergeModel.TargetBranch, mergeModel.OrderedChangesetIds.First(), mergeModel.OrderedChangesetIds.Last());
+            await _mergeService.MergeBranchesAsync(mergeModel.WorkspaceModel, mergeModel.SourceBranch, mergeModel.TargetBranch, mergeModel.OrderedChangesetIds.First(), mergeModel.OrderedChangesetIds.Last());
 
-            var workItemIds = await _mergeService.GetWorkItemIds(mergeModel.OrderedChangesetIds, _configManager.GetValue<IEnumerable<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE));
+            var workItemIds = await _mergeService.GetWorkItemIdsAsync(mergeModel.OrderedChangesetIds, _configManager.GetValue<IEnumerable<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE));
             var comment = GetCommentForMerge(mergeModel.SourceBranch, mergeModel.TargetBranch, workItemIds);
 
             _mergeService.AddWorkItemsAndCommentThenNavigate(mergeModel.WorkspaceModel, comment, workItemIds);
@@ -72,7 +72,7 @@ namespace TeamMerge.Operations
                 SetCurrentAction(string.Format(CultureInfo.CurrentUICulture, Resources.GettingLatestVersionForBranch, latestVersionForBranches.GetDescription().ToLower()));
                 var branchNamesForLatestVersion = GetBranchesForExecutingGetLatest(latestVersionForBranches, sourceBranch, targetBranch);
 
-                var hasConflicts = await _mergeService.GetLatestVersion(workspaceModel, branchNamesForLatestVersion.ToArray());                
+                var hasConflicts = await _mergeService.GetLatestVersionAsync(workspaceModel, branchNamesForLatestVersion.ToArray());                
 
                 if (hasConflicts)
                 {
@@ -80,7 +80,7 @@ namespace TeamMerge.Operations
 
                     if (shouldResolveConflicts)
                     {
-                        await _mergeService.ResolveConflicts(workspaceModel);
+                        await _mergeService.ResolveConflictsAsync(workspaceModel);
 
                         if (_mergeService.HasConflicts(workspaceModel))
                         {

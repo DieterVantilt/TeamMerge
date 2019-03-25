@@ -46,9 +46,9 @@ namespace TeamMerge.Tests.Merge
             var projectName1 = "Project1";
             var projectName2 = "Project2";
 
-            _teamService.Expect(x => x.GetProjectNames()).Return(Task.FromResult<IEnumerable<string>>(new List<string> { projectName1, projectName2 }));
+            _teamService.Expect(x => x.GetProjectNamesAsync()).Return(Task.FromResult<IEnumerable<string>>(new List<string> { projectName1, projectName2 }));
 
-            _teamService.Expect(x => x.AllWorkspaces()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel }));
+            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(workspaceModel);
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(false);
@@ -78,9 +78,9 @@ namespace TeamMerge.Tests.Merge
                 TargetBranch = selectedTarget
             };
 
-            _teamService.Expect(x => x.GetProjectNames()).Return(Task.FromResult<IEnumerable<string>>(new List<string> { projectName }));
+            _teamService.Expect(x => x.GetProjectNamesAsync()).Return(Task.FromResult<IEnumerable<string>>(new List<string> { projectName }));
 
-            _teamService.Expect(x => x.AllWorkspaces()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel }));
+            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(workspaceModel);
             _teamService.Expect(x => x.GetBranches(projectName)).Return(new List<BranchModel>() { new BranchModel() { Name = selectedSource, Branches = new List<string>() { selectedTarget } } });
 
@@ -103,9 +103,9 @@ namespace TeamMerge.Tests.Merge
             const string selectedSource = "$/TFS/Dev";
             const string selectedTarget = "$/TFS/Main";
 
-            _teamService.Expect(x => x.GetProjectNames()).Return(Task.FromResult<IEnumerable<string>>(new List<string> { projectName }));
+            _teamService.Expect(x => x.GetProjectNamesAsync()).Return(Task.FromResult<IEnumerable<string>>(new List<string> { projectName }));
 
-            _teamService.Expect(x => x.AllWorkspaces()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel }));
+            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(workspaceModel);
             _teamService.Expect(x => x.GetBranches(projectName)).Return(new List<BranchModel>() { new BranchModel() { Name = selectedSource, Branches = new List<string>() { selectedTarget } } });
 
@@ -129,9 +129,9 @@ namespace TeamMerge.Tests.Merge
             var workspaceModel1 = new WorkspaceModel { Name = "Go test1", OwnerName = "14590" };
             var workspaceModel2 = new WorkspaceModel { Name = "Go test2", OwnerName = "14525" };
 
-            _teamService.Expect(x => x.GetProjectNames()).Return(Task.FromResult(Enumerable.Empty<string>()));
+            _teamService.Expect(x => x.GetProjectNamesAsync()).Return(Task.FromResult(Enumerable.Empty<string>()));
 
-            _teamService.Expect(x => x.AllWorkspaces()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel1, workspaceModel2 }));
+            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel1, workspaceModel2 }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(workspaceModel2);
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(false);
@@ -151,9 +151,9 @@ namespace TeamMerge.Tests.Merge
             var workspaceModel1 = new WorkspaceModel { Name = "Go test1", OwnerName = "14590" };
             var workspaceModel2 = new WorkspaceModel { Name = "Go test2", OwnerName = "14525" };
 
-            _teamService.Expect(x => x.GetProjectNames()).Return(Task.FromResult(Enumerable.Empty<string>()));
+            _teamService.Expect(x => x.GetProjectNamesAsync()).Return(Task.FromResult(Enumerable.Empty<string>()));
 
-            _teamService.Expect(x => x.AllWorkspaces()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel1, workspaceModel2 }));
+            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel1, workspaceModel2 }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(null);
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(false);
@@ -202,9 +202,9 @@ namespace TeamMerge.Tests.Merge
             var branch = new BranchModel { Branches = new List<string> { "SourceBranch1", "SourceBranch2" }, Name = "Branch1" };
             var workspaceModel1 = new WorkspaceModel { Name = "Go test1", OwnerName = "14590" };
 
-            _teamService.Expect(x => x.GetProjectNames()).Return(Task.FromResult<IEnumerable<string>>(new List<string> { "WrongProjectName", projectName }));
+            _teamService.Expect(x => x.GetProjectNamesAsync()).Return(Task.FromResult<IEnumerable<string>>(new List<string> { "WrongProjectName", projectName }));
 
-            _teamService.Expect(x => x.AllWorkspaces()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel1 }));
+            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel1 }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(null);
 
             _teamService.Expect(x => x.GetBranches(projectName)).Return(new List<BranchModel> { branch });

@@ -28,6 +28,8 @@ namespace TeamMerge.Services
 
         public SolutionModel GetActiveSolution()
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+
             var dte = (DTE)_serviceProvider.GetService(typeof(DTE));
 
             return dte.Solution != null ? new SolutionModel(dte.Solution.FullName) : null;

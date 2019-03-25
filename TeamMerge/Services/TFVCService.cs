@@ -11,15 +11,15 @@ namespace TeamMerge.Services
 {
     public interface ITFVCService
     {
-        Task<Changeset> GetChangeset(int changesetId);
-        Task<IEnumerable<Changeset>> GetMergeCandidates(string sourceBranch, string targetBranch);
+        Task<Changeset> GetChangesetAsync(int changesetId);
+        Task<IEnumerable<Changeset>> GetMergeCandidatesAsync(string sourceBranch, string targetBranch);
         IEnumerable<BranchObject> ListBranches(string projectName);
-        Task<IEnumerable<TeamProject>> ListTfsProjects();
-        Task Merge(Workspace workspace, string source, string target, int changesetFrom, int changesetTo);
-        Task<IEnumerable<Workspace>> AllWorkspaces();
+        Task<IEnumerable<TeamProject>> ListTfsProjectsAsync();
+        Task MergeAsync(Workspace workspace, string source, string target, int changesetFrom, int changesetTo);
+        Task<IEnumerable<Workspace>> AllWorkspacesAsync();
         Workspace CurrentWorkspace();
         Workspace GetWorkspace(string workspaceName, string workspaceOwner);
-        Task<bool> GetLatestVersion(Workspace workspace, params string[] branchNames);
+        Task<bool> GetLatestVersionAsync(Workspace workspace, params string[] branchNames);
         IEnumerable<string> GetAllWorkItemTypes();
     }
 
@@ -36,7 +36,7 @@ namespace TeamMerge.Services
             _versionControlServer = context.TeamProjectCollection.GetService<VersionControlServer>();
         }
 
-        public async Task<IEnumerable<TeamProject>> ListTfsProjects()
+        public async Task<IEnumerable<TeamProject>> ListTfsProjectsAsync()
         {
             return await Task.Run(() => _versionControlServer.GetAllTeamProjects(true));
         }
@@ -59,26 +59,26 @@ namespace TeamMerge.Services
             return result;
         }
 
-        public async Task Merge(Workspace workspace, string source, string target, int changesetFrom, int changesetTo)
+        public async Task MergeAsync(Workspace workspace, string source, string target, int changesetFrom, int changesetTo)
         {
             await Task.Run(() => workspace.Merge(source, target, new ChangesetVersionSpec(changesetFrom), new ChangesetVersionSpec(changesetTo), LockLevel.None, RecursionType.Full, MergeOptions.None));
         }
 
-        public async Task<Changeset> GetChangeset(int changesetId)
+        public async Task<Changeset> GetChangesetAsync(int changesetId)
         {
             var changeset = await Task.Run(() => _versionControlServer.GetChangeset(changesetId, false, false));
 
             return changeset;
         }
 
-        public async Task<IEnumerable<Changeset>> GetMergeCandidates(string sourceBranch, string targetBranch)
+        public async Task<IEnumerable<Changeset>> GetMergeCandidatesAsync(string sourceBranch, string targetBranch)
         {
             var mergeCandidates = await Task.Run(() => _versionControlServer.GetMergeCandidates(sourceBranch, targetBranch, RecursionType.Full));
 
             return mergeCandidates.Select(x => x.Changeset).ToList();
         }
 
-        public async Task<IEnumerable<Workspace>> AllWorkspaces()
+        public async Task<IEnumerable<Workspace>> AllWorkspacesAsync()
         {
             return await Task.Run(() => _versionControlServer.QueryWorkspaces(null, null, Environment.MachineName));
         }
@@ -104,7 +104,7 @@ namespace TeamMerge.Services
             return _versionControlServer.GetWorkspace(workspaceName, workspaceOwner);
         }
 
-        public async Task<bool> GetLatestVersion(Workspace workspace, params string[] branchNames)
+        public async Task<bool> GetLatestVersionAsync(Workspace workspace, params string[] branchNames)
         {
             var getRequests = branchNames.Select(x => new GetRequest(x, RecursionType.Full, VersionSpec.Latest));
 
