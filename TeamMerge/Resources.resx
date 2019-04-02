@@ -228,4 +228,7 @@
   <data name="InvalidFormat" xml:space="preserve">
     <value>Invalid format</value>
   </data>
+  <data name="Workspace" xml:space="preserve">
+    <value>Workspace</value>
+  </data>
 </root>

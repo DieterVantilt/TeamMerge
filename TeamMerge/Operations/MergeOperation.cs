@@ -1,14 +1,15 @@
-﻿using System;
+﻿using Domain.Entities;
+using Logic.Services;
+using Shared.Utils;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using TeamMerge.Exceptions;
 using TeamMerge.Helpers;
-using TeamMerge.Services;
-using TeamMerge.Services.Models;
 using TeamMerge.Settings.Enums;
-using TeamMerge.Utils;
+using Branch = TeamMerge.Settings.Enums.Branch;
 
 namespace TeamMerge.Operations
 {
@@ -22,11 +23,13 @@ namespace TeamMerge.Operations
         : IMergeOperation
     {
         private readonly IMergeService _mergeService;
+        private readonly ITeamExplorerService _teamExplorerService;
         private readonly IConfigManager _configManager;
 
-        public MergeOperation(IMergeService mergeService, IConfigManager configManager)
+        public MergeOperation(IMergeService mergeService, ITeamExplorerService teamExplorerService, IConfigManager configManager)
         {
             _mergeService = mergeService;
+            _teamExplorerService = teamExplorerService;
             _configManager = configManager;
         }
 
@@ -44,10 +47,10 @@ namespace TeamMerge.Operations
             var workItemIds = await _mergeService.GetWorkItemIdsAsync(mergeModel.OrderedChangesetIds, _configManager.GetValue<IEnumerable<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE));
             var comment = GetCommentForMerge(mergeModel.SourceBranch, mergeModel.TargetBranch, workItemIds);
 
-            _mergeService.AddWorkItemsAndCommentThenNavigate(mergeModel.WorkspaceModel, comment, workItemIds);
+            _teamExplorerService.AddWorkItemsAndCommentThenNavigate(mergeModel.WorkspaceModel, comment, workItemIds);
         }
 
-        private async Task CheckIfWorkspaceHasIncludedPendingChangesAsync(WorkspaceModel workspaceModel)
+        private async Task CheckIfWorkspaceHasIncludedPendingChangesAsync(Workspace workspaceModel)
         {
             var shouldCheckForPendingChanges = _configManager.GetValue<bool>(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES);
 
@@ -63,7 +66,7 @@ namespace TeamMerge.Operations
             }
         }
 
-        private async Task DoGetLatestOnBranchAsync(WorkspaceModel workspaceModel, string sourceBranch, string targetBranch)
+        private async Task DoGetLatestOnBranchAsync(Workspace workspaceModel, string sourceBranch, string targetBranch)
         {
             var latestVersionForBranches = _configManager.GetValue<Branch>(ConfigKeys.LATEST_VERSION_FOR_BRANCH);
 
@@ -132,7 +135,7 @@ namespace TeamMerge.Operations
 
     public class MergeModel
     {
-        public WorkspaceModel WorkspaceModel { get; set; }
+        public Workspace WorkspaceModel { get; set; }
         public IEnumerable<int> OrderedChangesetIds { get; set; }
         public string SourceBranch { get; set; }
         public string TargetBranch { get; set; }

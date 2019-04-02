@@ -1,5 +1,5 @@
-﻿using System.Collections.ObjectModel;
-using TeamMerge.Services.Models;
+﻿using Domain.Entities;
+using System.Collections.ObjectModel;
 
 namespace TeamMerge.Merge.Context
 {
@@ -11,6 +11,6 @@ namespace TeamMerge.Merge.Context
 
         public string SelectedProjectName { get; set; }
 
-        public ObservableCollection<ChangesetModel> Changesets { get; set; }
+        public ObservableCollection<Changeset> Changesets { get; set; }
     }
 }

@@ -1,8 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using Domain.Entities;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using TeamMerge.Services.Models;
 
 namespace TeamMerge.UI
 {
@@ -23,12 +23,12 @@ namespace TeamMerge.UI
             {
                 if (!DisableAutoMergeListBox)
                 {
-                    foreach (var removedItem in e.RemovedItems.Cast<ChangesetModel>())
+                    foreach (var removedItem in e.RemovedItems.Cast<Changeset>())
                     {
                         SelectedItemsList.Remove(removedItem);
                     }
 
-                    foreach (var addItem in e.AddedItems.Cast<ChangesetModel>())
+                    foreach (var addItem in e.AddedItems.Cast<Changeset>())
                     {
                         SelectedItemsList.Add(addItem);
                     }
@@ -36,14 +36,14 @@ namespace TeamMerge.UI
             }
         }
 
-        public ObservableCollection<ChangesetModel> SelectedItemsList
+        public ObservableCollection<Changeset> SelectedItemsList
         {
-            get { return (ObservableCollection<ChangesetModel>)GetValue(SelectedItemsListProperty); }
+            get { return (ObservableCollection<Changeset>)GetValue(SelectedItemsListProperty); }
             set { SetValue(SelectedItemsListProperty, value); }
         }
 
         public static readonly DependencyProperty SelectedItemsListProperty =
-           DependencyProperty.Register(nameof(SelectedItemsList), typeof(ObservableCollection<ChangesetModel>), typeof(ChangesetListBox), new PropertyMetadata(null, null, CoerceVallBack));
+           DependencyProperty.Register(nameof(SelectedItemsList), typeof(ObservableCollection<Changeset>), typeof(ChangesetListBox), new PropertyMetadata(null, null, CoerceVallBack));
 
         private static object CoerceVallBack(DependencyObject d, object baseValue)
         {

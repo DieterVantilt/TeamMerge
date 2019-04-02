@@ -71,7 +71,8 @@
     <Compile Include="Helpers\CommentOutputHelper.cs" />
     <Compile Include="Helpers\EnumExtensions.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
-    <Compile Include="Helpers\VersionControlHelper.cs" />
+    <Compile Include="Merge\TeamMergeSectionVS2019.cs" />
+    <Compile Include="Merge\TeamMergeViewModel2019.cs" />
     <Compile Include="Settings\Dialogs\SettingsDialog.xaml.cs">
       <DependentUpon>SettingsDialog.xaml</DependentUpon>
     </Compile>
@@ -80,11 +81,11 @@
     <Compile Include="Settings\Enums\CheckInComment.cs" />
     <Compile Include="Settings\Models\SettingsModel.cs" />
     <Compile Include="Merge\Context\TeamMergeContext.cs" />
-    <Compile Include="Merge\TeamMergeSection.cs" />
+    <Compile Include="Merge\TeamMergeSectionVS2017.cs" />
     <Compile Include="Merge\TeamMergeView.xaml.cs">
       <DependentUpon>TeamMergeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Merge\TeamMergeViewModel.cs" />
+    <Compile Include="Merge\TeamMergeViewModel2017.cs" />
     <Compile Include="Operations\MergeOperation.cs" />
     <Compile Include="ResourceImage.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -96,34 +97,22 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Services\Models\BranchModel.cs" />
-    <Compile Include="Services\MergeService.cs" />
-    <Compile Include="Services\Models\ChangesetModel.cs" />
-    <Compile Include="Services\Models\DefaultMergeSettings.cs" />
-    <Compile Include="Services\Models\SolutionModel.cs" />
-    <Compile Include="Services\Models\WorkspaceModel.cs" />
-    <Compile Include="Services\SolutionService.cs" />
-    <Compile Include="Services\TeamService.cs" />
-    <Compile Include="Services\TFVCService.cs" />
     <Compile Include="Settings\Views\GeneralSettingsView.xaml.cs">
       <DependentUpon>GeneralSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings\Views\MergeSettingsView.xaml.cs">
       <DependentUpon>MergeSettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TeamMergeNavigationItem.cs" />
+    <Compile Include="TeamMergeNavigationItem2019.cs" />
+    <Compile Include="TeamMergeNavigationItem2017.cs" />
     <Compile Include="TeamMergePackage.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TeamMergePage.cs" />
+    <Compile Include="TeamMergePage2019.cs" />
+    <Compile Include="TeamMergePage2017.cs" />
     <Compile Include="UI\ChangesetListBox.cs" />
-    <Compile Include="Utils\ConfigFileHelper.cs" />
-    <Compile Include="Utils\ConfigKeys.cs" />
-    <Compile Include="Utils\ConfigManager.cs" />
     <Compile Include="Utils\DialogHelper.cs" />
-    <Compile Include="Utils\FileHelper.cs" />
     <Compile Include="Utils\LocalizedDescriptionAttribute.cs" />
-    <Compile Include="Utils\Logger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
@@ -164,59 +153,19 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <Choose>
-    <When Condition=" $(VisualStudioVersion) == '15.0'">
-      <ItemGroup>
-        <Reference Include="Microsoft.TeamFoundation.Client, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\Lib\15.0\Microsoft.TeamFoundation.Client.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.TeamFoundation.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\Lib\15.0\Microsoft.TeamFoundation.Common.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.TeamFoundation.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\Lib\15.0\Microsoft.TeamFoundation.Controls.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.TeamFoundation.VersionControl.Client">
-          <HintPath>..\Lib\15.0\Microsoft.TeamFoundation.VersionControl.Client.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.TeamFoundation.VersionControl.Common">
-          <HintPath>..\Lib\15.0\Microsoft.TeamFoundation.VersionControl.Common.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Client">
-          <HintPath>..\Lib\15.0\Microsoft.TeamFoundation.WorkItemTracking.Client.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-    <When Condition=" $(VisualStudioVersion) == '16.0'">
-      <ItemGroup>
-        <Reference Include="Microsoft.TeamFoundation.Client, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\Lib\16.0\Microsoft.TeamFoundation.Client.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.TeamFoundation.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\Lib\16.0\Microsoft.TeamFoundation.Common.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.TeamFoundation.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\Lib\16.0\Microsoft.TeamFoundation.Controls.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.TeamFoundation.VersionControl.Client">
-          <HintPath>..\Lib\16.0\Microsoft.TeamFoundation.VersionControl.Client.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.TeamFoundation.VersionControl.Common">
-          <HintPath>..\Lib\16.0\Microsoft.TeamFoundation.VersionControl.Common.dll</HintPath>
-        </Reference>
-        <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Client">
-          <HintPath>..\Lib\16.0\Microsoft.TeamFoundation.WorkItemTracking.Client.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <ItemGroup>    
+  <ItemGroup>
+    <Reference Include="Microsoft.TeamFoundation.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\Lib\15.0\Microsoft.TeamFoundation.Controls.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Aliases>VS2017</Aliases>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Controls16, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\Lib\16.0\Microsoft.TeamFoundation.Controls16.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Aliases>VS2019</Aliases>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -251,6 +200,28 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="15.9.3" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.0.2264" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <Project>{5DAD4C8A-6693-4A8C-95F2-C27F4224823C}</Project>
+      <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicVS2017\LogicVS2017.csproj">
+      <Project>{7f37744e-cd4a-47bf-8c6d-b1713fb19681}</Project>
+      <Name>LogicVS2017</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogicVS2019\LogicVS2019.csproj">
+      <Project>{3d402fbe-fb2b-40fa-b3aa-cf42ee3df169}</Project>
+      <Name>LogicVS2019</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logic\Logic.csproj">
+      <Project>{D46962B3-C7E3-4919-8711-BDD73EA5C3AA}</Project>
+      <Name>Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Shared\Shared.csproj">
+      <Project>{e01c2e81-97d5-4813-ae0a-1c79733eab4c}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

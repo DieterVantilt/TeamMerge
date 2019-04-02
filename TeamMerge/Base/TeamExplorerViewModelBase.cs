@@ -1,8 +1,9 @@
-﻿using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
+﻿extern alias VS2017;
+using Shared.Utils;
 using System;
 using System.Threading.Tasks;
 using TeamMerge.Exceptions;
-using TeamMerge.Utils;
+using VS2017::Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 
 namespace TeamMerge.Base
 {

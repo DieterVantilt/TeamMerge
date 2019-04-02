@@ -46,9 +46,6 @@
         <Reference Include="Microsoft.TeamFoundation.VersionControl.Client">
           <HintPath>..\Lib\15.0\Microsoft.TeamFoundation.VersionControl.Client.dll</HintPath>
         </Reference>
-        <Reference Include="Microsoft.VisualStudio.Services.Common">
-          <HintPath>..\Lib\15.0\Microsoft.VisualStudio.Services.Common.dll</HintPath>
-        </Reference>
       </ItemGroup>
     </When>
     <When Condition=" $(VisualStudioVersion) == '16.0'">
@@ -59,13 +56,10 @@
         <Reference Include="Microsoft.TeamFoundation.VersionControl.Client">
           <HintPath>..\Lib\16.0\Microsoft.TeamFoundation.VersionControl.Client.dll</HintPath>
         </Reference>
-        <Reference Include="Microsoft.VisualStudio.Services.Common">
-          <HintPath>..\Lib\16.0\Microsoft.VisualStudio.Services.Common.dll</HintPath>
-        </Reference>
       </ItemGroup>
     </When>
   </Choose>
-  <ItemGroup>   
+  <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />

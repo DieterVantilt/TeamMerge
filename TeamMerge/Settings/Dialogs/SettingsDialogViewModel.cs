@@ -1,4 +1,7 @@
-﻿using Microsoft.TeamFoundation.MVVM;
+﻿extern alias VS2017;
+
+using Logic.Services;
+using Shared.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,10 +11,9 @@ using System.Windows;
 using System.Windows.Input;
 using TeamMerge.Commands;
 using TeamMerge.Helpers;
-using TeamMerge.Services;
 using TeamMerge.Settings.Enums;
 using TeamMerge.Settings.Models;
-using TeamMerge.Utils;
+using VS2017::Microsoft.TeamFoundation.MVVM;
 using RelayCommand = TeamMerge.Commands.RelayCommand;
 
 namespace TeamMerge.Settings.Dialogs

@@ -6,7 +6,6 @@
              xmlns:ui="clr-namespace:TeamMerge.UI"
              xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              xmlns:resources="clr-namespace:TeamMerge"
-             xmlns:teamexplorer="clr-namespace:Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;assembly=Microsoft.TeamFoundation.Controls"
              xmlns:converters="clr-namespace:TeamMerge.Converters"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -56,24 +55,15 @@
 
     <StackPanel IsEnabled="{Binding IsBusy, Converter={StaticResource InvertedBooleanConverter}}"
                 Margin="5">
-        <DockPanel>
-            <teamexplorer:DropDownLink ShowArrow="True"
-                                   Text="{Binding SelectedWorkspace.Name}"
-                                   Margin="0 0 0 10">
-                <teamexplorer:DropDownLink.DropDownMenu>
-                    <ContextMenu ItemsSource="{Binding Workspaces}">
-                        <ContextMenu.ItemTemplate>
-                            <DataTemplate>
-                                <MenuItem Command="{Binding DataContext.SelectWorkspaceCommand,
-                                              RelativeSource={RelativeSource AncestorType=ContextMenu,
-                                                                             Mode=FindAncestor}}"
-                                      CommandParameter="{Binding .}"
-                                      Header="{Binding Name}"/>
-                            </DataTemplate>
-                        </ContextMenu.ItemTemplate>
-                    </ContextMenu>
-                </teamexplorer:DropDownLink.DropDownMenu>
-            </teamexplorer:DropDownLink>
+        <TextBlock Text="{x:Static resources:Resources.Workspace}" />
+        <DockPanel  Margin="0 0 0 20">
+
+            <ComboBox SelectedItem="{Binding SelectedWorkspace}"
+                      Margin="0 0 0 0"
+                      DisplayMemberPath="Name"
+                      ItemsSource="{Binding Workspaces}">
+
+            </ComboBox>
 
             <Button Command="{Binding OpenSettingsCommand}" Content="{x:Static resources:Resources.Settings}" HorizontalAlignment="Right"/>
         </DockPanel>
