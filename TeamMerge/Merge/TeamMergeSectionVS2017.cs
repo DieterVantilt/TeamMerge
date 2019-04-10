@@ -5,11 +5,12 @@ using VS2017.Microsoft.TeamFoundation.Controls;
 using VS2017.Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 using Shared.Utils;
 using TeamMerge.Operations;
-using LogicVS2017.Services;
+using VS2017::LogicVS2017.Services;
+using TeamMerge.Services;
 
 namespace TeamMerge.Merge
 {
-    [TeamExplorerSection(Guids.TeamMergeSectionId, Guids.TeamMergePageId, 10)]
+    [TeamExplorerSection(Guids.VS2017TeamMergeSectionId, Guids.VS2017TeamMergePageId, 10)]
     public class TeamMergeSectionVS2017
         : TeamExplorerSectionBase
     {

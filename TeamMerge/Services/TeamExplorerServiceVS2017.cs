@@ -1,16 +1,15 @@
-﻿using Domain.Entities;
+﻿extern alias VS2017;
+
 using Logic.Services;
-using LogicVS2017.Wrappers;
-using Microsoft.TeamFoundation.Controls;
-using Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
-using Microsoft.TeamFoundation.VersionControl.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Workspace = Domain.Entities.Workspace;
+using VS2017::Microsoft.TeamFoundation.Controls;
+using VS2017::Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 
-namespace LogicVS2017.Services
+namespace TeamMerge.Services
 {
     public class TeamExplorerServiceVS2017
         : ITeamExplorerService
@@ -29,17 +28,18 @@ namespace LogicVS2017.Services
             var workspace = _tfvcService.GetWorkspace(workspaceModel.Name, workspaceModel.OwnerName);
 
             var pendingChangePage = (TeamExplorerPageBase)_teamExplorer.NavigateToPage(new Guid(TeamExplorerPageIds.PendingChanges), null);
-            var pendingChangeModel = (IPendingCheckin)pendingChangePage.Model;
+            var pendingChangeModel = pendingChangePage.Model;
 
             var modelType = pendingChangeModel.GetType();
 
             var propertyInfo = modelType.GetProperty("Workspace");
-            propertyInfo.SetValue(pendingChangeModel, ((WorkspaceWrapper) workspace).Workspace);
+            propertyInfo.SetValue(pendingChangeModel, workspace.GetType().GetProperty("Workspace").GetValue(workspace, null));
 
             var method = modelType.GetMethod("AddWorkItemsByIdAsync", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
             method.Invoke(pendingChangeModel, new object[] { workItemIds.ToArray(), 1 });
 
-            pendingChangeModel.PendingChanges.Comment = comment;
+            var pendingChanges = modelType.GetProperty("PendingChanges").GetValue(pendingChangeModel, null);
+            pendingChanges.GetType().GetProperty("Comment").SetValue(pendingChanges, comment);
         }
     }
 }

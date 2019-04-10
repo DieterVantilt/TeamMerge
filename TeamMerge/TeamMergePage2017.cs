@@ -5,13 +5,13 @@ using VS2017::Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 
 namespace TeamMerge
 {
-    [TeamExplorerPage(Guids.TeamMergePageId)]
-    public class TeamMergePage2017 
+    [TeamExplorerPage(Guids.VS2017TeamMergePageId)]
+    public class TeamMergePage2017
         : TeamExplorerPageBase
     {
         public TeamMergePage2017()
         {
-            Title = Resources.TeamMerge;            
+            Title = Resources.TeamMerge;
         }
     }
 }

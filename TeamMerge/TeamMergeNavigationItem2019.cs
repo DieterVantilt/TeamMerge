@@ -9,7 +9,7 @@ using VS2019::Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 
 namespace TeamMerge
 {
-    [TeamExplorerNavigationItem(Guids.TeamMergeNavigationItemId, 400, TargetPageId = Guids.TeamMergePageId)]
+    [TeamExplorerNavigationItem(Guids.VS2019TeamMergeNavigationItemId, 400, TargetPageId = Guids.VS2019TeamMergePageId)]
     public class TeamMergeNavigationItem2019
         : TeamExplorerNavigationItemBase
     {
@@ -26,7 +26,7 @@ namespace TeamMerge
 
         public override void Execute()
         {
-            TeamExplorerUtils.Instance.NavigateToPage(Guids.TeamMergePageId.ToString(), _serviceProvider, null);
+            TeamExplorerUtils.Instance.NavigateToPage(Guids.VS2019TeamMergePageId.ToString(), _serviceProvider, null);
         }
 
         public override void Invalidate()

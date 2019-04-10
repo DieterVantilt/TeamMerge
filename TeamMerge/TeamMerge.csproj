@@ -73,6 +73,8 @@
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Merge\TeamMergeSectionVS2019.cs" />
     <Compile Include="Merge\TeamMergeViewModel2019.cs" />
+    <Compile Include="Services\TeamExplorerServiceVS2017.cs" />
+    <Compile Include="Services\TeamExplorerServiceVS2019.cs" />
     <Compile Include="Settings\Dialogs\SettingsDialog.xaml.cs">
       <DependentUpon>SettingsDialog.xaml</DependentUpon>
     </Compile>
@@ -154,17 +156,15 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.TeamFoundation.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.TeamFoundation.Controls">
       <HintPath>..\Lib\15.0\Microsoft.TeamFoundation.Controls.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
       <Aliases>VS2017</Aliases>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Controls16, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\Lib\16.0\Microsoft.TeamFoundation.Controls16.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
       <Aliases>VS2019</Aliases>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -209,6 +209,7 @@
     <ProjectReference Include="..\LogicVS2017\LogicVS2017.csproj">
       <Project>{7f37744e-cd4a-47bf-8c6d-b1713fb19681}</Project>
       <Name>LogicVS2017</Name>
+      <Aliases>VS2017</Aliases>
     </ProjectReference>
     <ProjectReference Include="..\LogicVS2019\LogicVS2019.csproj">
       <Project>{3d402fbe-fb2b-40fa-b3aa-cf42ee3df169}</Project>

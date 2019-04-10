@@ -5,7 +5,7 @@ using VS2019::Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 
 namespace TeamMerge
 {
-    [TeamExplorerPage(Guids.TeamMergePageId)]
+    [TeamExplorerPage(Guids.VS2019TeamMergePageId)]
     public class TeamMergePage2019 
         : TeamExplorerPageBase
     {

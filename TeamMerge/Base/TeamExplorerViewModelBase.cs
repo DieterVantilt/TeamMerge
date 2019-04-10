@@ -25,7 +25,7 @@ namespace TeamMerge.Base
             {
                 await task();
             }
-            catch(MergeActionException mergeActionEx)
+            catch (MergeActionException mergeActionEx)
             {
                 ShowMessage(mergeActionEx.Message);
             }

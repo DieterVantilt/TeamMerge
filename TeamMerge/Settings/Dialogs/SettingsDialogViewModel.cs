@@ -1,4 +1,4 @@
-﻿extern alias VS2017;
+﻿extern alias VS2019;
 
 using Logic.Services;
 using Shared.Utils;
@@ -13,7 +13,7 @@ using TeamMerge.Commands;
 using TeamMerge.Helpers;
 using TeamMerge.Settings.Enums;
 using TeamMerge.Settings.Models;
-using VS2017::Microsoft.TeamFoundation.MVVM;
+using VS2019::Microsoft.TeamFoundation.MVVM;
 using RelayCommand = TeamMerge.Commands.RelayCommand;
 
 namespace TeamMerge.Settings.Dialogs

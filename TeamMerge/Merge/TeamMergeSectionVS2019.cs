@@ -9,7 +9,7 @@ using LogicVS2019.Services;
 
 namespace TeamMerge.Merge
 {
-    [TeamExplorerSection(Guids.TeamMergeSectionId, Guids.TeamMergePageId, 10)]
+    [TeamExplorerSection(Guids.VS2019TeamMergeSectionId, Guids.VS2019TeamMergePageId, 10)]
     public class TeamMergeSectionVS2019
         : TeamExplorerSectionBase
     {
