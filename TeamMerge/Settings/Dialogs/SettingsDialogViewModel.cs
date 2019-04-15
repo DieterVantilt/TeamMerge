@@ -1,6 +1,4 @@
-﻿extern alias VS2019;
-
-using Logic.Services;
+﻿using Logic.Services;
 using Shared.Utils;
 using System;
 using System.Collections.Generic;
@@ -9,11 +7,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using TeamMerge.Base;
 using TeamMerge.Commands;
 using TeamMerge.Helpers;
 using TeamMerge.Settings.Enums;
 using TeamMerge.Settings.Models;
-using VS2019::Microsoft.TeamFoundation.MVVM;
 using RelayCommand = TeamMerge.Commands.RelayCommand;
 
 namespace TeamMerge.Settings.Dialogs
@@ -78,11 +76,8 @@ namespace TeamMerge.Settings.Dialogs
                 RaisePropertyChanged(nameof(IsDirty));
             }
         }
-        
-        public string CommentOutput
-        {
-            get { return CommentOutputHelper.GetCheckInComment(Model.CheckInComment, Model.CommenFormat, SOURCE_BRANCH_NAME_EXAMPLE, TARGET_BRANCH_NAME_EXAMPLE, new List<int> { 5, 12, 235 }); }
-        }
+
+        public string CommentOutput => CommentOutputHelper.GetCheckInComment(Model.CheckInComment, Model.CommenFormat, SOURCE_BRANCH_NAME_EXAMPLE, TARGET_BRANCH_NAME_EXAMPLE, new List<int> { 5, 12, 235 });
 
         private void AddWorkItemTypeToExclude(KeyEventArgs obj)
         {

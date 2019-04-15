@@ -1,6 +1,8 @@
-﻿using Microsoft.TeamFoundation.Controls;
+﻿using Domain.Entities;
+using Logic.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
+using Shared.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,16 +10,13 @@ using System.Threading.Tasks;
 using TeamMerge.Merge;
 using TeamMerge.Merge.Context;
 using TeamMerge.Operations;
-using TeamMerge.Services;
-using TeamMerge.Services.Models;
-using TeamMerge.Utils;
 
 namespace TeamMerge.Tests.Merge
 {
     [TestClass]
-    public class TeamMergeViewModelTests
+    public class TeamMergeCommonCommandsViewModelTests
     {
-        private TeamMergeViewModel _sut;
+        private TeamMergeCommonCommandsViewModel _sut;
 
         private ITeamService _teamService;
         private IMergeOperation _mergeOperation;
@@ -36,25 +35,25 @@ namespace TeamMerge.Tests.Merge
             _logger = MockRepository.GenerateStrictMock<ILogger>();
             _solutionService = MockRepository.GenerateStrictMock<ISolutionService>();
 
-            _sut = new TeamMergeViewModel(_teamService, _mergeOperation, _configManager, _logger, _solutionService);
+            _sut = new TeamMergeCommonCommandsViewModel(_teamService, _mergeOperation, _configManager, _logger, _solutionService, SetThingsBusyAndStuffAsync);
         }
 
         [TestMethod]
-        public void TeamMergeViewModel_Initialize_WhenCalled_InitializesTheSelectableProjectNames()
+        public async Task TeamMergeViewModel_Initialize_WhenCalled_InitializesTheSelectableProjectNames_Async()
         {
-            var workspaceModel = new WorkspaceModel { Name = "Go test", OwnerName = "14525" };
+            var workspaceModel = new Workspace { Name = "Go test", OwnerName = "14525" };
             var projectName1 = "Project1";
             var projectName2 = "Project2";
 
             _teamService.Expect(x => x.GetProjectNamesAsync()).Return(Task.FromResult<IEnumerable<string>>(new List<string> { projectName1, projectName2 }));
 
-            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel }));
+            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<Workspace>>(new List<Workspace> { workspaceModel }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(workspaceModel);
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(false);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return(null);
 
-            _sut.Initialize(this, new SectionInitializeEventArgs(_serviceProvider, null));
+            await _sut.InitializeAsync(null);
 
             Assert.AreEqual(2, _sut.ProjectNames.Count);
             Assert.IsTrue(_sut.ProjectNames.Contains(projectName1));
@@ -62,9 +61,9 @@ namespace TeamMerge.Tests.Merge
         }
 
         [TestMethod]
-        public void TeamMergeViewModel_Initialize_WhenSavePerSolution_AndSolutionHasSavedPreferences_ThenRestoreFromSavedPreferences()
+        public async Task TeamMergeViewModel_Initialize_WhenSavePerSolution_AndSolutionHasSavedPreferences_ThenRestoreFromSavedPreferences_Async()
         {
-            var workspaceModel = new WorkspaceModel { Name = "Go test", OwnerName = "14525" };
+            var workspaceModel = new Workspace { Name = "Go test", OwnerName = "14525" };
 
             const string solutionName = "Solution";
             const string projectName = "Project";
@@ -80,15 +79,15 @@ namespace TeamMerge.Tests.Merge
 
             _teamService.Expect(x => x.GetProjectNamesAsync()).Return(Task.FromResult<IEnumerable<string>>(new List<string> { projectName }));
 
-            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel }));
+            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<Workspace>>(new List<Workspace> { workspaceModel }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(workspaceModel);
-            _teamService.Expect(x => x.GetBranches(projectName)).Return(new List<BranchModel>() { new BranchModel() { Name = selectedSource, Branches = new List<string>() { selectedTarget } } });
+            _teamService.Expect(x => x.GetBranches(projectName)).Return(new List<Branch>() { new Branch() { Name = selectedSource, Branches = new List<string>() { selectedTarget } } });
 
             _solutionService.Expect(x => x.GetDefaultMergeSettingsForCurrentSolution()).Return(defaultMergeSetting);
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(true);
 
-            _sut.Initialize(this, new SectionInitializeEventArgs(_serviceProvider, null));
+            await _sut.InitializeAsync(null);
 
             Assert.IsTrue(_sut.SelectedProjectName == projectName);
             Assert.IsTrue(_sut.SelectedSourceBranch == selectedSource);
@@ -96,18 +95,18 @@ namespace TeamMerge.Tests.Merge
         }
 
         [TestMethod]
-        public void TeamMergeViewModel_Initialize_WhenSavePerSolution_ButSolutionHasNoPreferencesYet_ThenRestoreFromDefaultPreference()
+        public async Task TeamMergeViewModel_Initialize_WhenSavePerSolution_ButSolutionHasNoPreferencesYet_ThenRestoreFromDefaultPreference_Async()
         {
-            var workspaceModel = new WorkspaceModel { Name = "Go test", OwnerName = "14525" };
+            var workspaceModel = new Workspace { Name = "Go test", OwnerName = "14525" };
             const string projectName = "Project";
             const string selectedSource = "$/TFS/Dev";
             const string selectedTarget = "$/TFS/Main";
 
             _teamService.Expect(x => x.GetProjectNamesAsync()).Return(Task.FromResult<IEnumerable<string>>(new List<string> { projectName }));
 
-            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel }));
+            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<Workspace>>(new List<Workspace> { workspaceModel }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(workspaceModel);
-            _teamService.Expect(x => x.GetBranches(projectName)).Return(new List<BranchModel>() { new BranchModel() { Name = selectedSource, Branches = new List<string>() { selectedTarget } } });
+            _teamService.Expect(x => x.GetBranches(projectName)).Return(new List<Branch>() { new Branch() { Name = selectedSource, Branches = new List<string>() { selectedTarget } } });
 
             _solutionService.Expect(x => x.GetDefaultMergeSettingsForCurrentSolution()).Return(null);
 
@@ -116,7 +115,7 @@ namespace TeamMerge.Tests.Merge
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.SOURCE_BRANCH)).Return(selectedSource);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.TARGET_BRANCH)).Return(selectedTarget);
 
-            _sut.Initialize(this, new SectionInitializeEventArgs(_serviceProvider, null));
+            await _sut.InitializeAsync(null);
 
             Assert.IsTrue(_sut.SelectedProjectName == projectName);
             Assert.IsTrue(_sut.SelectedSourceBranch == selectedSource);
@@ -124,20 +123,20 @@ namespace TeamMerge.Tests.Merge
         }
 
         [TestMethod]
-        public void TeamMergeViewModel_Initialize_WhenCurrentWorkspaceFound_SetAsSelectedWorkspace()
+        public async Task TeamMergeViewModel_Initialize_WhenCurrentWorkspaceFound_SetAsSelectedWorkspace_Async()
         {
-            var workspaceModel1 = new WorkspaceModel { Name = "Go test1", OwnerName = "14590" };
-            var workspaceModel2 = new WorkspaceModel { Name = "Go test2", OwnerName = "14525" };
+            var workspaceModel1 = new Workspace { Name = "Go test1", OwnerName = "14590" };
+            var workspaceModel2 = new Workspace { Name = "Go test2", OwnerName = "14525" };
 
             _teamService.Expect(x => x.GetProjectNamesAsync()).Return(Task.FromResult(Enumerable.Empty<string>()));
 
-            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel1, workspaceModel2 }));
+            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<Workspace>>(new List<Workspace> { workspaceModel1, workspaceModel2 }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(workspaceModel2);
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(false);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return(null);
 
-            _sut.Initialize(this, new SectionInitializeEventArgs(_serviceProvider, null));
+            await _sut.InitializeAsync(null);
 
             Assert.AreEqual(2, _sut.Workspaces.Count);
             Assert.IsTrue(_sut.Workspaces.Contains(workspaceModel1));
@@ -146,20 +145,20 @@ namespace TeamMerge.Tests.Merge
         }
 
         [TestMethod]
-        public void TeamMergeViewModel_Initialize_WhenCurrentWorkspaceNotFound_SetFirstWorkspaceFromWorkspacesAsSelectedWorkspace()
+        public async Task TeamMergeViewModel_Initialize_WhenCurrentWorkspaceNotFound_SetFirstWorkspaceFromWorkspacesAsSelectedWorkspace_Async()
         {
-            var workspaceModel1 = new WorkspaceModel { Name = "Go test1", OwnerName = "14590" };
-            var workspaceModel2 = new WorkspaceModel { Name = "Go test2", OwnerName = "14525" };
+            var workspaceModel1 = new Workspace { Name = "Go test1", OwnerName = "14590" };
+            var workspaceModel2 = new Workspace { Name = "Go test2", OwnerName = "14525" };
 
             _teamService.Expect(x => x.GetProjectNamesAsync()).Return(Task.FromResult(Enumerable.Empty<string>()));
 
-            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel1, workspaceModel2 }));
+            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<Workspace>>(new List<Workspace> { workspaceModel1, workspaceModel2 }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(null);
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(false);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return(null);
 
-            _sut.Initialize(this, new SectionInitializeEventArgs(_serviceProvider, null));
+            await _sut.InitializeAsync(null);
 
             Assert.AreEqual(2, _sut.Workspaces.Count);
             Assert.IsTrue(_sut.Workspaces.Contains(workspaceModel1));
@@ -168,48 +167,48 @@ namespace TeamMerge.Tests.Merge
         }
 
         [TestMethod]
-        public void TeamMergeViewModel_Initialize_WhenConfigurationFound_ThenSetsConfigurationData()
+        public async Task TeamMergeViewModel_Initialize_WhenConfigurationFound_ThenSetsConfigurationData_Async()
         {
-            TestLoadingFromContextOrFromConfig(() =>
+            await TestLoadingFromContextOrFromConfigAsync(async () =>
             {
                 _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(false);
                 _configManager.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return("Project1");
                 _configManager.Expect(x => x.GetValue<string>(ConfigKeys.SOURCE_BRANCH)).Return("Branch1");
                 _configManager.Expect(x => x.GetValue<string>(ConfigKeys.TARGET_BRANCH)).Return("SourceBranch1");
 
-                _sut.Initialize(this, new SectionInitializeEventArgs(_serviceProvider, null));
+                await _sut.InitializeAsync(null);
             });
         }
 
         [TestMethod]
-        public void TeamMergeViewModel_Initialize_WhenCalledWithContext_SetsTheContextData()
+        public async Task TeamMergeViewModel_Initialize_WhenCalledWithContext_SetsTheContextData_Async()
         {
-            TestLoadingFromContextOrFromConfig(() =>
+            await TestLoadingFromContextOrFromConfigAsync(async () =>
             {
-                _sut.Initialize(this, new SectionInitializeEventArgs(_serviceProvider, new TeamMergeContext
+                await _sut.InitializeAsync(new TeamMergeContext
                 {
-                    Changesets = new System.Collections.ObjectModel.ObservableCollection<ChangesetModel>(),
+                    Changesets = new System.Collections.ObjectModel.ObservableCollection<Changeset>(),
                     SelectedProjectName = "Project1",
                     SourceBranch = "Branch1",
                     TargetBranch = "SourceBranch1"
-                }));
+                });
             });
         }
 
-        private void TestLoadingFromContextOrFromConfig(Action setUpForContextOrConfig)
+        private async Task TestLoadingFromContextOrFromConfigAsync(Func<Task> setUpForContextOrConfig)
         {
             var projectName = "Project1";
-            var branch = new BranchModel { Branches = new List<string> { "SourceBranch1", "SourceBranch2" }, Name = "Branch1" };
-            var workspaceModel1 = new WorkspaceModel { Name = "Go test1", OwnerName = "14590" };
+            var branch = new Branch { Branches = new List<string> { "SourceBranch1", "SourceBranch2" }, Name = "Branch1" };
+            var workspaceModel1 = new Workspace { Name = "Go test1", OwnerName = "14590" };
 
             _teamService.Expect(x => x.GetProjectNamesAsync()).Return(Task.FromResult<IEnumerable<string>>(new List<string> { "WrongProjectName", projectName }));
 
-            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<WorkspaceModel>>(new List<WorkspaceModel> { workspaceModel1 }));
+            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<Workspace>>(new List<Workspace> { workspaceModel1 }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(null);
 
-            _teamService.Expect(x => x.GetBranches(projectName)).Return(new List<BranchModel> { branch });
+            _teamService.Expect(x => x.GetBranches(projectName)).Return(new List<Branch> { branch });
 
-            setUpForContextOrConfig();
+            await setUpForContextOrConfig();
 
             Assert.AreEqual(1, _sut.SourcesBranches.Count);
             Assert.AreEqual(2, _sut.TargetBranches.Count);
@@ -226,6 +225,11 @@ namespace TeamMerge.Tests.Merge
             _configManager.VerifyAllExpectations();
             _serviceProvider.VerifyAllExpectations();
             _logger.VerifyAllExpectations();
+        }
+
+        private async Task SetThingsBusyAndStuffAsync(Func<Task> task)
+        {
+            await task();
         }
     }
 }

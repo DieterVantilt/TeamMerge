@@ -38,8 +38,8 @@ namespace LogicVS2019.Services
             var method = modelType.GetMethod("AddWorkItemsByIdAsync", BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
             method.Invoke(pendingChangeModel, new object[] { workItemIds.ToArray(), 1 });
 
-            var pendingChanges = modelType.GetProperty("PendingChanges").GetValue(pendingChangeModel, null);
-            pendingChanges.GetType().GetProperty("Comment").SetValue(pendingChanges, comment);
+            modelType.GetProperty("CheckinComment", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
+                .SetValue(pendingChangeModel, comment);
         }
     }
 }

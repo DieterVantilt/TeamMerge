@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="Base\ModelBase.cs" />
     <Compile Include="Base\TeamExplorerViewModelBase.cs" />
+    <Compile Include="Base\ViewModelBase.cs" />
     <Compile Include="Behaviors\EventToCommandBehavior.cs" />
     <Compile Include="Commands\AsyncRelayCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Helpers\CommentOutputHelper.cs" />
     <Compile Include="Helpers\EnumExtensions.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
+    <Compile Include="Merge\TeamMergeCommonCommandsViewModel.cs" />
     <Compile Include="Merge\TeamMergeSectionVS2019.cs" />
     <Compile Include="Merge\TeamMergeViewModel2019.cs" />
     <Compile Include="Services\TeamExplorerServiceVS2017.cs" />
@@ -159,6 +161,7 @@
     <Reference Include="Microsoft.TeamFoundation.Controls">
       <HintPath>..\Lib\15.0\Microsoft.TeamFoundation.Controls.dll</HintPath>
       <Aliases>VS2017</Aliases>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Controls16, Version=16.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\Lib\16.0\Microsoft.TeamFoundation.Controls16.dll</HintPath>
@@ -198,8 +201,13 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="15.9.3" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.0.2264" />
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="15.9.3" ExcludeAssets="runtime">
+      <IncludeAssets>compile; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.0.2264">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj">

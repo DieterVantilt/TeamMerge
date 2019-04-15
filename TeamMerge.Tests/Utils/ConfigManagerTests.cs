@@ -1,10 +1,10 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 using Rhino.Mocks;
+using Shared.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using TeamMerge.Settings.Enums;
-using TeamMerge.Utils;
 
 namespace TeamMerge.Tests.Utils
 {

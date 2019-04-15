@@ -1,15 +1,16 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Domain.Entities;
+using Logic.Services;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
+using Shared.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TeamMerge.Exceptions;
 using TeamMerge.Helpers;
 using TeamMerge.Operations;
-using TeamMerge.Services;
-using TeamMerge.Services.Models;
 using TeamMerge.Settings.Enums;
-using TeamMerge.Utils;
+using Branch = TeamMerge.Settings.Enums.Branch;
 
 namespace TeamMerge.Tests.Operations
 {
@@ -24,8 +25,9 @@ namespace TeamMerge.Tests.Operations
 
         private IMergeService _mergeService;
         private IConfigManager _configManager;
+        private ITeamExplorerService _teamExplorerService;
 
-        private WorkspaceModel _currentWorkspaceModel;
+        private Workspace _currentWorkspaceModel;
         private string _sourceBranchName;
         private string _targetbranchName;
         
@@ -34,10 +36,11 @@ namespace TeamMerge.Tests.Operations
         {
             _mergeService = MockRepository.GenerateStrictMock<IMergeService>();
             _configManager = MockRepository.GenerateStrictMock<IConfigManager>();
+            _teamExplorerService = MockRepository.GenerateStrictMock<ITeamExplorerService>();
 
-            _sut = new MergeOperation(_mergeService, _configManager);
+            _sut = new MergeOperation(_mergeService, _teamExplorerService, _configManager);
 
-            _currentWorkspaceModel = new WorkspaceModel
+            _currentWorkspaceModel = new Workspace
             {
                 OwnerName = "MyOwnerName",
                 Name = "WorkspaceName"
@@ -252,7 +255,7 @@ namespace TeamMerge.Tests.Operations
 
             _mergeService.Expect(x => x.MergeBranchesAsync(_currentWorkspaceModel, _sourceBranchName, _targetbranchName, 2, 8)).Return(Task.CompletedTask);
             _mergeService.Expect(x => x.GetWorkItemIdsAsync(orderedChangesetIds, excludedWorkItemTypes)).Return(Task.FromResult<IEnumerable<int>>(workItemsToAdd));
-            _mergeService.Expect(x => x.AddWorkItemsAndCommentThenNavigate(_currentWorkspaceModel, string.Empty, workItemsToAdd));
+            _teamExplorerService.Expect(x => x.AddWorkItemsAndCommentThenNavigate(_currentWorkspaceModel, string.Empty, workItemsToAdd));
 
             await _sut.ExecuteAsync(new MergeModel
             {
@@ -268,6 +271,7 @@ namespace TeamMerge.Tests.Operations
         {
             _mergeService.VerifyAllExpectations();
             _configManager.VerifyAllExpectations();
+            _teamExplorerService.VerifyAllExpectations();
         }
     }
 }

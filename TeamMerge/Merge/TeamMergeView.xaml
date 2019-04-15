@@ -57,38 +57,38 @@
                 Margin="5">
         <TextBlock Text="{x:Static resources:Resources.Workspace}" />
         <DockPanel  Margin="0 0 0 20">
-
-            <ComboBox SelectedItem="{Binding SelectedWorkspace}"
+            <ComboBox SelectedItem="{Binding TeamMergeCommandsViewModel.SelectedWorkspace}"
                       Margin="0 0 0 0"
+                      MinWidth="150"
                       DisplayMemberPath="Name"
-                      ItemsSource="{Binding Workspaces}">
+                      ItemsSource="{Binding TeamMergeCommandsViewModel.Workspaces}">
 
             </ComboBox>
 
-            <Button Command="{Binding OpenSettingsCommand}" Content="{x:Static resources:Resources.Settings}" HorizontalAlignment="Right"/>
+            <Button Command="{Binding TeamMergeCommandsViewModel.OpenSettingsCommand}" Content="{x:Static resources:Resources.Settings}" HorizontalAlignment="Right"/>
         </DockPanel>
 
         <TextBlock Text="{x:Static resources:Resources.ProjectName}" />
-        <ComboBox ItemsSource="{Binding ProjectNames}"
-                  SelectedItem="{Binding SelectedProjectName, UpdateSourceTrigger=PropertyChanged}"
+        <ComboBox ItemsSource="{Binding TeamMergeCommandsViewModel.ProjectNames}"
+                  SelectedItem="{Binding TeamMergeCommandsViewModel.SelectedProjectName, UpdateSourceTrigger=PropertyChanged}"
                   Margin="0 0 0 10"/>
 
         <TextBlock Text="{x:Static resources:Resources.SourceBranch}" />
-        <ComboBox ItemsSource="{Binding SourcesBranches}"
-                  SelectedItem="{Binding SelectedSourceBranch, UpdateSourceTrigger=PropertyChanged}"
+        <ComboBox ItemsSource="{Binding TeamMergeCommandsViewModel.SourcesBranches}"
+                  SelectedItem="{Binding TeamMergeCommandsViewModel.SelectedSourceBranch, UpdateSourceTrigger=PropertyChanged}"
                   Margin="0 0 0 10"/>
 
         <TextBlock Text="{x:Static resources:Resources.TargetBranch}" />
-        <ComboBox ItemsSource="{Binding TargetBranches}"
-                  SelectedItem="{Binding SelectedTargetBranch, UpdateSourceTrigger=PropertyChanged}"
+        <ComboBox ItemsSource="{Binding TeamMergeCommandsViewModel.TargetBranches}"
+                  SelectedItem="{Binding TeamMergeCommandsViewModel.SelectedTargetBranch, UpdateSourceTrigger=PropertyChanged}"
                   Margin="0 0 0 20"/>
 
         <ui:ChangesetListBox
              Margin="0 0 0 20" MaxHeight="400"
-             ItemsSource="{Binding Changesets}"
-             SelectedItem="{Binding SelectedChangeset}"
+             ItemsSource="{Binding TeamMergeCommandsViewModel.Changesets}"
+             SelectedItem="{Binding TeamMergeCommandsViewModel.SelectedChangeset}"
              Style="{StaticResource ChangesetListStyle}"
-             SelectedItemsList="{Binding SelectedChangesets}"
+             SelectedItemsList="{Binding TeamMergeCommandsViewModel.SelectedChangesets}"
              SelectionMode="Extended">
             <ui:ChangesetListBox.InputBindings>
                 <KeyBinding Key="Enter" Command="{Binding ViewChangesetDetailsCommand}" />
@@ -101,9 +101,9 @@
 
         </ui:ChangesetListBox>
 
-        <TextBlock Margin="10" FontSize="18" FontWeight="Heavy" Visibility="{Binding MyCurrentAction, Converter={StaticResource NullToInvisibleConverter}}" 
+        <TextBlock Margin="10" FontSize="18" FontWeight="Heavy" Visibility="{Binding TeamMergeCommandsViewModel.MyCurrentAction, Converter={StaticResource NullToInvisibleConverter}}" 
                    TextAlignment="Center" HorizontalAlignment="Stretch" TextWrapping="WrapWithOverflow"
-                   Text="{Binding MyCurrentAction}" />
+                   Text="{Binding TeamMergeCommandsViewModel.MyCurrentAction}" />
 
         <Grid>
             <Grid.ColumnDefinitions>
@@ -112,12 +112,12 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <Button Command="{Binding FetchChangesetsCommand}"
+            <Button Command="{Binding TeamMergeCommandsViewModel.FetchChangesetsCommand}"
                   Content="{x:Static resources:Resources.FetchChangesets}"
                   Grid.Column="0"/>
 
 
-            <Button Command="{Binding MergeCommand}"
+            <Button Command="{Binding TeamMergeCommandsViewModel.MergeCommand}"
                   Content="{x:Static resources:Resources.Merge}"
                   FontWeight="Bold"
                   Grid.Column="2"/>
