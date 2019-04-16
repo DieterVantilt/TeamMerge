@@ -23,3 +23,6 @@ First release version:
 
 16/04/2019 (2.0.0)
 - Update for Visual Studio 2019
+
+16/04/2019 (2.0.1)
+- Remove Dependency for MPF. This is no longer needed
