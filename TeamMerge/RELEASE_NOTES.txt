@@ -26,3 +26,8 @@ First release version:
 
 16/04/2019 (2.0.1)
 - Remove Dependency for MPF. This is no longer needed
+
+08/09/2019 (2.1.0)
+- New way of fecthing work item types (Had to change before 2020 because it would be obsolete)
+- Possible to exclude work items when merging
+- Show in comments when merging the latest version of the branch

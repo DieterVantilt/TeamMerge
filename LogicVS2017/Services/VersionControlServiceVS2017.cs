@@ -8,6 +8,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LogicVS2017.Services
 {
@@ -27,16 +28,16 @@ namespace LogicVS2017.Services
             return _versionControlServer.GetAllTeamProjects(refresh).Select(x => new TeamProjectWrapper(x)).ToList();
         }
 
-        public IEnumerable<string> GetAllWorkItemTypes()
+        public async Task<IEnumerable<string>> GetAllWorkItemTypesAsync()
         {
             var wis = _versionControlServer.TeamProjectCollection.GetService<WorkItemStore>();
 
-            return wis.Projects.Cast<Project>()
+            return await Task.FromResult(wis.Projects.Cast<Project>()
                 .SelectMany(x => x.WorkItemTypes.Cast<WorkItemType>())
                 .Select(x => x.Name)
                 .Distinct()
                 .OrderBy(x => x)
-                .ToList();
+                .ToList());
         }
 
         public ITFVCChangeset GetChangeset(int changesetId, bool includeChanges, bool includeDownloadInfo)

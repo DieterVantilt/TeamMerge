@@ -115,6 +115,15 @@ namespace TeamMerge {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Exclude work items for merge.
+        /// </summary>
+        public static string ExcludeWorkItems {
+            get {
+                return ResourceManager.GetString("ExcludeWorkItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fetch changesets.
         /// </summary>
         public static string FetchChangesets {
@@ -169,6 +178,15 @@ namespace TeamMerge {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Latest version.
+        /// </summary>
+        public static string LatestVersion {
+            get {
+                return ResourceManager.GetString("LatestVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Before merging do get latest version on branch:.
         /// </summary>
         public static string LatestVersionBranch {
@@ -183,6 +201,24 @@ namespace TeamMerge {
         public static string Merge {
             get {
                 return ResourceManager.GetString("Merge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merge direction and work items.
+        /// </summary>
+        public static string MergeDirectionAndWorkItemsComment {
+            get {
+                return ResourceManager.GetString("MergeDirectionAndWorkItemsComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merge {0} --&gt; {1} ({2}).
+        /// </summary>
+        public static string MergeDirectionAndWorkItemsFormat {
+            get {
+                return ResourceManager.GetString("MergeDirectionAndWorkItemsFormat", resourceCulture);
             }
         }
         
@@ -282,6 +318,15 @@ namespace TeamMerge {
         public static string ShouldResolveConflicts {
             get {
                 return ResourceManager.GetString("ShouldResolveConflicts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show in comments when merging latest version.
+        /// </summary>
+        public static string ShowLatestVersionInComment {
+            get {
+                return ResourceManager.GetString("ShowLatestVersionInComment", resourceCulture);
             }
         }
         

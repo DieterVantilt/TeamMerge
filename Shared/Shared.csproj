@@ -53,6 +53,7 @@
     <Compile Include="Utils\ConfigManager.cs" />
     <Compile Include="Utils\FileHelper.cs" />
     <Compile Include="Utils\Logger.cs" />
+    <Compile Include="Utils\QueuingTask.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">

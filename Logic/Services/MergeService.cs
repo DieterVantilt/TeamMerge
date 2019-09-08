@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Entities.TFVC.Base;
+using Shared.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -78,23 +79,12 @@ namespace Logic.Services
 
         public async Task<IEnumerable<int>> GetWorkItemIdsAsync(IEnumerable<int> changesetIds, IEnumerable<string> workItemTypesToExclude)
         {
-            var workItemIds = new ConcurrentBag<int>();
+            var associatedWorkItems = await QueuingTask.WhenAll(changesetIds, x => GetAssociatedWorkItemIdsAsync(x, workItemTypesToExclude ?? Enumerable.Empty<string>()));
 
-            var tasks = new List<Task>();
-
-            workItemTypesToExclude = workItemTypesToExclude ?? Enumerable.Empty<string>();
-
-            foreach (var changesetId in changesetIds)
-            {
-                tasks.Add(GetAssociatedWorkItemIdsAsync(changesetId, workItemIds, workItemTypesToExclude));
-            }
-
-            await Task.WhenAll(tasks.ToArray());
-
-            return workItemIds.Distinct().OrderBy(x => x).ToList();
+            return associatedWorkItems.Distinct().OrderBy(x => x).ToList();
         }
 
-        private async Task GetAssociatedWorkItemIdsAsync(int changesetId, ConcurrentBag<int> concurrentbag, IEnumerable<string> workItemTypesToExclude)
+        private async Task<List<int>> GetAssociatedWorkItemIdsAsync(int changesetId, IEnumerable<string> workItemTypesToExclude)
         {
             var changeset = await _tfvcService.GetChangesetAsync(changesetId);
 
@@ -102,7 +92,7 @@ namespace Logic.Services
                 .Where(x => !workItemTypesToExclude.Contains(x.WorkItemType))
                 .Select(x => x.Id) ?? new List<int>();
 
-            associatedWorkItemIds.ToList().ForEach(x => concurrentbag.Add(x));
+            return associatedWorkItemIds.ToList();
         }
     }
 }

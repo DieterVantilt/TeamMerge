@@ -13,7 +13,7 @@ namespace Logic.Services
         Task<IEnumerable<string>> GetProjectNamesAsync();
         Task<IEnumerable<Workspace>> AllWorkspacesAsync();
         Workspace CurrentWorkspace();
-        IEnumerable<string> GetAllWorkItemTypes();
+        Task<IEnumerable<string>> GetAllWorkItemTypesAsync();
     }
 
     public class TeamService
@@ -89,9 +89,9 @@ namespace Logic.Services
             return currentWorkspace == null ? null : new Workspace { Name = currentWorkspace.Name, OwnerName = currentWorkspace.OwnerName };
         }
 
-        public IEnumerable<string> GetAllWorkItemTypes()
+        public Task<IEnumerable<string>> GetAllWorkItemTypesAsync()
         {
-            return _tfvcService.GetAllWorkItemTypes();
+            return _tfvcService.GetAllWorkItemTypesAsync();
         }
     }
 }

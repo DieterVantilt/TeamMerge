@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using TeamMerge.Base;
@@ -77,7 +78,20 @@ namespace TeamMerge.Settings.Dialogs
             }
         }
 
-        public string CommentOutput => CommentOutputHelper.GetCheckInComment(Model.CheckInComment, Model.CommenFormat, SOURCE_BRANCH_NAME_EXAMPLE, TARGET_BRANCH_NAME_EXAMPLE, new List<int> { 5, 12, 235 });
+        public string CommentOutput
+        {
+            get
+            {
+                var comment = CommentOutputHelper.GetCheckInComment(Model.CheckInComment, Model.CommenFormat, SOURCE_BRANCH_NAME_EXAMPLE, TARGET_BRANCH_NAME_EXAMPLE, new List<int> { 5, 12, 235 }, false);
+
+                if (Model.ShouldShowLatestVersionMerge)
+                {
+                    comment += Environment.NewLine + CommentOutputHelper.GetCheckInComment(Model.CheckInComment, Model.CommenFormat, SOURCE_BRANCH_NAME_EXAMPLE, TARGET_BRANCH_NAME_EXAMPLE, Enumerable.Empty<int>(), true);
+                }
+
+                return comment;
+            }
+        } 
 
         private void AddWorkItemTypeToExclude(KeyEventArgs obj)
         {
@@ -97,10 +111,8 @@ namespace TeamMerge.Settings.Dialogs
             Model.WorkItemTypesToExclude.Remove(workItemTypeToRemove);
         }
 
-        public void Initialize()
+        public async Task InitializeAsync()
         {
-            WorkItemTypes = _teamService.GetAllWorkItemTypes();
-
             Model = new SettingsModel
             {
                 EnablePendingChangesWarning = _configManager.GetValue<bool>(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES),
@@ -110,6 +122,8 @@ namespace TeamMerge.Settings.Dialogs
                 SaveSelectedBranchPerSolution = _configManager.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION),
                 CheckInComment = _configManager.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION),
                 CommenFormat = _configManager.GetValue<string>(ConfigKeys.COMMENT_FORMAT),
+                ExcludeWorkItemsForMerge = _configManager.GetValue<bool>(ConfigKeys.EXCLUDE_WORK_ITEMS_FOR_MERGE),
+                ShouldShowLatestVersionMerge = _configManager.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT),
                 WorkItemTypesToExclude = new ObservableCollection<string>(_configManager.GetValue<ObservableCollection<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE) ?? Enumerable.Empty<string>()) 
             };
 
@@ -118,13 +132,15 @@ namespace TeamMerge.Settings.Dialogs
             Model.WorkItemTypesToExclude.CollectionChanged += (s, ea) => IsDirty = true;
 
             RaisePropertyChanged(nameof(CommentOutput));
+
+            WorkItemTypes = await _teamService.GetAllWorkItemTypesAsync();
         }
 
         private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             IsDirty = true;
 
-            if (e.PropertyName == nameof(SettingsModel.CommenFormat))
+            if (e.PropertyName == nameof(SettingsModel.CommenFormat) || e.PropertyName == nameof(SettingsModel.ShouldShowLatestVersionMerge))
             {
                 RaisePropertyChanged(nameof(CommentOutput));
             }
@@ -140,6 +156,8 @@ namespace TeamMerge.Settings.Dialogs
             _configManager.AddValue(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE, Model.WorkItemTypesToExclude);
             _configManager.AddValue(ConfigKeys.CHECK_IN_COMMENT_OPTION, Model.CheckInComment);
             _configManager.AddValue(ConfigKeys.COMMENT_FORMAT, Model.CommenFormat);
+            _configManager.AddValue(ConfigKeys.EXCLUDE_WORK_ITEMS_FOR_MERGE, Model.ExcludeWorkItemsForMerge);
+            _configManager.AddValue(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT, Model.ShouldShowLatestVersionMerge);
 
             _configManager.SaveDictionary();
 

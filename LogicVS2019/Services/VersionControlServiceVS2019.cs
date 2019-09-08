@@ -3,11 +3,15 @@ using Domain.Entities.TFVC.Enums;
 using Logic.Services;
 using LogicVS2019.Helpers;
 using LogicVS2019.Wrappers;
+using Microsoft.TeamFoundation.Core.WebApi;
 using Microsoft.TeamFoundation.VersionControl.Client;
-using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using Microsoft.TeamFoundation.WorkItemTracking.WebApi;
+using Microsoft.VisualStudio.Services.WebApi;
+using Shared.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LogicVS2019.Services
 {
@@ -27,16 +31,25 @@ namespace LogicVS2019.Services
             return _versionControlServer.GetAllTeamProjects(refresh).Select(x => new TeamProjectWrapper(x)).ToList();
         }
 
-        public IEnumerable<string> GetAllWorkItemTypes()
+        public async Task<IEnumerable<string>> GetAllWorkItemTypesAsync()
         {
-            var wis = _versionControlServer.TeamProjectCollection.GetService<WorkItemStore>();
+            var vssConnection = new VssConnection(_versionControlServer.TeamProjectCollection.Uri, _versionControlServer.TeamProjectCollection.ClientCredentials);
 
-            return wis.Projects.Cast<Project>()
-                .SelectMany(x => x.WorkItemTypes.Cast<WorkItemType>())
-                .Select(x => x.Name)
-                .Distinct()
-                .OrderBy(x => x)
-                .ToList();
+            using (var projectClientHttpClient = await vssConnection.GetClientAsync<ProjectHttpClient>())
+            using (var workItemTrackingHttpClient = await vssConnection.GetClientAsync<WorkItemTrackingHttpClient>())
+            {
+                var projects = await projectClientHttpClient.GetProjects(ProjectState.All, null, null, null, null);
+
+                var projectGuids = projects.Select(x => x.Id).ToList();
+
+                var result = await QueuingTask.WhenAll(projectGuids, x => workItemTrackingHttpClient.GetWorkItemTypesAsync(x));
+
+                return result
+                    .Select(x => x.Name)
+                    .Distinct()
+                    .OrderBy(x => x)
+                    .ToList();
+            }
         }
 
         public ITFVCChangeset GetChangeset(int changesetId, bool includeChanges, bool includeDownloadInfo)

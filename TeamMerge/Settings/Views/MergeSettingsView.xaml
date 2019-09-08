@@ -75,6 +75,10 @@
             </ComboBox>
         </DockPanel>
 
+        <CheckBox Margin="0 5 0 0"
+                  IsChecked="{Binding Model.ShouldShowLatestVersionMerge, UpdateSourceTrigger=PropertyChanged}"
+                  Content="{x:Static resource:Resources.ShowLatestVersionInComment}"/>
+
         <TextBox Margin="0 5 0 5"
                  IsEnabled="{Binding Model.CheckInComment, Converter={StaticResource IsNotEqualToConverter}, ConverterParameter={x:Static enums:CheckInComment.None}}"
                  Text="{Binding Model.CommenFormat, UpdateSourceTrigger=PropertyChanged}"/>

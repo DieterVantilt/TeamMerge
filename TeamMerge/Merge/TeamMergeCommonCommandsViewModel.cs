@@ -203,7 +203,8 @@ namespace TeamMerge.Merge
                     WorkspaceModel = SelectedWorkspace,
                     OrderedChangesetIds = orderedSelectedChangesets.Select(x => x.ChangesetId).ToList(),
                     SourceBranch = SelectedSourceBranch,
-                    TargetBranch = SelectedTargetBranch
+                    TargetBranch = SelectedTargetBranch,
+                    IsLatestVersion = SelectedChangesets.Count == Changesets.Count
                 });
 
                 SaveDefaultSettings();
@@ -342,7 +343,9 @@ namespace TeamMerge.Merge
         public void OpenSettings()
         {
             var viewModel = new SettingsDialogViewModel(_configManager, _teamService);
-            viewModel.Initialize();
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            _ = viewModel.InitializeAsync();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
             var window = new SettingsDialog
             {

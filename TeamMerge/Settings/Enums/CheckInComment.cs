@@ -11,6 +11,8 @@ namespace TeamMerge.Settings.Enums
         [LocalizedDescription(nameof(Resources.WorkItemIdsComment), typeof(Resources))]
         WorkItemIds,
         [LocalizedDescription(nameof(Resources.FixedComment), typeof(Resources))]
-        Fixed
+        Fixed,
+        [LocalizedDescription(nameof(Resources.MergeDirectionAndWorkItemsComment), typeof(Resources))]
+        MergeDirectionAndWorkItems
     }
 }

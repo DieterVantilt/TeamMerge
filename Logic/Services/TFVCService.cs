@@ -19,7 +19,7 @@ namespace Logic.Services
         ITFVCWorkspace CurrentWorkspace();
         ITFVCWorkspace GetWorkspace(string workspaceName, string workspaceOwner);
         Task<bool> GetLatestVersionAsync(ITFVCWorkspace workspace, params string[] branchNames);
-        IEnumerable<string> GetAllWorkItemTypes();
+        Task<IEnumerable<string>> GetAllWorkItemTypesAsync();
     }
 
     public class TFVCService
@@ -55,9 +55,9 @@ namespace Logic.Services
             return result;
         }
 
-        public IEnumerable<string> GetAllWorkItemTypes()
+        public Task<IEnumerable<string>> GetAllWorkItemTypesAsync()
         {
-            return _versionControlService.GetAllWorkItemTypes();
+            return _versionControlService.GetAllWorkItemTypesAsync();
         }
 
         public async Task<ITFVCChangeset> GetChangesetAsync(int changesetId)

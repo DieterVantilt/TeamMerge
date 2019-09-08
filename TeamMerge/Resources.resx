@@ -231,4 +231,19 @@
   <data name="Workspace" xml:space="preserve">
     <value>Workspace</value>
   </data>
+  <data name="ExcludeWorkItems" xml:space="preserve">
+    <value>Exclude work items for merge</value>
+  </data>
+  <data name="MergeDirectionAndWorkItemsComment" xml:space="preserve">
+    <value>Merge direction and work items</value>
+  </data>
+  <data name="MergeDirectionAndWorkItemsFormat" xml:space="preserve">
+    <value>Merge {0} --&gt; {1} ({2})</value>
+  </data>
+  <data name="ShowLatestVersionInComment" xml:space="preserve">
+    <value>Show in comments when merging latest version</value>
+  </data>
+  <data name="LatestVersion" xml:space="preserve">
+    <value>Latest version</value>
+  </data>
 </root>

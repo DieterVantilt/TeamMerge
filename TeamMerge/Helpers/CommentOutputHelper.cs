@@ -7,7 +7,7 @@ namespace TeamMerge.Helpers
 {
     public static class CommentOutputHelper
     {
-        public static string GetCheckInComment(CheckInComment checkInCommentChoice, string commentFormat, string sourceBranch, string targetBranch, IEnumerable<int> workItemIds)
+        public static string GetCheckInComment(CheckInComment checkInCommentChoice, string commentFormat, string sourceBranch, string targetBranch, IEnumerable<int> workItemIds, bool isLatestVersion)
         {
             var comment = string.Empty;
 
@@ -19,11 +19,15 @@ namespace TeamMerge.Helpers
                 }
                 else if (checkInCommentChoice == CheckInComment.WorkItemIds)
                 {
-                    comment = string.Format(CultureInfo.CurrentCulture, commentFormat, string.Join(", ", workItemIds));
+                    comment = string.Format(CultureInfo.CurrentCulture, commentFormat, GetWorkItemsComment(workItemIds, isLatestVersion));
                 }
                 else if (checkInCommentChoice == CheckInComment.Fixed)
                 {
                     comment = commentFormat;
+                }
+                else if (checkInCommentChoice == CheckInComment.MergeDirectionAndWorkItems)
+                {
+                    comment = string.Format(CultureInfo.CurrentCulture, commentFormat, sourceBranch.GetBranchName(), targetBranch.GetBranchName(), GetWorkItemsComment(workItemIds, isLatestVersion));
                 }
             }
             catch (FormatException)
@@ -32,6 +36,16 @@ namespace TeamMerge.Helpers
             }
 
             return comment;
+        }
+
+        private static string GetWorkItemsComment(IEnumerable<int> workItemIds, bool isLatestVersion)
+        {
+            if (isLatestVersion)
+            {
+                return Resources.LatestVersion;
+            }
+
+            return string.Join(", ", workItemIds);
         }
     }
 }

@@ -87,6 +87,10 @@ namespace TeamMerge.Settings.Models
                 {
                     CommenFormat = string.Empty;
                 }
+                else if (_checkInComment == CheckInComment.MergeDirectionAndWorkItems)
+                {
+                    CommenFormat = Resources.MergeDirectionAndWorkItemsFormat;
+                }
             }
         }
 
@@ -98,9 +102,22 @@ namespace TeamMerge.Settings.Models
             set { _commentFormat = value; RaisePropertyChanged(nameof(CommenFormat)); }
         }
 
-        public ObservableCollection<string> WorkItemTypesToExclude
+        private bool _shouldShowLatestVersionMerge;
+
+        public bool ShouldShowLatestVersionMerge
         {
-            get; set;
+            get { return _shouldShowLatestVersionMerge; }
+            set { _shouldShowLatestVersionMerge = value; RaisePropertyChanged(nameof(ShouldShowLatestVersionMerge)); }
         }
+
+        private bool _excludeWorkItemsForMerge;
+
+        public bool ExcludeWorkItemsForMerge
+        {
+            get { return _excludeWorkItemsForMerge; }
+            set { _excludeWorkItemsForMerge = value; RaisePropertyChanged(nameof(ExcludeWorkItemsForMerge)); }
+        }
+
+        public ObservableCollection<string> WorkItemTypesToExclude { get; set; }
     }
 }

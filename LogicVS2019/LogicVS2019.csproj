@@ -84,12 +84,21 @@
       <Project>{D46962B3-C7E3-4919-8711-BDD73EA5C3AA}</Project>
       <Name>Logic</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Shared\Shared.csproj">
+      <Project>{E01C2E81-97D5-4813-AE0A-1C79733EAB4C}</Project>
+      <Name>Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.TeamFoundationServer.Client">
+      <Version>16.143.1</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
