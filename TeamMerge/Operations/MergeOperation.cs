@@ -45,7 +45,7 @@ namespace TeamMerge.Operations
             await _mergeService.MergeBranchesAsync(mergeModel.WorkspaceModel, mergeModel.SourceBranch, mergeModel.TargetBranch, mergeModel.OrderedChangesetIds.First(), mergeModel.OrderedChangesetIds.Last());
 
             var workItemIds = await GetWorkItemIdsAsync(mergeModel.OrderedChangesetIds);
-            var comment = GetCommentForMerge(mergeModel.SourceBranch, mergeModel.TargetBranch, workItemIds, mergeModel.IsLatestVersion);
+            var comment = GetCommentForMerge(mergeModel.SourceBranch, mergeModel.TargetBranch, workItemIds, mergeModel.OrderedChangesetIds, mergeModel.IsLatestVersion);
 
             _teamExplorerService.AddWorkItemsAndCommentThenNavigate(mergeModel.WorkspaceModel, comment, workItemIds);
         }
@@ -134,12 +134,12 @@ namespace TeamMerge.Operations
             return _configManager.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT) && isLatestVersion;
         }
 
-        private string GetCommentForMerge(string sourceBranch, string targetBranch, IEnumerable<int> workItemIds, bool isLatestVersion)
+        private string GetCommentForMerge(string sourceBranch, string targetBranch, IEnumerable<int> workItemIds, IEnumerable<int> changesetIds, bool isLatestVersion)
         {
             var checkInCommentChoice = _configManager.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION);
             var commentFormat = _configManager.GetValue<string>(ConfigKeys.COMMENT_FORMAT);
 
-            return CommentOutputHelper.GetCheckInComment(checkInCommentChoice, commentFormat, sourceBranch, targetBranch, workItemIds, ShouldShowLatestVersionComment(isLatestVersion));
+            return CommentOutputHelper.GetCheckInComment(checkInCommentChoice, commentFormat, sourceBranch, targetBranch, workItemIds, changesetIds, ShouldShowLatestVersionComment(isLatestVersion));
         }
 
         private void SetCurrentAction(string currentAction)

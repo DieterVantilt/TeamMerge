@@ -19,7 +19,7 @@ namespace TeamMerge {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -75,6 +75,24 @@ namespace TeamMerge {
         public static string BranchDirectionFormat {
             get {
                 return ResourceManager.GetString("BranchDirectionFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changeset ids.
+        /// </summary>
+        public static string ChangesetIdsComment {
+            get {
+                return ResourceManager.GetString("ChangesetIdsComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merged changeset ids: {0}.
+        /// </summary>
+        public static string ChangesetIdsFormat {
+            get {
+                return ResourceManager.GetString("ChangesetIdsFormat", resourceCulture);
             }
         }
         
@@ -205,6 +223,24 @@ namespace TeamMerge {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Merge direction and changeset ids.
+        /// </summary>
+        public static string MergeDirectionAndChangesetIdsComment {
+            get {
+                return ResourceManager.GetString("MergeDirectionAndChangesetIdsComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merge {0} --&gt; {1} ({2}).
+        /// </summary>
+        public static string MergeDirectionAndChangesetIdsFormat {
+            get {
+                return ResourceManager.GetString("MergeDirectionAndChangesetIdsFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Merge direction and work items.
         /// </summary>
         public static string MergeDirectionAndWorkItemsComment {
@@ -228,6 +264,24 @@ namespace TeamMerge {
         public static string MergeDirectionComment {
             get {
                 return ResourceManager.GetString("MergeDirectionComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merge direction with changeset ids and work items.
+        /// </summary>
+        public static string MergeDirectionWorkItemsAndChangesetIdsComment {
+            get {
+                return ResourceManager.GetString("MergeDirectionWorkItemsAndChangesetIdsComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merge {0} --&gt; {1} ({2}; {3}).
+        /// </summary>
+        public static string MergeDirectionWorkItemsAndChangesetIdsFormat {
+            get {
+                return ResourceManager.GetString("MergeDirectionWorkItemsAndChangesetIdsFormat", resourceCulture);
             }
         }
         
@@ -340,7 +394,7 @@ namespace TeamMerge {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Soure and target.
+        ///   Looks up a localized string similar to Source and target.
         /// </summary>
         public static string SourceAndTarget {
             get {
@@ -399,6 +453,24 @@ namespace TeamMerge {
         public static string WarningPendingChanges {
             get {
                 return ResourceManager.GetString("WarningPendingChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Work item ids and changeset ids.
+        /// </summary>
+        public static string WorkItemIdsAndChangesetIdsComment {
+            get {
+                return ResourceManager.GetString("WorkItemIdsAndChangesetIdsComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merged work items ids: {0}; changeset ids: {1}.
+        /// </summary>
+        public static string WorkItemIdsAndChangesetIdsFormat {
+            get {
+                return ResourceManager.GetString("WorkItemIdsAndChangesetIdsFormat", resourceCulture);
             }
         }
         

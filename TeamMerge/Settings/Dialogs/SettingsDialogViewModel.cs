@@ -82,11 +82,11 @@ namespace TeamMerge.Settings.Dialogs
         {
             get
             {
-                var comment = CommentOutputHelper.GetCheckInComment(Model.CheckInComment, Model.CommenFormat, SOURCE_BRANCH_NAME_EXAMPLE, TARGET_BRANCH_NAME_EXAMPLE, new List<int> { 5, 12, 235 }, false);
+                var comment = CommentOutputHelper.GetCheckInComment(Model.CheckInComment, Model.CommenFormat, SOURCE_BRANCH_NAME_EXAMPLE, TARGET_BRANCH_NAME_EXAMPLE, new List<int> { 5, 12, 235 }, new List<int> { 1, 2, 5, 10 }, false);
 
                 if (Model.ShouldShowLatestVersionMerge)
                 {
-                    comment += Environment.NewLine + CommentOutputHelper.GetCheckInComment(Model.CheckInComment, Model.CommenFormat, SOURCE_BRANCH_NAME_EXAMPLE, TARGET_BRANCH_NAME_EXAMPLE, Enumerable.Empty<int>(), true);
+                    comment += Environment.NewLine + CommentOutputHelper.GetCheckInComment(Model.CheckInComment, Model.CommenFormat, SOURCE_BRANCH_NAME_EXAMPLE, TARGET_BRANCH_NAME_EXAMPLE, Enumerable.Empty<int>(), Enumerable.Empty<int>(), true);
                 }
 
                 return comment;

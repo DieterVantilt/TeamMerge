@@ -155,7 +155,7 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(string.Empty);
 
             var obj = new PrivateObject(_sut);
-            var result = (string) obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>(), false);
+            var result = (string) obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>(), Enumerable.Empty<int>(), false);
 
             Assert.AreEqual(string.Empty, result);
         }
@@ -168,7 +168,7 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return("Merge {0} --> {1}");
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>(), false);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>(), Enumerable.Empty<int>(), false);
 
             Assert.IsTrue(result.Contains(_sourceBranchName));
             Assert.IsTrue(result.Contains(_targetbranchName));
@@ -182,7 +182,7 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return("Merge {0}");
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>(), false);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>(), Enumerable.Empty<int>(), false);
 
             Assert.IsTrue(result.Contains(_sourceBranchName));
             Assert.IsFalse(result.Contains(_targetbranchName));
@@ -196,7 +196,7 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return("Merge {1}");
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>(), false);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>(), Enumerable.Empty<int>(), false);
 
             Assert.IsFalse(result.Contains(_sourceBranchName));
             Assert.IsTrue(result.Contains(_targetbranchName));
@@ -212,7 +212,7 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return("Merge work item ids: {0}");
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds, false);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds, Enumerable.Empty<int>(), false);
 
             Assert.IsTrue(result.Contains(string.Join(", ", workitemIds)));
         }
@@ -227,7 +227,7 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>(), false);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>(), Enumerable.Empty<int>(), false);
 
             Assert.AreEqual(result, awesomeCheckInComment);
         }
@@ -243,7 +243,7 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds, false);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds, Enumerable.Empty<int>(), false);
 
             Assert.IsTrue(result.Contains(_sourceBranchName));
             Assert.IsTrue(result.Contains(_targetbranchName));
@@ -261,7 +261,7 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds, true);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds, Enumerable.Empty<int>(), true);
 
             Assert.IsTrue(result.Contains(_sourceBranchName));
             Assert.IsTrue(result.Contains(_targetbranchName));
@@ -279,11 +279,49 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds, true);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds, Enumerable.Empty<int>(), true);
 
             Assert.IsTrue(result.Contains(_sourceBranchName));
             Assert.IsTrue(result.Contains(_targetbranchName));
             Assert.IsTrue(result.Contains(Resources.LatestVersion));
+        }
+
+        [TestMethod]
+        public void MergeOperation_GetCommentForMerge_WhenCalledAndCheckInCommentOptionIsChangesetIds_ThenReturnsChangesetIds()
+        {
+            var workitemIds = new List<int> { 5, 10, 16, 18 };
+            var changesetIds = new List<int> { 6, 23, 26, 27 };
+            var awesomeCheckInComment = "Merged with changesetids: {0}";
+
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.ChangesetIds);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
+
+            var obj = new PrivateObject(_sut);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds, changesetIds, true);
+
+            Assert.IsTrue(result.Contains(string.Join(", ", changesetIds)));
+            Assert.IsFalse(result.Contains(string.Join(", ", workitemIds)));
+        }
+
+        [TestMethod]
+        public void MergeOperation_GetCommentForMerge_WhenCalledAndCheckInCommentOptionIsMergeDirectionAndChangesetIds_ThenReturnsChangesetIds()
+        {
+            var workitemIds = new List<int> { 5, 10, 16, 18 };
+            var changesetIds = new List<int> { 6, 23, 26, 27 };
+            var awesomeCheckInComment = "Merge: {0} --> {1} ({2})";
+
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirectionAndChangesetIds);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
+
+            var obj = new PrivateObject(_sut);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds, changesetIds, true);
+
+            Assert.IsTrue(result.Contains(_sourceBranchName));
+            Assert.IsTrue(result.Contains(_targetbranchName));
+            Assert.IsTrue(result.Contains(string.Join(", ", changesetIds)));
+            Assert.IsFalse(result.Contains(string.Join(", ", workitemIds)));
         }
 
         [TestMethod]

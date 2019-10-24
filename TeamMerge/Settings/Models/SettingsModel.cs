@@ -91,6 +91,14 @@ namespace TeamMerge.Settings.Models
                 {
                     CommenFormat = Resources.MergeDirectionAndWorkItemsFormat;
                 }
+                else if (_checkInComment == CheckInComment.ChangesetIds)
+                {
+                    CommenFormat = Resources.ChangesetIdsFormat;
+                }
+                else if (_checkInComment == CheckInComment.MergeDirectionAndChangesetIds)
+                {
+                    CommenFormat = Resources.MergeDirectionAndChangesetIdsFormat;
+                }
             }
         }
 

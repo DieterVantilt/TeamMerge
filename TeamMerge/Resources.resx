@@ -166,7 +166,7 @@
     <value>Source</value>
   </data>
   <data name="SourceAndTarget" xml:space="preserve">
-    <value>Soure and target</value>
+    <value>Source and target</value>
   </data>
   <data name="SourceBranch" xml:space="preserve">
     <value>Source branch</value>
@@ -245,5 +245,29 @@
   </data>
   <data name="LatestVersion" xml:space="preserve">
     <value>Latest version</value>
+  </data>
+  <data name="ChangesetIdsComment" xml:space="preserve">
+    <value>Changeset ids</value>
+  </data>
+  <data name="ChangesetIdsFormat" xml:space="preserve">
+    <value>Merged changeset ids: {0}</value>
+  </data>
+  <data name="MergeDirectionAndChangesetIdsComment" xml:space="preserve">
+    <value>Merge direction and changeset ids</value>
+  </data>
+  <data name="MergeDirectionAndChangesetIdsFormat" xml:space="preserve">
+    <value>Merge {0} --&gt; {1} ({2})</value>
+  </data>
+  <data name="MergeDirectionWorkItemsAndChangesetIdsComment" xml:space="preserve">
+    <value>Merge direction with changeset ids and work items</value>
+  </data>
+  <data name="MergeDirectionWorkItemsAndChangesetIdsFormat" xml:space="preserve">
+    <value>Merge {0} --&gt; {1} ({2}; {3})</value>
+  </data>
+  <data name="WorkItemIdsAndChangesetIdsComment" xml:space="preserve">
+    <value>Work item ids and changeset ids</value>
+  </data>
+  <data name="WorkItemIdsAndChangesetIdsFormat" xml:space="preserve">
+    <value>Merged work items ids: {0}; changeset ids: {1}</value>
   </data>
 </root>

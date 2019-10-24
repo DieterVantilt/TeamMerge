@@ -31,3 +31,7 @@ First release version:
 - New way of fecthing work item types (Had to change before 2020 because it would be obsolete)
 - Possible to exclude work items when merging
 - Show in comments when merging the latest version of the branch
+
+24/10/2019 (2.2.0)
+- Fixed a little typo
+- Add the possibility to add changeset ids to the comment
