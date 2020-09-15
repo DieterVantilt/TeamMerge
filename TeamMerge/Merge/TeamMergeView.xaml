@@ -78,6 +78,10 @@
                   SelectedItem="{Binding TeamMergeCommandsViewModel.SelectedSourceBranch, UpdateSourceTrigger=PropertyChanged}"
                   Margin="0 0 0 10"/>
 
+        <Button Command="{Binding TeamMergeCommandsViewModel.SwitchTargetAndSourceBranchesCommand}"
+                Content="{x:Static resources:Resources.SwitchTargetAndSourceBranches}"
+                Margin="0 0 0 10" FontWeight="SemiBold"/>
+
         <TextBlock Text="{x:Static resources:Resources.TargetBranch}" />
         <ComboBox ItemsSource="{Binding TeamMergeCommandsViewModel.TargetBranches}"
                   SelectedItem="{Binding TeamMergeCommandsViewModel.SelectedTargetBranch, UpdateSourceTrigger=PropertyChanged}"

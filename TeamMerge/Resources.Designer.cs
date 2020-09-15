@@ -412,6 +412,15 @@ namespace TeamMerge {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ↓↑.
+        /// </summary>
+        public static string SwitchTargetAndSourceBranches {
+            get {
+                return ResourceManager.GetString("SwitchTargetAndSourceBranches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Target.
         /// </summary>
         public static string Target {
