@@ -171,6 +171,9 @@
   <data name="SourceBranch" xml:space="preserve">
     <value>Source branch</value>
   </data>
+  <data name="SwitchTargetAndSourceBranches" xml:space="preserve">
+    <value>&#x2193;&#x2191;</value>
+  </data>
   <data name="Target" xml:space="preserve">
     <value>Target</value>
   </data>

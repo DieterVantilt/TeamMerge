@@ -39,6 +39,7 @@ namespace TeamMerge.Merge
             FetchChangesetsCommand = new AsyncRelayCommand(FetchChangesetsAsync, CanFetchChangesets);
             SelectWorkspaceCommand = new RelayCommand<Workspace>(SelectWorkspace);
             OpenSettingsCommand = new RelayCommand(OpenSettings);
+            SwitchTargetAndSourceBranchesCommand = new RelayCommand(SwitchTargetAndSourceBranches, CanSwitchTargetAndSourceBranches);
 
             SourcesBranches = new ObservableCollection<string>();
             TargetBranches = new ObservableCollection<string>();
@@ -53,6 +54,7 @@ namespace TeamMerge.Merge
         public IRelayCommand FetchChangesetsCommand { get; }
         public IRelayCommand SelectWorkspaceCommand { get; }
         public IRelayCommand OpenSettingsCommand { get; }
+        public IRelayCommand SwitchTargetAndSourceBranchesCommand { get; }
 
         public ObservableCollection<string> ProjectNames { get; set; }
         public ObservableCollection<string> SourcesBranches { get; set; }
@@ -113,6 +115,7 @@ namespace TeamMerge.Merge
                 RaisePropertyChanged(nameof(SelectedTargetBranch));
 
                 FetchChangesetsCommand.RaiseCanExecuteChanged();
+                SwitchTargetAndSourceBranchesCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -384,5 +387,18 @@ namespace TeamMerge.Merge
                 _selectedChangesets.CollectionChanged -= SelectedChangesets_CollectionChanged;
             }
         }
+
+        private void SwitchTargetAndSourceBranches()
+        {
+            var previousSourceBranch = SelectedSourceBranch;
+            SelectedSourceBranch = SelectedTargetBranch;
+            SelectedTargetBranch = previousSourceBranch;
+        }
+
+        private bool CanSwitchTargetAndSourceBranches() =>
+            // If selected source branch is null, this command will be effectively "use target branch as source".
+            // Other way round - having target branch not selected while having source branch selected is useless,
+            // as after switching source will be empty and changing it to anything will clear target branch combo anyway.
+            SelectedTargetBranch != null;
     }
 }
