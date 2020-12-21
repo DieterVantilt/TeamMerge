@@ -273,4 +273,7 @@
   <data name="WorkItemIdsAndChangesetIdsFormat" xml:space="preserve">
     <value>Merged work items ids: {0}; changeset ids: {1}</value>
   </data>
+  <data name="ShowButtonForSwitchingBranches" xml:space="preserve">
+    <value>Show button for switching source and target branch</value>
+  </data>
 </root>

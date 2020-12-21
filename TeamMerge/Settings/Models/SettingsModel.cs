@@ -126,6 +126,14 @@ namespace TeamMerge.Settings.Models
             set { _excludeWorkItemsForMerge = value; RaisePropertyChanged(nameof(ExcludeWorkItemsForMerge)); }
         }
 
+        private bool _shouldShowButtonSwitchingSourceTargetBranch;
+
+        public bool ShouldShowButtonSwitchingSourceTargetBranch
+        {
+            get { return _shouldShowButtonSwitchingSourceTargetBranch;  }
+            set { _shouldShowButtonSwitchingSourceTargetBranch = value; RaisePropertyChanged(nameof(ShouldShowButtonSwitchingSourceTargetBranch)); }
+        }
+
         public ObservableCollection<string> WorkItemTypesToExclude { get; set; }
     }
 }

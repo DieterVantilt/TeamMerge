@@ -124,7 +124,8 @@ namespace TeamMerge.Settings.Dialogs
                 CommenFormat = _configManager.GetValue<string>(ConfigKeys.COMMENT_FORMAT),
                 ExcludeWorkItemsForMerge = _configManager.GetValue<bool>(ConfigKeys.EXCLUDE_WORK_ITEMS_FOR_MERGE),
                 ShouldShowLatestVersionMerge = _configManager.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT),
-                WorkItemTypesToExclude = new ObservableCollection<string>(_configManager.GetValue<ObservableCollection<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE) ?? Enumerable.Empty<string>()) 
+                WorkItemTypesToExclude = new ObservableCollection<string>(_configManager.GetValue<ObservableCollection<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE) ?? Enumerable.Empty<string>()), 
+                ShouldShowButtonSwitchingSourceTargetBranch = _configManager.GetValue<bool>(ConfigKeys.SHOULD_SHOW_BUTTON_SWITCHING_SOURCE_TARGET_BRANCH)
             };
 
             IsDirty = false;
@@ -158,6 +159,7 @@ namespace TeamMerge.Settings.Dialogs
             _configManager.AddValue(ConfigKeys.COMMENT_FORMAT, Model.CommenFormat);
             _configManager.AddValue(ConfigKeys.EXCLUDE_WORK_ITEMS_FOR_MERGE, Model.ExcludeWorkItemsForMerge);
             _configManager.AddValue(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT, Model.ShouldShowLatestVersionMerge);
+            _configManager.AddValue(ConfigKeys.SHOULD_SHOW_BUTTON_SWITCHING_SOURCE_TARGET_BRANCH, Model.ShouldShowButtonSwitchingSourceTargetBranch);
 
             _configManager.SaveDictionary();
 

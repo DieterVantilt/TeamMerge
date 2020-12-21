@@ -193,6 +193,14 @@ namespace TeamMerge.Merge
             }
         }
 
+        private bool _shouldShowButtonSwitchingSourceTargetBranch;
+
+        public bool ShouldShowButtonSwitchingSourceTargetBranch
+        {
+            get { return _shouldShowButtonSwitchingSourceTargetBranch; }
+            set { _shouldShowButtonSwitchingSourceTargetBranch = value; RaisePropertyChanged(nameof(ShouldShowButtonSwitchingSourceTargetBranch)); }
+        }
+
         private async Task MergeAsync()
         {
             await _setBusyWhileExecutingAsync(async () =>
@@ -299,6 +307,8 @@ namespace TeamMerge.Merge
                 {
                     SetSavedSelectedBranches();
                 }
+
+                ReadSettingsFromConfigManager();
             });
         }
 
@@ -343,6 +353,11 @@ namespace TeamMerge.Merge
             }
         }
 
+        private void ReadSettingsFromConfigManager()
+        {
+            ShouldShowButtonSwitchingSourceTargetBranch = _configManager.GetValue<bool>(ConfigKeys.SHOULD_SHOW_BUTTON_SWITCHING_SOURCE_TARGET_BRANCH);
+        }
+
         public void OpenSettings()
         {
             var viewModel = new SettingsDialogViewModel(_configManager, _teamService);
@@ -358,7 +373,9 @@ namespace TeamMerge.Merge
             window.Closing += (e, cancelEventArgs) => viewModel.OnCloseWindowRequest(cancelEventArgs);
             viewModel.RequestClose += () => window.Close();
 
-            window.ShowDialog();
+            window.ShowDialog(); 
+            
+            ReadSettingsFromConfigManager();
         }
 
         private void RestoreContext(TeamMergeContext context)

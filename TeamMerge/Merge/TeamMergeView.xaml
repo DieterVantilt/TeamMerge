@@ -7,7 +7,9 @@
              xmlns:i="clr-namespace:Microsoft.Xaml.Behaviors;assembly=Microsoft.Xaml.Behaviors"
              xmlns:resources="clr-namespace:TeamMerge"
              xmlns:converters="clr-namespace:TeamMerge.Converters"
+             xmlns:merge="clr-namespace:TeamMerge.Merge"
              mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance merge:TeamMergeViewModel2019}"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -16,6 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <converters:InvertedBooleanConverter x:Key="InvertedBooleanConverter" />
+            <BooleanToVisibilityConverter  x:Key="BooleanToVisibilityConverter"/>
 
             <converters:MultiConverter x:Key="NullToInvisibleConverter">
                 <converters:NullableToBooleanConverter />
@@ -80,6 +83,7 @@
 
         <Button Command="{Binding TeamMergeCommandsViewModel.SwitchTargetAndSourceBranchesCommand}"
                 Content="{x:Static resources:Resources.SwitchTargetAndSourceBranches}"
+                Visibility="{Binding TeamMergeCommandsViewModel.ShouldShowButtonSwitchingSourceTargetBranch, Converter={StaticResource BooleanToVisibilityConverter}}"
                 Margin="0 0 0 10" FontWeight="SemiBold"/>
 
         <TextBlock Text="{x:Static resources:Resources.TargetBranch}" />

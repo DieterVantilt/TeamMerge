@@ -53,11 +53,14 @@ namespace TeamMerge.Tests.Merge
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(false);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return(null);
 
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_BUTTON_SWITCHING_SOURCE_TARGET_BRANCH)).Return(true);
+
             await _sut.InitializeAsync(null);
 
             Assert.AreEqual(2, _sut.ProjectNames.Count);
             Assert.IsTrue(_sut.ProjectNames.Contains(projectName1));
             Assert.IsTrue(_sut.ProjectNames.Contains(projectName2));
+            Assert.IsTrue(_sut.ShouldShowButtonSwitchingSourceTargetBranch);
         }
 
         [TestMethod]
@@ -87,11 +90,14 @@ namespace TeamMerge.Tests.Merge
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(true);
 
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_BUTTON_SWITCHING_SOURCE_TARGET_BRANCH)).Return(false);
+
             await _sut.InitializeAsync(null);
 
             Assert.IsTrue(_sut.SelectedProjectName == projectName);
             Assert.IsTrue(_sut.SelectedSourceBranch == selectedSource);
             Assert.IsTrue(_sut.SelectedTargetBranch == selectedTarget);
+            Assert.IsFalse(_sut.ShouldShowButtonSwitchingSourceTargetBranch);
         }
 
         [TestMethod]
@@ -115,6 +121,8 @@ namespace TeamMerge.Tests.Merge
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.SOURCE_BRANCH)).Return(selectedSource);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.TARGET_BRANCH)).Return(selectedTarget);
 
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_BUTTON_SWITCHING_SOURCE_TARGET_BRANCH)).Return(false);
+
             await _sut.InitializeAsync(null);
 
             Assert.IsTrue(_sut.SelectedProjectName == projectName);
@@ -135,6 +143,8 @@ namespace TeamMerge.Tests.Merge
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(false);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return(null);
+
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_BUTTON_SWITCHING_SOURCE_TARGET_BRANCH)).Return(false);
 
             await _sut.InitializeAsync(null);
 
@@ -157,6 +167,8 @@ namespace TeamMerge.Tests.Merge
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(false);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return(null);
+
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_BUTTON_SWITCHING_SOURCE_TARGET_BRANCH)).Return(false);
 
             await _sut.InitializeAsync(null);
 
@@ -206,7 +218,9 @@ namespace TeamMerge.Tests.Merge
             _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<Workspace>>(new List<Workspace> { workspaceModel1 }));
             _teamService.Expect(x => x.CurrentWorkspace()).Return(null);
 
-            _teamService.Expect(x => x.GetBranches(projectName)).Return(new List<Branch> { branch });
+            _teamService.Expect(x => x.GetBranches(projectName)).Return(new List<Branch> {branch});
+
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_BUTTON_SWITCHING_SOURCE_TARGET_BRANCH)).Return(false);
 
             await setUpForContextOrConfig();
 

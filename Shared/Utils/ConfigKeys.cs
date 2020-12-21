@@ -17,5 +17,6 @@ namespace Shared.Utils
         public static readonly string COMMENT_FORMAT = "CommenFormat";
         public static readonly string EXCLUDE_WORK_ITEMS_FOR_MERGE = "ExcludeWorkItemsForMerge";
         public static readonly string SHOULD_SHOW_LATEST_VERSION_IN_COMMENT = "ShouldShowLatestVersionInComment";
+        public static readonly string SHOULD_SHOW_BUTTON_SWITCHING_SOURCE_TARGET_BRANCH = "ShouldShowButtonSwitchingSourceTargetBranch";
     }
 }

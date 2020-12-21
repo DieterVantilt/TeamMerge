@@ -27,5 +27,9 @@
                   Content="{x:Static resource:Resources.ExcludeWorkItems}"
                   IsChecked="{Binding Model.ExcludeWorkItemsForMerge, UpdateSourceTrigger=PropertyChanged}"/>
 
+        <CheckBox Margin="0 0 0 10"
+                  Content="{x:Static resource:Resources.ShowButtonForSwitchingBranches}"
+                  IsChecked="{Binding Model.ShouldShowButtonSwitchingSourceTargetBranch, UpdateSourceTrigger=PropertyChanged}"/>
+
     </StackPanel>
 </UserControl>

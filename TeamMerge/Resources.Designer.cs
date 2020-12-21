@@ -376,6 +376,15 @@ namespace TeamMerge {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show button for switching source and target branch.
+        /// </summary>
+        public static string ShowButtonForSwitchingBranches {
+            get {
+                return ResourceManager.GetString("ShowButtonForSwitchingBranches", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show in comments when merging latest version.
         /// </summary>
         public static string ShowLatestVersionInComment {
