@@ -35,3 +35,7 @@ First release version:
 24/10/2019 (2.2.0)
 - Fixed a little typo
 - Add the possibility to add changeset ids to the comment
+
+22/12/2020 (2.3.0)
+- New button available for switching source and target branch (enabling button in setting screen)
+- Changeset details can now be added to the comment
