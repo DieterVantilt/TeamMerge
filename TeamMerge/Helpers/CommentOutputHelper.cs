@@ -40,7 +40,7 @@ namespace TeamMerge.Helpers
                 {
                     comment = string.Format(CultureInfo.CurrentCulture, commentFormat, sourceBranch.GetBranchName(), targetBranch.GetBranchName(), GetIdsSplitedOrShowLatestVersionComment(changesets.Select(x => x.ChangesetId), isLatestVersion));
                 }
-                else if (checkInCommentChoice == CheckInComment.ChangesetDetailsComment)
+                else if (checkInCommentChoice == CheckInComment.ChangesetsDetails)
                 {
                     if (!isLatestVersion)
                     {
@@ -51,7 +51,7 @@ namespace TeamMerge.Helpers
                         comment = Resources.LatestVersion;
                     }
                 }
-                else if (checkInCommentChoice == CheckInComment.MergeDirectionChangesetDetailsComment)
+                else if (checkInCommentChoice == CheckInComment.MergeDirectionChangesetsDetails)
                 {
                     comment = string.Format(CultureInfo.CurrentCulture, commentFormat, sourceBranch.GetBranchName(), targetBranch.GetBranchName());
 

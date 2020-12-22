@@ -99,11 +99,11 @@ namespace TeamMerge.Settings.Models
                 {
                     CommentFormat = Resources.MergeDirectionAndChangesetIdsFormat;
                 }
-                else if (_checkInComment == CheckInComment.ChangesetDetailsComment)
+                else if (_checkInComment == CheckInComment.ChangesetsDetails)
                 {
                     CommentFormat = Resources.ChangesetCommentFormat;
                 }
-                else if (_checkInComment == CheckInComment.MergeDirectionChangesetDetailsComment)
+                else if (_checkInComment == CheckInComment.MergeDirectionChangesetsDetails)
                 {
                     CommentFormat = Resources.BranchDirectionFormat;
                     CommentLineFormat = Resources.ChangesetCommentFormat;

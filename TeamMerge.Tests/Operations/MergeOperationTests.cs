@@ -374,7 +374,7 @@ namespace TeamMerge.Tests.Operations
             var awesomeCheckInComment = "- {0} | {1} | {2} | {3}";
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
-            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.ChangesetDetailsComment);
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.ChangesetsDetails);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(string.Empty);
 
@@ -408,7 +408,7 @@ namespace TeamMerge.Tests.Operations
             var awesomeCheckInLineComment = "- {0} | {1} | {2} | {3}";
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
-            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirectionChangesetDetailsComment);
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirectionChangesetsDetails);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(awesomeCheckInLineComment);
 
@@ -441,7 +441,7 @@ namespace TeamMerge.Tests.Operations
             var awesomeCheckInComment = "Merge: {0} --> {1}";
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
-            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirectionChangesetDetailsComment);
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirectionChangesetsDetails);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(null);
 

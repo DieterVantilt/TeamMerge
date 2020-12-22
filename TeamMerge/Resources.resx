@@ -172,7 +172,7 @@
     <value>Source branch</value>
   </data>
   <data name="SwitchTargetAndSourceBranches" xml:space="preserve">
-    <value>&#x2193;&#x2191;</value>
+    <value>↓↑</value>
   </data>
   <data name="Target" xml:space="preserve">
     <value>Target</value>
@@ -258,11 +258,11 @@
   <data name="MergeDirectionAndChangesetIdsComment" xml:space="preserve">
     <value>Merge direction and changeset ids</value>
   </data>
-  <data name="ChangesetDetailsComment" xml:space="preserve">
-    <value>Changeset details comment</value>
+  <data name="ChangesetsDetails" xml:space="preserve">
+    <value>Changesets details</value>
   </data>
-  <data name="MergeDirectionChangesetDetailsComment" xml:space="preserve">
-    <value>Merge direction with changeset details</value>
+  <data name="MergeDirectionAndChangesetsDetails" xml:space="preserve">
+    <value>Merge direction and changesets details</value>
   </data>
   <data name="MergeDirectionAndChangesetIdsFormat" xml:space="preserve">
     <value>Merge {0} --&gt; {1} ({2})</value>

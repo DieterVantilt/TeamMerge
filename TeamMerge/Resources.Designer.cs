@@ -19,7 +19,7 @@ namespace TeamMerge {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -88,15 +88,6 @@ namespace TeamMerge {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Changeset details comment.
-        /// </summary>
-        public static string ChangesetDetailsComment {
-            get {
-                return ResourceManager.GetString("ChangesetDetailsComment", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Changeset ids.
         /// </summary>
         public static string ChangesetIdsComment {
@@ -111,6 +102,15 @@ namespace TeamMerge {
         public static string ChangesetIdsFormat {
             get {
                 return ResourceManager.GetString("ChangesetIdsFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changesets details.
+        /// </summary>
+        public static string ChangesetsDetails {
+            get {
+                return ResourceManager.GetString("ChangesetsDetails", resourceCulture);
             }
         }
         
@@ -259,6 +259,15 @@ namespace TeamMerge {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Merge direction and changesets details.
+        /// </summary>
+        public static string MergeDirectionAndChangesetsDetails {
+            get {
+                return ResourceManager.GetString("MergeDirectionAndChangesetsDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Merge direction and work items.
         /// </summary>
         public static string MergeDirectionAndWorkItemsComment {
@@ -273,15 +282,6 @@ namespace TeamMerge {
         public static string MergeDirectionAndWorkItemsFormat {
             get {
                 return ResourceManager.GetString("MergeDirectionAndWorkItemsFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Merge direction with changeset details.
-        /// </summary>
-        public static string MergeDirectionChangesetDetailsComment {
-            get {
-                return ResourceManager.GetString("MergeDirectionChangesetDetailsComment", resourceCulture);
             }
         }
         

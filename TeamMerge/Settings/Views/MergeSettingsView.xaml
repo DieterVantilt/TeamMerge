@@ -89,7 +89,7 @@
                  Text="{Binding Model.CommentFormat, UpdateSourceTrigger=PropertyChanged}"/>
 
         <TextBox Margin="0 5 0 5"
-                 Visibility="{Binding Model.CheckInComment, Converter={StaticResource IsEqualToVisibilityConverter}, ConverterParameter={x:Static enums:CheckInComment.MergeDirectionChangesetDetailsComment}}"
+                 Visibility="{Binding Model.CheckInComment, Converter={StaticResource IsEqualToVisibilityConverter}, ConverterParameter={x:Static enums:CheckInComment.MergeDirectionChangesetsDetails}}"
                  Text="{Binding Model.CommentLineFormat, UpdateSourceTrigger=PropertyChanged}"/>
 
         <StackPanel Orientation="Horizontal">
