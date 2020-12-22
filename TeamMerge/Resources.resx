@@ -258,6 +258,12 @@
   <data name="MergeDirectionAndChangesetIdsComment" xml:space="preserve">
     <value>Merge direction and changeset ids</value>
   </data>
+  <data name="ChangesetDetailsComment" xml:space="preserve">
+    <value>Changeset details comment</value>
+  </data>
+  <data name="MergeDirectionChangesetDetailsComment" xml:space="preserve">
+    <value>Merge direction with changeset details</value>
+  </data>
   <data name="MergeDirectionAndChangesetIdsFormat" xml:space="preserve">
     <value>Merge {0} --&gt; {1} ({2})</value>
   </data>
@@ -266,6 +272,9 @@
   </data>
   <data name="MergeDirectionWorkItemsAndChangesetIdsFormat" xml:space="preserve">
     <value>Merge {0} --&gt; {1} ({2}; {3})</value>
+  </data>
+  <data name="ChangesetCommentFormat" xml:space="preserve">
+    <value>- {0} | {1} | {2} | {3}</value>
   </data>
   <data name="WorkItemIdsAndChangesetIdsComment" xml:space="preserve">
     <value>Work item ids and changeset ids</value>

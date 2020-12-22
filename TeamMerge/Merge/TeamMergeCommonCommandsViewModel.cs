@@ -212,7 +212,7 @@ namespace TeamMerge.Merge
                 await _mergeOperation.ExecuteAsync(new MergeModel
                 {
                     WorkspaceModel = SelectedWorkspace,
-                    OrderedChangesetIds = orderedSelectedChangesets.Select(x => x.ChangesetId).ToList(),
+                    OrderedChangesets = orderedSelectedChangesets,
                     SourceBranch = SelectedSourceBranch,
                     TargetBranch = SelectedTargetBranch,
                     IsLatestVersion = SelectedChangesets.Count == Changesets.Count

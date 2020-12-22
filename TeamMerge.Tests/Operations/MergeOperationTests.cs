@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using System;
+using Domain.Entities;
 using Logic.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rhino.Mocks;
@@ -6,6 +7,7 @@ using Shared.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Services.Common;
 using TeamMerge.Exceptions;
 using TeamMerge.Helpers;
 using TeamMerge.Operations;
@@ -153,9 +155,12 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
             _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.None);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(string.Empty);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(string.Empty);
+
+            var mergeModel = CreateMergeModel(Enumerable.Empty<Changeset>(), false);
 
             var obj = new PrivateObject(_sut);
-            var result = (string) obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>(), Enumerable.Empty<int>(), false);
+            var result = (string) obj.Invoke(GETCOMMENT_METHOD_NAME, mergeModel, Enumerable.Empty<int>());
 
             Assert.AreEqual(string.Empty, result);
         }
@@ -166,9 +171,12 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
             _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirection);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return("Merge {0} --> {1}");
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(string.Empty);
+
+            var mergeModel = CreateMergeModel(Enumerable.Empty<Changeset>(), false);
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>(), Enumerable.Empty<int>(), false);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, mergeModel, Enumerable.Empty<int>());
 
             Assert.IsTrue(result.Contains(_sourceBranchName));
             Assert.IsTrue(result.Contains(_targetbranchName));
@@ -180,9 +188,12 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
             _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirection);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return("Merge {0}");
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(string.Empty);
+
+            var mergeModel = CreateMergeModel(Enumerable.Empty<Changeset>(), false);
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>(), Enumerable.Empty<int>(), false);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, mergeModel, Enumerable.Empty<int>());
 
             Assert.IsTrue(result.Contains(_sourceBranchName));
             Assert.IsFalse(result.Contains(_targetbranchName));
@@ -194,9 +205,12 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
             _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirection);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return("Merge {1}");
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(string.Empty);
+
+            var mergeModel = CreateMergeModel(Enumerable.Empty<Changeset>(), false);
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>(), Enumerable.Empty<int>(), false);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, mergeModel, Enumerable.Empty<int>());
 
             Assert.IsFalse(result.Contains(_sourceBranchName));
             Assert.IsTrue(result.Contains(_targetbranchName));
@@ -210,9 +224,12 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
             _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.WorkItemIds);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return("Merge work item ids: {0}");
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(string.Empty);
+
+            var mergeModel = CreateMergeModel(Enumerable.Empty<Changeset>(), false);
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds, Enumerable.Empty<int>(), false);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, mergeModel, workitemIds);
 
             Assert.IsTrue(result.Contains(string.Join(", ", workitemIds)));
         }
@@ -225,9 +242,12 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
             _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.Fixed);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(string.Empty);
+
+            var mergeModel = CreateMergeModel(Enumerable.Empty<Changeset>(), false);
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, Enumerable.Empty<int>(), Enumerable.Empty<int>(), false);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, mergeModel, Enumerable.Empty<int>());
 
             Assert.AreEqual(result, awesomeCheckInComment);
         }
@@ -241,9 +261,12 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
             _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirectionAndWorkItems);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(string.Empty);
+
+            var mergeModel = CreateMergeModel(Enumerable.Empty<Changeset>(), false);
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds, Enumerable.Empty<int>(), false);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, mergeModel, workitemIds);
 
             Assert.IsTrue(result.Contains(_sourceBranchName));
             Assert.IsTrue(result.Contains(_targetbranchName));
@@ -259,9 +282,12 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
             _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirectionAndWorkItems);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(string.Empty);
+
+            var mergeModel = CreateMergeModel(Enumerable.Empty<Changeset>(), true);
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds, Enumerable.Empty<int>(), true);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, mergeModel, workitemIds);
 
             Assert.IsTrue(result.Contains(_sourceBranchName));
             Assert.IsTrue(result.Contains(_targetbranchName));
@@ -277,9 +303,12 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(true);
             _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirectionAndWorkItems);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(string.Empty);
+
+            var mergeModel = CreateMergeModel(Enumerable.Empty<Changeset>(), true);
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds, Enumerable.Empty<int>(), true);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, mergeModel, workitemIds);
 
             Assert.IsTrue(result.Contains(_sourceBranchName));
             Assert.IsTrue(result.Contains(_targetbranchName));
@@ -290,17 +319,20 @@ namespace TeamMerge.Tests.Operations
         public void MergeOperation_GetCommentForMerge_WhenCalledAndCheckInCommentOptionIsChangesetIds_ThenReturnsChangesetIds()
         {
             var workitemIds = new List<int> { 5, 10, 16, 18 };
-            var changesetIds = new List<int> { 6, 23, 26, 27 };
+            var changesets = new List<Changeset> { new Changeset { ChangesetId = 6 }, new Changeset { ChangesetId = 23 }, new Changeset { ChangesetId = 26 }, new Changeset { ChangesetId = 27 } };
             var awesomeCheckInComment = "Merged with changesetids: {0}";
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
             _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.ChangesetIds);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(string.Empty);
+
+            var mergeModel = CreateMergeModel(changesets, true);
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds, changesetIds, true);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, mergeModel, workitemIds);
 
-            Assert.IsTrue(result.Contains(string.Join(", ", changesetIds)));
+            Assert.IsTrue(result.Contains(string.Join(", ", changesets.Select(x => x.ChangesetId))));
             Assert.IsFalse(result.Contains(string.Join(", ", workitemIds)));
         }
 
@@ -308,26 +340,129 @@ namespace TeamMerge.Tests.Operations
         public void MergeOperation_GetCommentForMerge_WhenCalledAndCheckInCommentOptionIsMergeDirectionAndChangesetIds_ThenReturnsChangesetIds()
         {
             var workitemIds = new List<int> { 5, 10, 16, 18 };
-            var changesetIds = new List<int> { 6, 23, 26, 27 };
+            var changesets = new List<Changeset> { new Changeset { ChangesetId = 6 }, new Changeset { ChangesetId = 23 }, new Changeset { ChangesetId = 26 }, new Changeset { ChangesetId = 27 } };
             var awesomeCheckInComment = "Merge: {0} --> {1} ({2})";
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
             _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirectionAndChangesetIds);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(string.Empty);
+
+            var mergeModel = CreateMergeModel(changesets, true);
 
             var obj = new PrivateObject(_sut);
-            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, _sourceBranchName, _targetbranchName, workitemIds, changesetIds, true);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, mergeModel, workitemIds);
 
             Assert.IsTrue(result.Contains(_sourceBranchName));
             Assert.IsTrue(result.Contains(_targetbranchName));
-            Assert.IsTrue(result.Contains(string.Join(", ", changesetIds)));
+            Assert.IsTrue(result.Contains(string.Join(", ", changesets.Select(x => x.ChangesetId))));
             Assert.IsFalse(result.Contains(string.Join(", ", workitemIds)));
+        }
+
+        [TestMethod]
+        public void MergeOperation_GetCommentForMerge_WhenCalledAndCheckInCommentOptionIsChangesetDetailsComment_ThenReturnsChangesetDetails()
+        {
+            var datetimeNow = DateTime.Now;
+            var workitemIds = new List<int> { 5, 10, 16, 18 };
+            var changesets = new List<Changeset>
+            {
+                new Changeset { ChangesetId = 6, Comment = "comment 6", CreationDate = datetimeNow, Owner = "owner 6"}, 
+                new Changeset { ChangesetId = 23, Comment = "comment 23", CreationDate = datetimeNow, Owner = "owner 23" }, 
+                new Changeset { ChangesetId = 26, Comment = "comment 26", CreationDate = datetimeNow, Owner = "owner 26" }, 
+                new Changeset { ChangesetId = 27, Comment = "comment 27", CreationDate = datetimeNow, Owner = "owner 27" }
+            };
+            var awesomeCheckInComment = "- {0} | {1} | {2} | {3}";
+
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.ChangesetDetailsComment);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(string.Empty);
+
+            var mergeModel = CreateMergeModel(changesets, false);
+
+            var obj = new PrivateObject(_sut);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, mergeModel, workitemIds);
+
+            Assert.IsFalse(result.Contains(_sourceBranchName));
+            Assert.IsFalse(result.Contains(_targetbranchName));
+            Assert.IsTrue(result.Contains(datetimeNow.ToString()));
+            Assert.IsTrue(result.Contains("comment 6"));
+            Assert.IsTrue(result.Contains("comment 23"));
+            Assert.IsTrue(result.Contains("owner 26"));
+            Assert.IsTrue(result.Contains("owner 27"));
+        }
+
+        [TestMethod]
+        public void MergeOperation_GetCommentForMerge_WhenCalledAndCheckInCommentOptionIsMergeDirectionChangesetDetailsComment_ThenReturnsMergeDirectionChangesetDetails()
+        {
+            var datetimeNow = DateTime.Now;
+            var workitemIds = new List<int> { 5, 10, 16, 18 };
+            var changesets = new List<Changeset>
+            {
+                new Changeset { ChangesetId = 6, Comment = "comment 6", CreationDate = datetimeNow, Owner = "owner 6"},
+                new Changeset { ChangesetId = 23, Comment = "comment 23", CreationDate = datetimeNow, Owner = "owner 23" },
+                new Changeset { ChangesetId = 26, Comment = "comment 26", CreationDate = datetimeNow, Owner = "owner 26" },
+                new Changeset { ChangesetId = 27, Comment = "comment 27", CreationDate = datetimeNow, Owner = "owner 27" }
+            };
+            var awesomeCheckInComment = "Merge: {0} --> {1}";
+            var awesomeCheckInLineComment = "- {0} | {1} | {2} | {3}";
+
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirectionChangesetDetailsComment);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(awesomeCheckInLineComment);
+
+            var mergeModel = CreateMergeModel(changesets, false);
+
+            var obj = new PrivateObject(_sut);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, mergeModel, workitemIds);
+
+            Assert.IsTrue(result.Contains(_sourceBranchName));
+            Assert.IsTrue(result.Contains(_targetbranchName));
+            Assert.IsTrue(result.Contains(datetimeNow.ToString()));
+            Assert.IsTrue(result.Contains("comment 6"));
+            Assert.IsTrue(result.Contains("comment 23"));
+            Assert.IsTrue(result.Contains("owner 26"));
+            Assert.IsTrue(result.Contains("owner 27"));
+        }
+
+        [TestMethod]
+        public void MergeOperation_GetCommentForMerge_WhenCalledAndCheckInCommentOptionIsMergeDirectionChangesetDetailsCommentAndCommentLineFormatIsNull_ThenDoesNotCrash()
+        {
+            var datetimeNow = DateTime.Now;
+            var workitemIds = new List<int> { 5, 10, 16, 18 };
+            var changesets = new List<Changeset>
+            {
+                new Changeset { ChangesetId = 6, Comment = "comment 6", CreationDate = datetimeNow, Owner = "owner 6"},
+                new Changeset { ChangesetId = 23, Comment = "comment 23", CreationDate = datetimeNow, Owner = "owner 23" },
+                new Changeset { ChangesetId = 26, Comment = "comment 26", CreationDate = datetimeNow, Owner = "owner 26" },
+                new Changeset { ChangesetId = 27, Comment = "comment 27", CreationDate = datetimeNow, Owner = "owner 27" }
+            };
+            var awesomeCheckInComment = "Merge: {0} --> {1}";
+
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT)).Return(false);
+            _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION)).Return(CheckInComment.MergeDirectionChangesetDetailsComment);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(awesomeCheckInComment);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(null);
+
+            var mergeModel = CreateMergeModel(changesets, false);
+
+            var obj = new PrivateObject(_sut);
+            var result = (string)obj.Invoke(GETCOMMENT_METHOD_NAME, mergeModel, workitemIds);
+
+            Assert.IsFalse(result.Contains(Resources.InvalidFormat));
         }
 
         [TestMethod]
         public async Task MergeOperation_Execute_WhenCalled_NothingGoesWrong()
         {
-            var orderedChangesetIds = new List<int> { 2, 5, 7, 8 };
+            var changesets = new List<Changeset>
+            {
+                new Changeset {ChangesetId = 2, Comment = "twee"},
+                new Changeset {ChangesetId = 5, Comment = "vijf"},
+                new Changeset {ChangesetId = 7, Comment = "zeven"},
+                new Changeset {ChangesetId = 8, Comment = "acht"}
+            };
 
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES))
                 .Return(false);
@@ -352,19 +487,33 @@ namespace TeamMerge.Tests.Operations
             _configManager.Expect(x => x.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION))
                 .Return(CheckInComment.None);
             _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_FORMAT)).Return(string.Empty);
+            _configManager.Expect(x => x.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT)).Return(string.Empty);
 
             _mergeService.Expect(x => x.MergeBranchesAsync(_currentWorkspaceModel, _sourceBranchName, _targetbranchName, 2, 8)).Return(Task.CompletedTask);
-            _mergeService.Expect(x => x.GetWorkItemIdsAsync(orderedChangesetIds, excludedWorkItemTypes)).Return(Task.FromResult<IEnumerable<int>>(workItemsToAdd));
+            _mergeService.Expect(x => x.GetWorkItemIdsAsync(Arg<IEnumerable<int>>.Matches(y => y.All(z => changesets.Select(cs => cs.ChangesetId).Contains(z))), Arg<IEnumerable<string>>.Matches(y => y.First() == excludedWorkItemTypes.First())))
+                .Return(Task.FromResult<IEnumerable<int>>(workItemsToAdd));
             _teamExplorerService.Expect(x => x.AddWorkItemsAndCommentThenNavigate(_currentWorkspaceModel, string.Empty, workItemsToAdd));
 
             await _sut.ExecuteAsync(new MergeModel
             {
-                OrderedChangesetIds = new List<int> { 2, 5, 7, 8 },
+                OrderedChangesets = changesets,
                 SourceBranch = _sourceBranchName,
                 TargetBranch = _targetbranchName,
                 WorkspaceModel = _currentWorkspaceModel
             });
-        }        
+        }
+
+        private MergeModel CreateMergeModel(IEnumerable<Changeset> changesets, bool isLatestVersion)
+        {
+            return new MergeModel()
+            {
+                TargetBranch = _targetbranchName,
+                SourceBranch = _sourceBranchName,
+                OrderedChangesets = changesets,
+                IsLatestVersion = isLatestVersion,
+                WorkspaceModel = new Workspace()
+            };
+        }
 
         [TestCleanup]
         public void CleanUp()

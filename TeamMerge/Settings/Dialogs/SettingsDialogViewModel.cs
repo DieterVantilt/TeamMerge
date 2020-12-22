@@ -8,11 +8,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
+using Domain.Entities;
 using TeamMerge.Base;
 using TeamMerge.Commands;
 using TeamMerge.Helpers;
 using TeamMerge.Settings.Enums;
 using TeamMerge.Settings.Models;
+using Branch = TeamMerge.Settings.Enums.Branch;
 using RelayCommand = TeamMerge.Commands.RelayCommand;
 
 namespace TeamMerge.Settings.Dialogs
@@ -82,11 +85,20 @@ namespace TeamMerge.Settings.Dialogs
         {
             get
             {
-                var comment = CommentOutputHelper.GetCheckInComment(Model.CheckInComment, Model.CommenFormat, SOURCE_BRANCH_NAME_EXAMPLE, TARGET_BRANCH_NAME_EXAMPLE, new List<int> { 5, 12, 235 }, new List<int> { 1, 2, 5, 10 }, false);
+                var comment = CommentOutputHelper.GetCheckInComment(Model.CheckInComment, Model.CommentFormat, Model.CommentLineFormat, SOURCE_BRANCH_NAME_EXAMPLE, TARGET_BRANCH_NAME_EXAMPLE
+                    , new List<int> { 5, 12, 235 }
+                    , new List<Changeset>
+                    {
+                        new Changeset { ChangesetId = 1, Comment = "Comment 1", CreationDate = DateTime.Now.AddDays(-10), Owner = "Owner 1"}, 
+                        new Changeset { ChangesetId = 2, Comment = "Comment 2", CreationDate = DateTime.Now.AddDays(-5), Owner = "Owner 2" }, 
+                        new Changeset { ChangesetId = 5, Comment = "Comment 5", CreationDate = DateTime.Now.AddDays(-2), Owner = "Owner 5" }, 
+                        new Changeset { ChangesetId = 10, Comment = "Comment 10", CreationDate = DateTime.Now.AddDays(1), Owner = "Owner 10" }
+                    }
+                    , false);
 
                 if (Model.ShouldShowLatestVersionMerge)
                 {
-                    comment += Environment.NewLine + CommentOutputHelper.GetCheckInComment(Model.CheckInComment, Model.CommenFormat, SOURCE_BRANCH_NAME_EXAMPLE, TARGET_BRANCH_NAME_EXAMPLE, Enumerable.Empty<int>(), Enumerable.Empty<int>(), true);
+                    comment += Environment.NewLine + CommentOutputHelper.GetCheckInComment(Model.CheckInComment, Model.CommentFormat, Model.CommentLineFormat, SOURCE_BRANCH_NAME_EXAMPLE, TARGET_BRANCH_NAME_EXAMPLE, Enumerable.Empty<int>(), Enumerable.Empty<Changeset>(), true);
                 }
 
                 return comment;
@@ -121,7 +133,8 @@ namespace TeamMerge.Settings.Dialogs
                 ShouldResolveConflicts = _configManager.GetValue<bool>(ConfigKeys.SHOULD_RESOLVE_CONFLICTS),
                 SaveSelectedBranchPerSolution = _configManager.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION),
                 CheckInComment = _configManager.GetValue<CheckInComment>(ConfigKeys.CHECK_IN_COMMENT_OPTION),
-                CommenFormat = _configManager.GetValue<string>(ConfigKeys.COMMENT_FORMAT),
+                CommentFormat = _configManager.GetValue<string>(ConfigKeys.COMMENT_FORMAT),
+                CommentLineFormat = _configManager.GetValue<string>(ConfigKeys.COMMENT_LINE_FORMAT),
                 ExcludeWorkItemsForMerge = _configManager.GetValue<bool>(ConfigKeys.EXCLUDE_WORK_ITEMS_FOR_MERGE),
                 ShouldShowLatestVersionMerge = _configManager.GetValue<bool>(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT),
                 WorkItemTypesToExclude = new ObservableCollection<string>(_configManager.GetValue<ObservableCollection<string>>(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE) ?? Enumerable.Empty<string>()), 
@@ -141,7 +154,7 @@ namespace TeamMerge.Settings.Dialogs
         {
             IsDirty = true;
 
-            if (e.PropertyName == nameof(SettingsModel.CommenFormat) || e.PropertyName == nameof(SettingsModel.ShouldShowLatestVersionMerge))
+            if (e.PropertyName == nameof(SettingsModel.CommentFormat) || e.PropertyName == nameof(SettingsModel.CommentLineFormat) || e.PropertyName == nameof(SettingsModel.ShouldShowLatestVersionMerge))
             {
                 RaisePropertyChanged(nameof(CommentOutput));
             }
@@ -156,7 +169,8 @@ namespace TeamMerge.Settings.Dialogs
             _configManager.AddValue(ConfigKeys.SAVE_BRANCH_PERSOLUTION, Model.SaveSelectedBranchPerSolution);
             _configManager.AddValue(ConfigKeys.WORK_ITEM_TYPES_TO_EXCLUDE, Model.WorkItemTypesToExclude);
             _configManager.AddValue(ConfigKeys.CHECK_IN_COMMENT_OPTION, Model.CheckInComment);
-            _configManager.AddValue(ConfigKeys.COMMENT_FORMAT, Model.CommenFormat);
+            _configManager.AddValue(ConfigKeys.COMMENT_FORMAT, Model.CommentFormat);
+            _configManager.AddValue(ConfigKeys.COMMENT_LINE_FORMAT, Model.CommentLineFormat);
             _configManager.AddValue(ConfigKeys.EXCLUDE_WORK_ITEMS_FOR_MERGE, Model.ExcludeWorkItemsForMerge);
             _configManager.AddValue(ConfigKeys.SHOULD_SHOW_LATEST_VERSION_IN_COMMENT, Model.ShouldShowLatestVersionMerge);
             _configManager.AddValue(ConfigKeys.SHOULD_SHOW_BUTTON_SWITCHING_SOURCE_TARGET_BRANCH, Model.ShouldShowButtonSwitchingSourceTargetBranch);

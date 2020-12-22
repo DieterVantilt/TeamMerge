@@ -73,41 +73,58 @@ namespace TeamMerge.Settings.Models
 
                 if (_checkInComment == CheckInComment.None)
                 {
-                    CommenFormat = null;
+                    CommentFormat = null;
                 }
                 else if (_checkInComment == CheckInComment.MergeDirection)
                 {
-                    CommenFormat = Resources.BranchDirectionFormat;
+                    CommentFormat = Resources.BranchDirectionFormat;
                 }
                 else if (_checkInComment == CheckInComment.WorkItemIds)
                 {
-                    CommenFormat = Resources.WorkItemIdsFormat;
+                    CommentFormat = Resources.WorkItemIdsFormat;
                 }
                 else if (_checkInComment == CheckInComment.Fixed)
                 {
-                    CommenFormat = string.Empty;
+                    CommentFormat = string.Empty;
                 }
                 else if (_checkInComment == CheckInComment.MergeDirectionAndWorkItems)
                 {
-                    CommenFormat = Resources.MergeDirectionAndWorkItemsFormat;
+                    CommentFormat = Resources.MergeDirectionAndWorkItemsFormat;
                 }
                 else if (_checkInComment == CheckInComment.ChangesetIds)
                 {
-                    CommenFormat = Resources.ChangesetIdsFormat;
+                    CommentFormat = Resources.ChangesetIdsFormat;
                 }
                 else if (_checkInComment == CheckInComment.MergeDirectionAndChangesetIds)
                 {
-                    CommenFormat = Resources.MergeDirectionAndChangesetIdsFormat;
+                    CommentFormat = Resources.MergeDirectionAndChangesetIdsFormat;
+                }
+                else if (_checkInComment == CheckInComment.ChangesetDetailsComment)
+                {
+                    CommentFormat = Resources.ChangesetCommentFormat;
+                }
+                else if (_checkInComment == CheckInComment.MergeDirectionChangesetDetailsComment)
+                {
+                    CommentFormat = Resources.BranchDirectionFormat;
+                    CommentLineFormat = Resources.ChangesetCommentFormat;
                 }
             }
         }
 
         private string _commentFormat;
 
-        public string CommenFormat
+        public string CommentFormat
         {
             get { return _commentFormat; }
-            set { _commentFormat = value; RaisePropertyChanged(nameof(CommenFormat)); }
+            set { _commentFormat = value; RaisePropertyChanged(nameof(CommentFormat)); }
+        }
+
+        private string _commentLineFormat;
+
+        public string CommentLineFormat
+        {
+            get { return _commentLineFormat; }
+            set { _commentLineFormat = value; RaisePropertyChanged(nameof(CommentLineFormat)); }
         }
 
         private bool _shouldShowLatestVersionMerge;

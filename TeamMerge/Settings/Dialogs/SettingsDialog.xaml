@@ -15,7 +15,7 @@
         x:Name="SettingsView">
 
     <StackPanel Margin="15">
-        <TabControl Height="350" Width="450">
+        <TabControl Height="450" Width="450">
             <TabItem Header="{x:Static resource:Resources.General}">
                 <settingViews:GeneralSettingsView />
             </TabItem>

@@ -15,6 +15,7 @@ namespace Shared.Utils
         public static readonly string WORK_ITEM_TYPES_TO_EXCLUDE = "WorkItemTypesToExclude";
         public static readonly string CHECK_IN_COMMENT_OPTION = "CheckInComment";
         public static readonly string COMMENT_FORMAT = "CommenFormat";
+        public static readonly string COMMENT_LINE_FORMAT = "CommentLineFormat";
         public static readonly string EXCLUDE_WORK_ITEMS_FOR_MERGE = "ExcludeWorkItemsForMerge";
         public static readonly string SHOULD_SHOW_LATEST_VERSION_IN_COMMENT = "ShouldShowLatestVersionInComment";
         public static readonly string SHOULD_SHOW_BUTTON_SWITCHING_SOURCE_TARGET_BRANCH = "ShouldShowButtonSwitchingSourceTargetBranch";

@@ -79,6 +79,24 @@ namespace TeamMerge {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to - {0} | {1} | {2} | {3}.
+        /// </summary>
+        public static string ChangesetCommentFormat {
+            get {
+                return ResourceManager.GetString("ChangesetCommentFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changeset details comment.
+        /// </summary>
+        public static string ChangesetDetailsComment {
+            get {
+                return ResourceManager.GetString("ChangesetDetailsComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Changeset ids.
         /// </summary>
         public static string ChangesetIdsComment {
@@ -255,6 +273,15 @@ namespace TeamMerge {
         public static string MergeDirectionAndWorkItemsFormat {
             get {
                 return ResourceManager.GetString("MergeDirectionAndWorkItemsFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Merge direction with changeset details.
+        /// </summary>
+        public static string MergeDirectionChangesetDetailsComment {
+            get {
+                return ResourceManager.GetString("MergeDirectionChangesetDetailsComment", resourceCulture);
             }
         }
         

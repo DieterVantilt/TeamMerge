@@ -17,6 +17,10 @@ namespace TeamMerge.Settings.Enums
         [LocalizedDescription(nameof(Resources.ChangesetIdsComment), typeof(Resources))]
         ChangesetIds,
         [LocalizedDescription(nameof(Resources.MergeDirectionAndChangesetIdsComment), typeof(Resources))]
-        MergeDirectionAndChangesetIds
+        MergeDirectionAndChangesetIds,
+        [LocalizedDescription(nameof(Resources.ChangesetDetailsComment), typeof(Resources))]
+        ChangesetDetailsComment,
+        [LocalizedDescription(nameof(Resources.MergeDirectionChangesetDetailsComment), typeof(Resources))]
+        MergeDirectionChangesetDetailsComment
     }
 }

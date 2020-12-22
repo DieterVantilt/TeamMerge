@@ -35,6 +35,11 @@
             <converters:InvertedBooleanConverter />
         </converters:MultiConverter>
 
+        <converters:MultiConverter x:Key="IsEqualToVisibilityConverter">
+            <converters:IsEqualConverter />
+            <BooleanToVisibilityConverter />
+        </converters:MultiConverter>
+
         <converters:IsEqualConverter x:Key="EqualToConverter" />
 
         <Image x:Key="AddImage"  Source="/TeamMerge;component/Resources/AddIcon.png"/>
@@ -81,7 +86,11 @@
 
         <TextBox Margin="0 5 0 5"
                  IsEnabled="{Binding Model.CheckInComment, Converter={StaticResource IsNotEqualToConverter}, ConverterParameter={x:Static enums:CheckInComment.None}}"
-                 Text="{Binding Model.CommenFormat, UpdateSourceTrigger=PropertyChanged}"/>
+                 Text="{Binding Model.CommentFormat, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <TextBox Margin="0 5 0 5"
+                 Visibility="{Binding Model.CheckInComment, Converter={StaticResource IsEqualToVisibilityConverter}, ConverterParameter={x:Static enums:CheckInComment.MergeDirectionChangesetDetailsComment}}"
+                 Text="{Binding Model.CommentLineFormat, UpdateSourceTrigger=PropertyChanged}"/>
 
         <StackPanel Orientation="Horizontal">
             <Label Content="{x:Static resource:Resources.CommentOutput}" />
@@ -109,7 +118,7 @@
             <Button Grid.Column="1" Margin="2 0 0 0" Width="22" HorizontalAlignment="Left" Command="{Binding AddWorkItemTypeToExcludeCommand}" Content="{StaticResource AddImage}" />
         </Grid>
 
-        <ScrollViewer VerticalScrollBarVisibility="Visible" Height="150">
+        <ScrollViewer VerticalScrollBarVisibility="Visible" Height="100">
             <ItemsControl Margin="0 2 0 2" ItemsSource="{Binding Model.WorkItemTypesToExclude}" HorizontalContentAlignment="Stretch">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
