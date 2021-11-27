@@ -1,0 +1,2 @@
+﻿27/11/2021 (1.0.0)
+First release version for Visual Studio 2022

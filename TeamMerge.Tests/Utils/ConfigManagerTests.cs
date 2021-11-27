@@ -4,9 +4,9 @@ using Rhino.Mocks;
 using Shared.Utils;
 using System.Collections.Generic;
 using System.Linq;
-using TeamMerge.Settings.Enums;
+using TeamMergeBase.Settings.Enums;
 
-namespace TeamMerge.Tests.Utils
+namespace TeamMergeBase.Tests.Utils
 {
     [TestClass]
     public class ConfigManagerTests

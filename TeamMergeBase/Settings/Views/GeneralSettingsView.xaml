@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="TeamMergeBase.Settings.Views.GeneralSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TeamMergeBase.Settings.Views"
+             xmlns:resource="clr-namespace:TeamMergeBase"
+             xmlns:dialogs="clr-namespace:TeamMergeBase.Settings.Dialogs"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance dialogs:SettingsDialogViewModel}"
+             Margin="5">
+    
+    <StackPanel>
+        <CheckBox Margin="0 0 0 10"
+                  Content="{x:Static resource:Resources.WarningPendingChanges}"
+                  IsChecked="{Binding Model.EnablePendingChangesWarning, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <CheckBox Margin="0 0 0 10"
+                  Content="{x:Static resource:Resources.AutoSelectAllChangesets}"
+                  IsChecked="{Binding Model.EnableAutoSelectAllChangesets, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <CheckBox Margin="0 0 0 10"
+                  Content="{x:Static resource:Resources.SaveSelectedBranchPerSolution}"
+                  IsChecked="{Binding Model.SaveSelectedBranchPerSolution, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <CheckBox Margin="0 0 0 10"
+                  Content="{x:Static resource:Resources.ExcludeWorkItems}"
+                  IsChecked="{Binding Model.ExcludeWorkItemsForMerge, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <CheckBox Margin="0 0 0 10"
+                  Content="{x:Static resource:Resources.ShowButtonForSwitchingBranches}"
+                  IsChecked="{Binding Model.ShouldShowButtonSwitchingSourceTargetBranch, UpdateSourceTrigger=PropertyChanged}"/>
+
+    </StackPanel>
+</UserControl>

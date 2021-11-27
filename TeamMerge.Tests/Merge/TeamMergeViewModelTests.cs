@@ -7,11 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TeamMerge.Merge;
-using TeamMerge.Merge.Context;
-using TeamMerge.Operations;
+using TeamMergeBase.Merge;
+using TeamMergeBase.Merge.Context;
+using TeamMergeBase.Operations;
 
-namespace TeamMerge.Tests.Merge
+namespace TeamMergeBase.Tests.Merge
 {
     [TestClass]
     public class TeamMergeCommonCommandsViewModelTests
@@ -181,7 +181,7 @@ namespace TeamMerge.Tests.Merge
         [TestMethod]
         public async Task TeamMergeViewModel_Initialize_WhenConfigurationFound_ThenSetsConfigurationData_Async()
         {
-            await TestLoadingFromContextOrFromConfigAsync(async () =>
+            await TestLoadingFromContextOrFromConfigWithAssertionsAsync(async () =>
             {
                 _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(false);
                 _configManager.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return("Project1");
@@ -193,9 +193,22 @@ namespace TeamMerge.Tests.Merge
         }
 
         [TestMethod]
-        public async Task TeamMergeViewModel_Initialize_WhenCalledWithContext_SetsTheContextData_Async()
+        public async Task TeamMergeViewModel_Initialize_WhenConfigurationFoundAndSourceBranchDoesNotExistAnymoreInProject_ThenDoesNotCrash_Async()
         {
             await TestLoadingFromContextOrFromConfigAsync(async () =>
+            {
+                _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SAVE_BRANCH_PERSOLUTION)).Return(false);
+                _configManager.Expect(x => x.GetValue<string>(ConfigKeys.SELECTED_PROJECT_NAME)).Return("Project1");
+                _configManager.Expect(x => x.GetValue<string>(ConfigKeys.SOURCE_BRANCH)).Return("DeletedSourceBranch");
+
+                await _sut.InitializeAsync(null);
+            });
+        }
+
+        [TestMethod]
+        public async Task TeamMergeViewModel_Initialize_WhenCalledWithContext_SetsTheContextData_Async()
+        {
+            await TestLoadingFromContextOrFromConfigWithAssertionsAsync(async () =>
             {
                 await _sut.InitializeAsync(new TeamMergeContext
                 {
@@ -207,28 +220,53 @@ namespace TeamMerge.Tests.Merge
             });
         }
 
-        private async Task TestLoadingFromContextOrFromConfigAsync(Func<Task> setUpForContextOrConfig)
+        [TestMethod]
+        public async Task TeamMergeViewModel_Initialize_WhenCalledWithContextAndSourceBranchDoesNotExistAnymoreInProject_ThenDoesNotCrash_Async()
         {
-            var projectName = "Project1";
-            var branch = new Branch { Branches = new List<string> { "SourceBranch1", "SourceBranch2" }, Name = "Branch1" };
-            var workspaceModel1 = new Workspace { Name = "Go test1", OwnerName = "14590" };
+            await TestLoadingFromContextOrFromConfigAsync(async () =>
+            {
+                await _sut.InitializeAsync(new TeamMergeContext
+                {
+                    Changesets = new System.Collections.ObjectModel.ObservableCollection<Changeset>(),
+                    SelectedProjectName = "Project1",
+                    SourceBranch = "DeleteSourceBranch",
+                    TargetBranch = "DeleteTargetBranch1"
+                });
+            });
+        }
 
-            _teamService.Expect(x => x.GetProjectNamesAsync()).Return(Task.FromResult<IEnumerable<string>>(new List<string> { "WrongProjectName", projectName }));
-
-            _teamService.Expect(x => x.AllWorkspacesAsync()).Return(Task.FromResult<IEnumerable<Workspace>>(new List<Workspace> { workspaceModel1 }));
-            _teamService.Expect(x => x.CurrentWorkspace()).Return(null);
-
-            _teamService.Expect(x => x.GetBranches(projectName)).Return(new List<Branch> {branch});
-
-            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_BUTTON_SWITCHING_SOURCE_TARGET_BRANCH)).Return(false);
-
-            await setUpForContextOrConfig();
+        private async Task TestLoadingFromContextOrFromConfigWithAssertionsAsync(Func<Task> setUpForContextOrConfig)
+        {
+            var (projectName, branch) = await TestLoadingFromContextOrFromConfigAsync(setUpForContextOrConfig);
 
             Assert.AreEqual(1, _sut.SourcesBranches.Count);
             Assert.AreEqual(2, _sut.TargetBranches.Count);
             Assert.AreEqual(projectName, _sut.SelectedProjectName);
             Assert.AreEqual(branch.Name, _sut.SelectedSourceBranch);
             Assert.AreEqual(branch.Branches[0], _sut.SelectedTargetBranch);
+        }
+
+        private async Task<(string projectnaam, Branch branch)> TestLoadingFromContextOrFromConfigAsync(Func<Task> setUpForContextOrConfig)
+        {
+            var projectName = "Project1";
+            var branch = new Branch {Branches = new List<string> {"SourceBranch1", "SourceBranch2"}, Name = "Branch1"};
+            var workspaceModel1 = new Workspace {Name = "Go test1", OwnerName = "14590"};
+
+            _teamService.Expect(x => x.GetProjectNamesAsync())
+                .Return(Task.FromResult<IEnumerable<string>>(new List<string> {"WrongProjectName", projectName}));
+
+            _teamService.Expect(x => x.AllWorkspacesAsync())
+                .Return(Task.FromResult<IEnumerable<Workspace>>(new List<Workspace> {workspaceModel1}));
+            _teamService.Expect(x => x.CurrentWorkspace()).Return(null);
+
+            _teamService.Expect(x => x.GetBranches(projectName)).Return(new List<Branch> {branch});
+
+            _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.SHOULD_SHOW_BUTTON_SWITCHING_SOURCE_TARGET_BRANCH))
+                .Return(false);
+
+            await setUpForContextOrConfig();
+
+            return (projectName, branch);
         }
 
         [TestCleanup]

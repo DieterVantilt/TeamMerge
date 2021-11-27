@@ -4,10 +4,11 @@ using Logic.Services;
 using Shared.Utils;
 using System;
 using System.Threading.Tasks;
-using TeamMerge.Commands;
-using TeamMerge.Exceptions;
-using TeamMerge.Merge.Context;
-using TeamMerge.Operations;
+using TeamMergeBase.Commands;
+using TeamMergeBase.Exceptions;
+using TeamMergeBase.Merge;
+using TeamMergeBase.Merge.Context;
+using TeamMergeBase.Operations;
 using VS2019::Microsoft.TeamFoundation.Controls;
 using VS2019::Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 

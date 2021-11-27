@@ -4,9 +4,10 @@ using Logic.Services;
 using VS2017.Microsoft.TeamFoundation.Controls;
 using VS2017.Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 using Shared.Utils;
-using TeamMerge.Operations;
+using TeamMergeBase.Operations;
 using VS2017::LogicVS2017.Services;
 using TeamMerge.Services;
+using TeamMergeBase.Merge;
 
 namespace TeamMerge.Merge
 {

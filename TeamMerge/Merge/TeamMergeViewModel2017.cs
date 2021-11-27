@@ -1,15 +1,16 @@
 ﻿extern alias VS2017;
 
 using System.Threading.Tasks;
-using TeamMerge.Commands;
-using TeamMerge.Merge.Context;
-using TeamMerge.Operations;
+using TeamMergeBase.Commands;
+using TeamMergeBase.Merge.Context;
+using TeamMergeBase.Operations;
 using Logic.Services;
 using Shared.Utils;
 using VS2017::Microsoft.TeamFoundation.Controls;
 using VS2017::Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
-using TeamMerge.Exceptions;
+using TeamMergeBase.Exceptions;
 using System;
+using TeamMergeBase.Merge;
 
 namespace TeamMerge.Merge
 {

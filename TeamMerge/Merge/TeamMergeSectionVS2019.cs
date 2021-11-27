@@ -4,8 +4,9 @@ using Logic.Services;
 using VS2019.Microsoft.TeamFoundation.Controls;
 using VS2019.Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 using Shared.Utils;
-using TeamMerge.Operations;
+using TeamMergeBase.Operations;
 using LogicVS2019.Services;
+using TeamMergeBase.Merge;
 
 namespace TeamMerge.Merge
 {
@@ -22,7 +23,7 @@ namespace TeamMerge.Merge
             var configHelper = new ConfigManager(new ConfigFileHelper());
             var versionControlService = new VersionControlServiceVS2019(ServiceProvider);            
 
-            var solutionService = new SolutionService(ServiceProvider, configHelper);
+            var solutionService = new SolutionServiceBase(ServiceProvider, configHelper);
             var tfvcService = new TFVCService(versionControlService, solutionService);
 
             var teamExplorerService = new TeamExplorerServiceVS2019(ServiceProvider, tfvcService);

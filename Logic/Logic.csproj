@@ -52,7 +52,7 @@
     <Compile Include="Services\IVersionControlService.cs" />
     <Compile Include="Services\TFVCService.cs" />
     <Compile Include="Services\MergeService.cs" />
-    <Compile Include="Services\SolutionService.cs" />
+    <Compile Include="Services\SolutionServiceBase.cs" />
     <Compile Include="Services\ITeamExplorerService.cs" />
     <Compile Include="Services\TeamService.cs" />
   </ItemGroup>
@@ -73,14 +73,7 @@
     <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.SDK">
-      <Version>15.9.3</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VSSDK.BuildTools">
-      <Version>16.0.2264</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

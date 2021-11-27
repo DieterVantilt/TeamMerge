@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AutoSelectAllChangesets" xml:space="preserve">
+    <value>Enable auto select all changesets.</value>
+  </data>
+  <data name="SaveSelectedBranchPerSolution" xml:space="preserve">
+    <value>Save selected branches per solution</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="FetchChangesets" xml:space="preserve">
+    <value>Fetch changesets</value>
+  </data>
+  <data name="GetLatestConflicts" xml:space="preserve">
+    <value>Conflicts occurred when getting latest. Open the conflict window to resolve these issues.</value>
+  </data>
+  <data name="LatestVersionBranch" xml:space="preserve">
+    <value>Before merging do get latest version on branch:</value>
+  </data>
+  <data name="Merge" xml:space="preserve">
+    <value>Merge</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="NotSelected" xml:space="preserve">
+    <value>(NotSelected)</value>
+  </data>
+  <data name="ProjectName" xml:space="preserve">
+    <value>Project name:</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Successfully saved!</value>
+  </data>
+  <data name="SaveYourChanges" xml:space="preserve">
+    <value>Want to save your changes?</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="ShouldResolveConflicts" xml:space="preserve">
+    <value>Should resolve conflicts</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Source</value>
+  </data>
+  <data name="SourceAndTarget" xml:space="preserve">
+    <value>Source and target</value>
+  </data>
+  <data name="SourceBranch" xml:space="preserve">
+    <value>Source branch</value>
+  </data>
+  <data name="SwitchTargetAndSourceBranches" xml:space="preserve">
+    <value>↓↑</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="TargetBranch" xml:space="preserve">
+    <value>Target branch</value>
+  </data>
+  <data name="TeamMerge" xml:space="preserve">
+    <value>Team Merge</value>
+  </data>
+  <data name="TeamMergeSettings" xml:space="preserve">
+    <value>TeamMerge settings</value>
+  </data>
+  <data name="WarningPendingChanges" xml:space="preserve">
+    <value>Enable warning when merging with included pending changes in workspace.</value>
+  </data>
+  <data name="WorkspaceContainsPendingChanges" xml:space="preserve">
+    <value>Your workspace contains included pending changes. Exclude or undo your included pending changes before merging.</value>
+  </data>
+  <data name="CheckingPendingChanges" xml:space="preserve">
+    <value>Checking for included pending changes</value>
+  </data>
+  <data name="GettingLatestVersionForBranch" xml:space="preserve">
+    <value>Getting latest version for {0} branch.</value>
+  </data>
+  <data name="MergingBranches" xml:space="preserve">
+    <value>Merging branches</value>
+  </data>
+  <data name="WorkItemTypesToExclude" xml:space="preserve">
+    <value>Work item types to exclude:</value>
+  </data>
+  <data name="General" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="CheckInComment" xml:space="preserve">
+    <value>Check-in comment:</value>
+  </data>
+  <data name="MergeDirectionComment" xml:space="preserve">
+    <value>Merge direction</value>
+  </data>
+  <data name="BranchDirectionFormat" xml:space="preserve">
+    <value>Merge {0} --&gt; {1}</value>
+  </data>
+  <data name="FixedComment" xml:space="preserve">
+    <value>Fixed</value>
+  </data>
+  <data name="WorkItemIdsComment" xml:space="preserve">
+    <value>Work item ids</value>
+  </data>
+  <data name="WorkItemIdsFormat" xml:space="preserve">
+    <value>Merged work item ids: {0}</value>
+  </data>
+  <data name="CommentOutput" xml:space="preserve">
+    <value>Comment output:</value>
+  </data>
+  <data name="InvalidFormat" xml:space="preserve">
+    <value>Invalid format</value>
+  </data>
+  <data name="Workspace" xml:space="preserve">
+    <value>Workspace</value>
+  </data>
+  <data name="ExcludeWorkItems" xml:space="preserve">
+    <value>Exclude work items for merge</value>
+  </data>
+  <data name="MergeDirectionAndWorkItemsComment" xml:space="preserve">
+    <value>Merge direction and work items</value>
+  </data>
+  <data name="MergeDirectionAndWorkItemsFormat" xml:space="preserve">
+    <value>Merge {0} --&gt; {1} ({2})</value>
+  </data>
+  <data name="ShowLatestVersionInComment" xml:space="preserve">
+    <value>Show in comments when merging latest version</value>
+  </data>
+  <data name="LatestVersion" xml:space="preserve">
+    <value>Latest version</value>
+  </data>
+  <data name="ChangesetIdsComment" xml:space="preserve">
+    <value>Changeset ids</value>
+  </data>
+  <data name="ChangesetIdsFormat" xml:space="preserve">
+    <value>Merged changeset ids: {0}</value>
+  </data>
+  <data name="MergeDirectionAndChangesetIdsComment" xml:space="preserve">
+    <value>Merge direction and changeset ids</value>
+  </data>
+  <data name="ChangesetsDetails" xml:space="preserve">
+    <value>Changesets details</value>
+  </data>
+  <data name="MergeDirectionAndChangesetsDetails" xml:space="preserve">
+    <value>Merge direction and changesets details</value>
+  </data>
+  <data name="MergeDirectionAndChangesetIdsFormat" xml:space="preserve">
+    <value>Merge {0} --&gt; {1} ({2})</value>
+  </data>
+  <data name="MergeDirectionWorkItemsAndChangesetIdsComment" xml:space="preserve">
+    <value>Merge direction with changeset ids and work items</value>
+  </data>
+  <data name="MergeDirectionWorkItemsAndChangesetIdsFormat" xml:space="preserve">
+    <value>Merge {0} --&gt; {1} ({2}; {3})</value>
+  </data>
+  <data name="ChangesetCommentFormat" xml:space="preserve">
+    <value>- {0} | {1} | {2} | {3}</value>
+  </data>
+  <data name="WorkItemIdsAndChangesetIdsComment" xml:space="preserve">
+    <value>Work item ids and changeset ids</value>
+  </data>
+  <data name="WorkItemIdsAndChangesetIdsFormat" xml:space="preserve">
+    <value>Merged work items ids: {0}; changeset ids: {1}</value>
+  </data>
+  <data name="ShowButtonForSwitchingBranches" xml:space="preserve">
+    <value>Show button for switching source and target branch</value>
+  </data>
+</root>

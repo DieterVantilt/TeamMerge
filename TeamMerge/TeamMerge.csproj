@@ -55,42 +55,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Base\ModelBase.cs" />
-    <Compile Include="Base\TeamExplorerViewModelBase.cs" />
-    <Compile Include="Base\ViewModelBase.cs" />
-    <Compile Include="Behaviors\EventToCommandBehavior.cs" />
-    <Compile Include="Commands\AsyncRelayCommand.cs" />
-    <Compile Include="Commands\RelayCommand.cs" />
-    <Compile Include="Converters\EnumConverters.cs" />
-    <Compile Include="Converters\InvertedBooleanConverter.cs" />
-    <Compile Include="Converters\IsEqualConverter.cs" />
-    <Compile Include="Converters\MultiConverter.cs" />
-    <Compile Include="Converters\NullableToBooleanConverter.cs" />
-    <Compile Include="Exceptions\MergeActionException.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Helpers\CollectionExtensions.cs" />
-    <Compile Include="Helpers\CommentOutputHelper.cs" />
-    <Compile Include="Helpers\EnumExtensions.cs" />
-    <Compile Include="Helpers\StringExtensions.cs" />
-    <Compile Include="Merge\TeamMergeCommonCommandsViewModel.cs" />
     <Compile Include="Merge\TeamMergeSectionVS2019.cs" />
     <Compile Include="Merge\TeamMergeViewModel2019.cs" />
+    <Compile Include="Services\SolutionService.cs" />
     <Compile Include="Services\TeamExplorerServiceVS2017.cs" />
     <Compile Include="Services\TeamExplorerServiceVS2019.cs" />
-    <Compile Include="Settings\Dialogs\SettingsDialog.xaml.cs">
-      <DependentUpon>SettingsDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Settings\Dialogs\SettingsDialogViewModel.cs" />
-    <Compile Include="Settings\Enums\Branch.cs" />
-    <Compile Include="Settings\Enums\CheckInComment.cs" />
-    <Compile Include="Settings\Models\SettingsModel.cs" />
-    <Compile Include="Merge\Context\TeamMergeContext.cs" />
     <Compile Include="Merge\TeamMergeSectionVS2017.cs" />
-    <Compile Include="Merge\TeamMergeView.xaml.cs">
-      <DependentUpon>TeamMergeView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Merge\TeamMergeViewModel2017.cs" />
-    <Compile Include="Operations\MergeOperation.cs" />
     <Compile Include="ResourceImage.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -101,12 +73,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Settings\Views\GeneralSettingsView.xaml.cs">
-      <DependentUpon>GeneralSettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Settings\Views\MergeSettingsView.xaml.cs">
-      <DependentUpon>MergeSettingsView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="TeamMergeNavigationItem2019.cs" />
     <Compile Include="TeamMergeNavigationItem2017.cs" />
     <Compile Include="TeamMergePackage.cs" />
@@ -114,9 +80,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TeamMergePage2019.cs" />
     <Compile Include="TeamMergePage2017.cs" />
-    <Compile Include="UI\ChangesetListBox.cs" />
-    <Compile Include="Utils\DialogHelper.cs" />
-    <Compile Include="Utils\LocalizedDescriptionAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
@@ -133,9 +96,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Resource Include="Resources\AddIcon.png" />
     <Content Include="Resources\Command1Package.ico" />
-    <Resource Include="Resources\DeleteIcon.png" />
     <Content Include="Resources\TeamMerge.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -179,24 +140,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Settings\Dialogs\SettingsDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Merge\TeamMergeView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Settings\Views\GeneralSettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Settings\Views\MergeSettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
@@ -206,9 +149,6 @@
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.0.2264">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf">
-      <Version>1.1.19</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +172,10 @@
     <ProjectReference Include="..\Shared\Shared.csproj">
       <Project>{e01c2e81-97d5-4813-ae0a-1c79733eab4c}</Project>
       <Name>Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TeamMergeBase\TeamMergeBase.csproj">
+      <Project>{06fcde8c-095e-4d00-a674-8409031c2874}</Project>
+      <Name>TeamMergeBase</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

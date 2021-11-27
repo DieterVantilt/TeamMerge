@@ -7,14 +7,14 @@ using Shared.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.Services.Common;
-using TeamMerge.Exceptions;
-using TeamMerge.Helpers;
-using TeamMerge.Operations;
-using TeamMerge.Settings.Enums;
-using Branch = TeamMerge.Settings.Enums.Branch;
+using TeamMergeBase.Exceptions;
+using TeamMergeBase.Helpers;
+using TeamMergeBase.Operations;
+using TeamMergeBase.Settings.Enums;
+using Branch = TeamMergeBase.Settings.Enums.Branch;
+using TeamMergeBase;
 
-namespace TeamMerge.Tests.Operations
+namespace TeamMergeBase.Tests.Operations
 {
     [TestClass]
     public class MergeOperationTests
