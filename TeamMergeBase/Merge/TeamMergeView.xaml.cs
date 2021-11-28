@@ -10,6 +10,9 @@ namespace TeamMergeBase.Merge
     {
         public TeamMergeView()
         {
+            //necessary to provoke dll from loading...
+            var trig = new Microsoft.Xaml.Behaviors.EventTrigger(); trig.SourceName = "foo";
+
             InitializeComponent();
         }
     }

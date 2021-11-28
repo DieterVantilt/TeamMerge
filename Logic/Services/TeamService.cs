@@ -86,7 +86,7 @@ namespace Logic.Services
         {
             var currentWorkspace = _tfvcService.CurrentWorkspace();
 
-            return currentWorkspace == null ? null : new Workspace { Name = currentWorkspace.Name, OwnerName = currentWorkspace.OwnerName };
+            return currentWorkspace?.Exists == true ? new Workspace { Name = currentWorkspace.Name, OwnerName = currentWorkspace.OwnerName } : null;
         }
 
         public Task<IEnumerable<string>> GetAllWorkItemTypesAsync()

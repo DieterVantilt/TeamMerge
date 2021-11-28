@@ -16,6 +16,8 @@ namespace LogicVS2022.Wrappers
             Workspace = workspace;
         }
 
+        public bool Exists => Workspace != null;
+
         public string OwnerName => Workspace.OwnerName;
         public string Name => Workspace.Name;
         public ITFVCSavedCheckin LastSavedCheckin => new SavedCheckinWrapper(Workspace.LastSavedCheckin);

@@ -5,6 +5,7 @@ namespace Domain.Entities.TFVC.Base
 {
     public interface ITFVCWorkspace
     {        
+        bool Exists { get; }
         string OwnerName { get; }
         string Name { get; }
         ITFVCSavedCheckin LastSavedCheckin { get; }
