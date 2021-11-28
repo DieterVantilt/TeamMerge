@@ -1,5 +1,5 @@
 ﻿extern alias VS2017;
-
+using TeamMergeBase;
 using VS2017::Microsoft.TeamFoundation.Controls;
 using VS2017::Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 

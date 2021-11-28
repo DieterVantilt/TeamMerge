@@ -63,16 +63,6 @@
     <Compile Include="Services\TeamExplorerServiceVS2019.cs" />
     <Compile Include="Merge\TeamMergeSectionVS2017.cs" />
     <Compile Include="Merge\TeamMergeViewModel2017.cs" />
-    <Compile Include="ResourceImage.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ResourceImage.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="TeamMergeNavigationItem2019.cs" />
     <Compile Include="TeamMergeNavigationItem2017.cs" />
     <Compile Include="TeamMergePackage.cs" />
@@ -103,15 +93,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ResourceImage.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ResourceImage.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>

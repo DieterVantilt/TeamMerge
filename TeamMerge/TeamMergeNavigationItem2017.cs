@@ -3,6 +3,7 @@
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Composition;
+using TeamMergeBase;
 using VS2017::LogicVS2017.Helpers;
 using VS2017::Microsoft.TeamFoundation.Controls;
 using VS2017::Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;

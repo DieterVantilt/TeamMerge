@@ -10,6 +10,7 @@ using VS2017::Microsoft.TeamFoundation.Controls;
 using VS2017::Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 using TeamMergeBase.Exceptions;
 using System;
+using TeamMergeBase;
 using TeamMergeBase.Merge;
 
 namespace TeamMerge.Merge

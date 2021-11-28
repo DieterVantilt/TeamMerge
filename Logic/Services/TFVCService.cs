@@ -43,7 +43,7 @@ namespace Logic.Services
         {
             ITFVCWorkspace result = null;
 
-            var fullName = _solutionService.GetActiveSolution().FullName;
+            var fullName = _solutionService.GetActiveSolution()?.FullName;
 
             if (!string.IsNullOrWhiteSpace(fullName))
             {

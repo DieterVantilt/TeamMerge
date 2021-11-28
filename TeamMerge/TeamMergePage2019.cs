@@ -1,5 +1,5 @@
 ﻿extern alias VS2019;
-
+using TeamMergeBase;
 using VS2019::Microsoft.TeamFoundation.Controls;
 using VS2019::Microsoft.TeamFoundation.Controls.WPF.TeamExplorer;
 

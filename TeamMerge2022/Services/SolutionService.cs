@@ -21,7 +21,14 @@ namespace TeamMerge2022.Services
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
 
-            var dte = (DTE)_serviceProvider.GetService(typeof(DTE));
+            DTE dte = null;
+
+            var result = _serviceProvider.GetService(typeof(DTE));
+
+            if (result != null)
+            {
+                dte = (DTE)result;
+            }            
 
             return dte?.Solution != null ? new SolutionModel(dte.Solution.FullName) : null;
         }

@@ -4,6 +4,7 @@ using Logic.Services;
 using Shared.Utils;
 using System;
 using System.Threading.Tasks;
+using TeamMergeBase;
 using TeamMergeBase.Commands;
 using TeamMergeBase.Exceptions;
 using TeamMergeBase.Merge;
