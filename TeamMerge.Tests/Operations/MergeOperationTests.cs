@@ -53,7 +53,6 @@ namespace TeamMergeBase.Tests.Operations
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MergeActionException))]
         public async Task MergeOperation_CheckIfWorkspaceHasIncludedPendingChangesAsync_WhenCalledWithPendingChangesInWorkspace_ThenThrowsException()
         {
             _configManager.Expect(x => x.GetValue<bool>(ConfigKeys.ENABLE_WARNING_WHEN_PENDING_CHANGES))
@@ -65,7 +64,7 @@ namespace TeamMergeBase.Tests.Operations
             _sut.MyCurrentAction += InvokesMyCurrentActionWithCheckingPendingChanges;
             
             var obj = new PrivateObject(_sut);
-            await (Task) obj.Invoke(CHECK_WORKSPACE_METHOD_NAME, _currentWorkspaceModel);
+            await Assert.ThrowsAsync<MergeActionException>(async () => await (Task) obj.Invoke(CHECK_WORKSPACE_METHOD_NAME, _currentWorkspaceModel));
         }
 
         private void InvokesMyCurrentActionWithCheckingPendingChanges(object sender, string e)
@@ -74,7 +73,6 @@ namespace TeamMergeBase.Tests.Operations
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MergeActionException))]
         public async Task MergeOperation_DoGetLatestOnBranchAsync_WhenCalledAndShouldNotResolveConflicts_ConflictsOccur_ThenThrowsException()
         {
             ChecksIfMyCurrentActionIsCorrectlySet(Branch.Source);
@@ -89,11 +87,10 @@ namespace TeamMergeBase.Tests.Operations
                 .Return(false);
 
             var obj = new PrivateObject(_sut);
-            await (Task)obj.Invoke(DO_GET_LATEST_ON_BRANCH_METHOD_NAME, _currentWorkspaceModel, _sourceBranchName, _targetbranchName);
+            await Assert.ThrowsAsync<MergeActionException>(async () => await (Task)obj.Invoke(DO_GET_LATEST_ON_BRANCH_METHOD_NAME, _currentWorkspaceModel, _sourceBranchName, _targetbranchName));
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MergeActionException))]
         public async Task MergeOperation_DoGetLatestOnBranchAsync_WhenCalledAndShouldResolveConflicts_ButUserCancelsTheResolve_ThenThrowsException()
         {
             ChecksIfMyCurrentActionIsCorrectlySet(Branch.Target);
@@ -114,7 +111,7 @@ namespace TeamMergeBase.Tests.Operations
                 .Return(true);
 
             var obj = new PrivateObject(_sut);
-            await (Task)obj.Invoke(DO_GET_LATEST_ON_BRANCH_METHOD_NAME, _currentWorkspaceModel, _sourceBranchName, _targetbranchName);
+            await Assert.ThrowsAsync<MergeActionException>(async () => await (Task)obj.Invoke(DO_GET_LATEST_ON_BRANCH_METHOD_NAME, _currentWorkspaceModel, _sourceBranchName, _targetbranchName));
         }
 
         [TestMethod]

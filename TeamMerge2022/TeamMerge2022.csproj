@@ -69,17 +69,22 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.TeamFoundation.Controls">
-      <HintPath>..\Lib\VS2022\Microsoft.TeamFoundation.Controls.dll</HintPath>
+      <HintPath>..\Lib\VS2026\Microsoft.TeamFoundation.Controls.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.31902.203" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.0.5233" />
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.14.40265" ExcludeAssets="runtime">
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="18.5.40034">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf">
-      <Version>1.1.39</Version>
+      <Version>1.1.142</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
